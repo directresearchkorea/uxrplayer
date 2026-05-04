@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights | uXr. player</title>
+    <meta name="description" content="Read our latest insights, case studies, and research from the UXR Player team.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Insights | uXr. player">
+    <meta property="og:description" content="Read our latest insights, case studies, and research from the UXR Player team.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ site_url }}/insights/">
+    <meta property="og:image" content="{{ site_url }}/assets/images/og-image-default.jpg">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Arial:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="icon">u<span class="red">X</span>r<span class="red">.</span></span>
+                <span class="text">player</span>
+            </a>
+            <nav>
+                <a href="../index.html">Home</a>
+                <div class="dropdown">
+                    <a href="../index.html#services" class="dropbtn" style="text-decoration:none;">Services <span class="caret">&#9662;</span></a>
+                    <div class="dropdown-content">
+                        <a href="../deeppersona/index.html">DEEP PERSONA</a>
+                        <a href="../behavioralanalysis/index.html">BEHAVIORAL ANALYSIS</a>
+                        <a href="../videography/index.html">VIDEOGRAPHY</a>
+                    </div>
+                </div>
+                <a href="../insights/index.html">Insights</a>
+                <a href="../index.html#team">Team</a>
+                <a href="../index.html#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="insights-page">
+        <div class="container">
+            <h2>INSIGHTS</h2>
+            
+            <div class="filter-tabs">
+                <button class="filter-btn active" onclick="filterPosts('all')">All Posts</button>
+                <button class="filter-btn" onclick="filterPosts('case-study')">Case Study</button>
+            </div>
+
+            <div class="post-grid" id="insights-grid">
+                {% for post in posts %}
+                <div class="post-card" data-title="{{ post.title | lower }}">
+                    <a href="../posts/{{ post.url.replace('/posts/', '') }}">
+                        {% if post.thumbnail %}
+                        <div class="post-card-image" style="background-image: url('{{ post.thumbnail }}');"></div>
+                        {% else %}
+                        <div class="post-card-image" style="background-color: #eee;"></div>
+                        {% endif %}
+                        <div class="post-card-content">
+                            {% if post.formatted_date %}
+                            <span class="date">{{ post.formatted_date }}</span>
+                            {% endif %}
+                            <h3>{{ post.title }}</h3>
+                            <p>{{ post.description }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% else %}
+                <p style="text-align:center;">No insights available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h2>Let's talk</h2>
+                    <p style="font-size: 1.2rem; font-family: 'Poppins', sans-serif; font-weight: 600; margin-bottom: 20px;">
+                        Contact us
+                    </p>
+                    <p style="margin-bottom: 20px; font-style: italic; opacity: 0.8;">A dedicated UX researcher will revert back in 12 hours.</p>
+                    <p style="font-size: 1rem; color: rgba(255,255,255,0.8); margin-bottom: 10px;">
+                        directory@research-asia.com<br>
+                        bruces.zhu@uupai-lab.com
+                    </p>
+                </div>
+                <div class="footer-form">
+                    <form id="contact-form" onsubmit="sendContactForm(event)">
+                        <input type="text" name="name" placeholder="Name" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <textarea name="message" placeholder="Message" required></textarea>
+                        <button type="submit" id="submit-btn">Submit</button>
+                    </form>
+                    <script>
+                    async function sendContactForm(e) {
+                        e.preventDefault();
+                        const form = document.getElementById('contact-form');
+                        const btn = document.getElementById('submit-btn');
+                        const name = form.name.value;
+                        const email = form.email.value;
+                        const message = form.message.value;
+                        btn.disabled = true;
+                        btn.textContent = 'Sending...';
+                        try {
+                            const res = await fetch('https://script.google.com/macros/s/AKfycbz_WY4guW_T7trO2I1lKyap7DIPdIFKgSITsz2i-TBEKcHcSxd_vzTefgPsq-VpesQg/exec', {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ name, email, message, site: 'uxrplayer.com' })
+                            });
+                            form.reset();
+                            btn.textContent = 'Sent ✓';
+                            setTimeout(() => { btn.textContent = 'Submit'; btn.disabled = false; }, 3000);
+                        } catch (err) {
+                            btn.textContent = 'Error. Try again.';
+                            btn.disabled = false;
+                        }
+                    }
+                    </script>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 UXR Player. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let visibleCount = 6;
+
+        function updatePostsVisibility() {
+            const currentCategory = document.querySelector('.filter-btn.active').innerText.toLowerCase();
+            const posts = document.querySelectorAll('.post-card');
+            let matchIndex = 0;
+
+            posts.forEach(post => {
+                const title = post.getAttribute('data-title');
+                const isCaseStudy = title.includes('case study') || title.includes('[case study]');
+                const isMatch = (currentCategory === 'all posts') || (currentCategory === 'case study' && isCaseStudy);
+
+                if (isMatch) {
+                    if (matchIndex < visibleCount) {
+                        post.style.display = 'flex';
+                        // Add a slight fade-in effect if it was previously hidden
+                        if (post.style.opacity !== '1') {
+                            post.style.opacity = '0';
+                            setTimeout(() => post.style.opacity = '1', 50);
+                            post.style.transition = 'opacity 0.5s ease-in';
+                        }
+                    } else {
+                        post.style.display = 'none';
+                        post.style.opacity = '0';
+                    }
+                    matchIndex++;
+                } else {
+                    post.style.display = 'none';
+                    post.style.opacity = '0';
+                }
+            });
+        }
+
+        function filterPosts(category) {
+            // Update active button state
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Reset visible count when changing categories
+            visibleCount = 6;
+            updatePostsVisibility();
+        }
+
+        // Infinite Scroll
+        window.addEventListener('scroll', () => {
+            // Check if we are near the bottom of the page (within 500px)
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                visibleCount += 6;
+                updatePostsVisibility();
+            }
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePostsVisibility();
+        });
+    </script>
+</body>
+</html>

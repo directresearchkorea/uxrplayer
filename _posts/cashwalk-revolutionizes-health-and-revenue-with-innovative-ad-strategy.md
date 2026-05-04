@@ -1,0 +1,18 @@
+---
+title: "CashWalk Revolutionizes Health and Revenue with Innovative Ad Strategy"
+date: 2023-10-10T00:00:00
+description: "IntroductionCashWalk, a revolutionary health app based in Seoul, South Korea, has masterfully integrated the concept of gamification into its core functionality, transforming the pursuit of good health into a rewarding and engaging adventure for users. CashWalk gamifies the process of walking and ex"
+thumbnail: "https://static.wixstatic.com/media/da7396_67322e872b1e465186bb113d16926ec4~mv2.png/v1/fill/w_521,h_593,al_c,lg_1,q_85/da7396_67322e872b1e465186bb113d16926ec4~mv2.png"
+---
+
+Introduction
+CashWalk, a revolutionary health app based in Seoul, South Korea, has masterfully integrated the concept of gamification into its core functionality, transforming the pursuit of good health into a rewarding and engaging adventure for users. CashWalk gamifies the process of walking and exercising by transforming mundane activities into exciting challenges. Users set daily step goals, effectively turning their physical activities into in-game achievements. As users reach milestones, they are rewarded with virtual coins or other incentives, creating a sense of accomplishment akin to leveling up in a video game. Gamification in CashWalk is not just about earning rewards; it’s also about providing users with real-time feedback and progress tracking. Users can view their daily, weekly, and monthly activity statistics, allowing them to see how their efforts translate into achievements. In a groundbreaking collaboration with Unity LevelPlay and Unity’s app design consultancy, CashWalk experienced a monumental shift in its revenue and engagement metrics.
+The Power of Unity LevelPlay
+Before partnering with Unity LevelPlay, CashWalk primarily relied on banner ads for monetization. Seeking diversification, the company engaged with LevelPlay, which provided access to exclusive tools and features. Unity's ad strategy consultancy conducted a thorough analysis, uncovering hidden ad placements within the app. By making rewarded video placements more accessible, particularly on the home screen, CashWalk significantly enhanced user engagement.
+Innovative Strategies for Success
+Unity’s consultancy provided invaluable insights into optimizing ad placements. They introduced strategies like offering users the opportunity to claim uncollected coins, creating a sense of urgency and fear of missing out (FOMO). Additionally, the team recommended setting limits on the frequency of ads, ensuring a balanced user experience. CashWalk also introduced a milestone-based rewarded video placement, further encouraging users to engage with the app.
+Remarkable Results
+The impact of these strategic implementations was profound. CashWalk witnessed a staggering 225% increase in overall revenue. On Android, the daily revenue surged by 67%, ARPDAU (Average Revenue Per Daily Active User) increased by 74%, and the engagement rate skyrocketed by 5x. For iOS users, the daily revenue leaped by 3.5x, ARPDAU doubled, and the engagement rate tripled.
+Conclusion
+CashWalk's collaboration with Unity LevelPlay and their app design consultancy has not only elevated the app's financial prowess but also enhanced user engagement to unprecedented levels. By embracing innovative ad strategies and placing user experience at the forefront, CashWalk has set a remarkable precedent in the realm of health-oriented apps. As it continues to inspire healthier lifestyles, CashWalk stands as a testament to the transformative power of strategic partnerships and user-centric design.
+Source: https://www.is.com/community/case-studies/cashwalk-levelplay/
