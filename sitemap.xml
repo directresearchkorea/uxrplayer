@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://uxrplayer.com/</loc>
-    <lastmod>2026-05-04</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
@@ -21,12 +21,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/how-koreans-prepare-for-international-travel-the-structure-of-travel-planning-revealed-through-app/index.html</loc>
+    <loc>https://uxrplayer.com/posts/aion2-data-analysis-what-role-do-live-streams-play/index.html</loc>
     <lastmod>2026-04-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/aion2-data-analysis-what-role-do-live-streams-play/index.html</loc>
+    <loc>https://uxrplayer.com/posts/how-koreans-prepare-for-international-travel-the-structure-of-travel-planning-revealed-through-app/index.html</loc>
     <lastmod>2026-04-29</lastmod>
     <priority>0.8</priority>
   </url>
@@ -156,22 +156,22 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/食品価格上昇で日本の消費行動が変化、米国産豚肉カットへの需要が高まるs/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://uxrplayer.com/posts/rising-food-prices-shift-consumer-behavior-in-japan-boosting-demand-for-u-s-pork-cuts/index.html</loc>
     <lastmod>2024-05-28</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/中国的-国潮-趋势/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
+    <loc>https://uxrplayer.com/posts/食品価格上昇で日本の消費行動が変化、米国産豚肉カットへの需要が高まるs/index.html</loc>
+    <lastmod>2024-05-28</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://uxrplayer.com/posts/the-guochao-trend-in-china/index.html</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uxrplayer.com/posts/中国的-国潮-趋势/index.html</loc>
     <lastmod>2024-05-21</lastmod>
     <priority>0.8</priority>
   </url>
@@ -181,12 +181,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/unlocking-line-japan-s-no-1-social-app-and-its-unstoppable-rise/index.html</loc>
+    <loc>https://uxrplayer.com/posts/jp-unlocking-line-日本のno-1ソーシャルアプリとその立ち止まらない上昇/index.html</loc>
     <lastmod>2024-05-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/jp-unlocking-line-日本のno-1ソーシャルアプリとその立ち止まらない上昇/index.html</loc>
+    <loc>https://uxrplayer.com/posts/unlocking-line-japan-s-no-1-social-app-and-its-unstoppable-rise/index.html</loc>
     <lastmod>2024-05-09</lastmod>
     <priority>0.8</priority>
   </url>
@@ -406,16 +406,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/marketing-mix-modeling-case-study/index.html</loc>
-    <lastmod>2023-04-24</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://uxrplayer.com/posts/marketing-research-case-study/index.html</loc>
-    <lastmod>2023-04-24</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://uxrplayer.com/posts/community-management-case-study/index.html</loc>
     <lastmod>2023-04-24</lastmod>
     <priority>0.8</priority>
@@ -426,11 +416,21 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/deeppersona/index.html</loc>
+    <loc>https://uxrplayer.com/posts/marketing-mix-modeling-case-study/index.html</loc>
+    <lastmod>2023-04-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uxrplayer.com/posts/marketing-research-case-study/index.html</loc>
+    <lastmod>2023-04-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://uxrplayer.com/behavioralanalysis/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uxrplayer.com/deeppersona/index.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
