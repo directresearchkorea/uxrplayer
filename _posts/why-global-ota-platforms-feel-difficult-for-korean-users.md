@@ -2,7 +2,7 @@
 title: "Why Global OTA Platforms Feel Difficult for Korean Users"
 date: 2026-06-26T16:08:00
 description: "Why does 'Global Standard' design cause high cognitive fatigue for Korean users? We reveal the local friction points of Korean travelers uncovered through online community exploration, in-situ interviews, and AI-assisted workflows."
-thumbnail: "/assets/images/global_ota_korean_ux.png"
+thumbnail: "/assets/images/Google%20Maps_list%20view%20navigation.png"
 ---
 
 Why does "Global Standard" design cause high cognitive fatigue for Korean users? In this article, we reveal the local friction points of Korean travelers, uncovered through online community exploration, in-situ interviews, and an AI-assisted research workflow.
@@ -13,11 +13,9 @@ Recently, our team successfully completed a project analyzing the digital user j
 
 ## Research Innovation: Rigorous Validation and AI Workflows
 
-In global qualitative research, the ultimate goals are **data reliability** and **speed**. Our team led the entire process—from participant recruitment and meticulous moderation to close collaboration with global partners—to extract high-density qualitative insights.
+In global qualitative research, the ultimate goals are **reliable data** and **project speed**. Our team led the entire process—from participant recruitment and meticulous moderation to close collaboration with global partners—to extract high-density qualitative insights. In particular, for this project, we actively integrated AI technology into our workflow to minimize the massive resource overhead typical of qualitative research and maximize the speed of analysis.
 
-For this project, we integrated AI translation technology into our workflow to efficiently process a massive volume of interview scripts. This drastically reduced the barrier and cost of script translation, which is traditionally a major bottleneck in global UX research.
-
-However, we did not rely on technology alone. Our professional researchers cross-checked and refined the raw AI-translated data, injecting local context, cultural nuances, and domain-specific knowledge of the Korean travel market. By preserving the depth and reliability of qualitative data while accelerating the translation process, we delivered the comprehensive summary report ahead of schedule, exceeding our client's expectations.
+To efficiently process a vast volume of interview scripts, we utilized AI translation technology to rapidly secure initial transcripts. Since AI can easily miss the subtle contextual nuances of the Korean market, the raw colloquial expressions of users, and domain-specific context, our professional researchers thoroughly cross-checked and refined every line. By combining technology with human researcher expertise, we preserved the depth and reliability of qualitative data while dramatically accelerating the data translation and analysis phase. As a result, we delivered the comprehensive summary report ahead of schedule, earning high satisfaction from our global partners.
 
 ## Listening to the User: Local Pain Points of Global OTAs
 
