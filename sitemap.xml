@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://uxrplayer.com/</loc>
-    <lastmod>2026-06-26</lastmod>
+    <lastmod>2026-07-14</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
@@ -171,12 +171,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/中国的-国潮-趋势/index.html</loc>
+    <loc>https://uxrplayer.com/posts/the-guochao-trend-in-china/index.html</loc>
     <lastmod>2024-05-21</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/the-guochao-trend-in-china/index.html</loc>
+    <loc>https://uxrplayer.com/posts/中国的-国潮-趋势/index.html</loc>
     <lastmod>2024-05-21</lastmod>
     <priority>0.8</priority>
   </url>
@@ -186,12 +186,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/unlocking-line-japan-s-no-1-social-app-and-its-unstoppable-rise/index.html</loc>
+    <loc>https://uxrplayer.com/posts/jp-unlocking-line-日本のno-1ソーシャルアプリとその立ち止まらない上昇/index.html</loc>
     <lastmod>2024-05-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/jp-unlocking-line-日本のno-1ソーシャルアプリとその立ち止まらない上昇/index.html</loc>
+    <loc>https://uxrplayer.com/posts/unlocking-line-japan-s-no-1-social-app-and-its-unstoppable-rise/index.html</loc>
     <lastmod>2024-05-09</lastmod>
     <priority>0.8</priority>
   </url>
@@ -206,12 +206,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/揭示消费者洞察：2023年香港热搜游戏/index.html</loc>
+    <loc>https://uxrplayer.com/posts/covid-19-lessons-from-japan-s-post-pandemic-economic-landscape/index.html</loc>
     <lastmod>2024-04-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/covid-19-lessons-from-japan-s-post-pandemic-economic-landscape/index.html</loc>
+    <loc>https://uxrplayer.com/posts/揭示消费者洞察：2023年香港热搜游戏/index.html</loc>
     <lastmod>2024-04-16</lastmod>
     <priority>0.8</priority>
   </url>
@@ -411,17 +411,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/gaming-translation-case-study/index.html</loc>
-    <lastmod>2023-04-24</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://uxrplayer.com/posts/community-management-case-study/index.html</loc>
     <lastmod>2023-04-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uxrplayer.com/posts/marketing-research-case-study/index.html</loc>
+    <loc>https://uxrplayer.com/posts/gaming-translation-case-study/index.html</loc>
     <lastmod>2023-04-24</lastmod>
     <priority>0.8</priority>
   </url>
@@ -431,15 +426,20 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://uxrplayer.com/posts/marketing-research-case-study/index.html</loc>
+    <lastmod>2023-04-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uxrplayer.com/behavioralanalysis/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://uxrplayer.com/deeppersona/index.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://uxrplayer.com/team/index.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://uxrplayer.com/behavioralanalysis/index.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
