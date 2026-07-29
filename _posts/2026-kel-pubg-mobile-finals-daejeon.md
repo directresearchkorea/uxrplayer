@@ -1,48 +1,59 @@
 ---
-title: "2026 KEL 모바일 배틀그라운드 결승 직관 후기: 대전 e스포츠 아레나를 다녀오며"
-description: "대전 e스포츠 경기장에서 열린 2026 KEL 모바일 배틀그라운드 결승전 관람 후기 및 지역 e스포츠의 발전 가능성에 대한 인사이트"
+title: "2026 KEL PUBG Mobile Finals: A Live Experience at the Daejeon e-Sports Arena"
+description: "Review of the 2026 KEL PUBG Mobile Finals at Daejeon e-Sports Arena and insights into the growth potential of regional esports."
 date: "2026-07-29"
-thumbnail: "/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689.jpg"
+thumbnail: "/assets/images/posts/2026-kel-pubg/thumbnail.jpg"
 ---
 
-지난 주말, **대전 e스포츠 경기장(Daejeon e-Sports Arena)**에서 성황리에 개최된 '2026 대한민국 e스포츠 리그(이하 2026 KEL)' 배틀그라운드 모바일 결승전을 직접 관람하고 왔습니다. 
+Last weekend, I had the opportunity to attend the **'2026 Korea e-Sports League (KEL)' PUBG Mobile Finals**, held successfully at the **Daejeon e-Sports Arena**. 
 
-현장의 생생한 열기와 모바일 e스포츠 관람객들의 특징, 그리고 로컬 e스포츠 경기장이 주는 새로운 UX에 대한 인사이트를 전해드립니다.
-
----
-
-## 🎮 2026 KEL 배틀그라운드 모바일 결선 개요
-
-> 한국e스포츠협회(KeSPA) 주관으로 진행된 **2026 대한민국 e스포츠 리그(KEL)**는 지역 e스포츠 선수 육성과 지역 경쟁력 강화를 목표로 출범한 리그입니다. 올해 2년 차를 맞이한 KEL은 선수들에게 실전 경험을 제공하며 훌륭한 등용문 역할을 하고 있습니다.
-
-이번 배틀그라운드 모바일 최강팀을 가리는 결선은 25일부터 26일까지 대전에서 이틀간 치러졌으며, 지역 기반의 팬덤과 가족 단위 관람객들이 함께 모여 응원하는 모습이 돋보였습니다.
+Here are some insights from my live viewing experience, focusing on the vibrant on-site atmosphere, the characteristics of mobile esports audiences, and the unique UX offered by local esports venues.
 
 ---
 
-## 🏟️ 대전 e스포츠 아레나 직관 후기
+## 🎮 Overview of the 2026 KEL PUBG Mobile Finals
 
-e스포츠의 중심이 수도권에 집중되어 있던 과거와 달리, 최근에는 지역 상설 경기장들이 활성화되며 새로운 관람 문화를 만들어가고 있습니다. 대전 e스포츠 경기장은 최신식 시설과 쾌적한 관람 환경을 자랑했습니다.
+> Hosted by the **Korea e-Sports Association (KeSPA)**, the **2026 Korea e-Sports League (KEL)** was launched with the goal of nurturing regional esports players and strengthening local competitiveness. Now in its second year, KEL serves as an excellent gateway, providing players with valuable real-world competitive experience.
 
-![대전 e스포츠 아레나 현장 분위기](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689.jpg)
+The finals, which determined the top PUBG Mobile team, took place over two days in Daejeon. The event was highlighted by a strong showing of regional fanbases and families coming together to cheer for their teams.
 
-경기장 내부는 모바일 배틀그라운드 특유의 긴장감 넘치는 사운드와 해설진의 열띤 목소리로 가득 찼습니다. 대형 스크린을 통해 선수들의 플레이 하나하나가 중계될 때마다 관람석에서는 탄성과 환호가 교차했습니다.
-
-![경기장 내부 모습](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_01.jpg)
-
-### 💡 UX Research Insight: 모바일 e스포츠의 관람 경험
-
-이번 직관을 통해 모바일 e스포츠만이 가지는 독특한 관람 문화를 엿볼 수 있었습니다.
-
-1. **가족 단위 관람객의 증가**: PC 게임 대회에 비해 모바일 게임은 연령 장벽이 낮아, 자녀와 함께 방문한 가족 단위 관람객의 비율이 눈에 띄게 높았습니다. 이는 e스포츠가 전 세대가 함께 즐길 수 있는 '여가 문화'로 자리 잡고 있음을 시사합니다.
-2. **빠른 호흡과 몰입감**: 모바일 배틀그라운드는 경기 템포가 빠르고 교전이 잦아 관람객들의 집중도가 매우 높았습니다. 경기장 내 웅장한 사운드 세팅은 이러한 몰입감을 극대화시켰습니다.
-3. **로컬 커뮤니티의 힘**: 지역 기반 리그인 만큼, 해당 지역 팀을 응원하는 팬덤의 결속력이 강했습니다. 이는 향후 로컬 e스포츠 비즈니스의 성장 잠재력이 매우 크다는 것을 보여줍니다.
-
-![관중석의 열기](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_02.jpg)
+![Arena Setup 1](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689.jpg)
+![Arena Setup 2](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_01.jpg)
 
 ---
 
-## 마무리하며
+## 🏟️ Live Experience at the Daejeon e-Sports Arena
 
-이번 2026 KEL 배틀그라운드 모바일 대전 결승전 직관은 지역 e스포츠 경기장의 뛰어난 인프라와 모바일 게임 팬덤의 열정을 동시에 확인할 수 있는 귀중한 시간이었습니다. 앞으로도 다양한 지역에서 다채로운 e스포츠 이벤트가 열려, 더 많은 게이머들이 오프라인에서 경험과 감동을 나눌 수 있기를 기대합니다.
+Unlike in the past, when esports was heavily concentrated in the capital region, the recent revitalization of regional permanent arenas is creating a new viewing culture. The Daejeon e-Sports Arena boasted state-of-the-art facilities and a highly comfortable environment for spectators.
 
-![현장 인증샷](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_05.jpg)
+![Arena View 1](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_02.jpg)
+![Arena View 2](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_03.jpg)
+![Players competing](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_04.jpg)
+
+The interior of the arena was filled with the tension-inducing sounds unique to PUBG Mobile and the passionate voices of the commentators. Every time a player's crucial move was broadcasted on the massive screens, the audience erupted in a mix of gasps and cheers.
+
+![Audience 1](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_05.jpg)
+![Audience 2](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_06.jpg)
+![Audience 3](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_07.jpg)
+
+### 💡 UX Research Insight: The Mobile Esports Viewing Experience
+
+Through this live event, I was able to observe the distinct viewing culture specific to mobile esports.
+
+1. **Increase in Family Audiences**: Compared to PC gaming tournaments, mobile games have a lower age barrier. As a result, the proportion of families visiting with their children was noticeably high. This suggests that esports is firmly establishing itself as a 'leisure culture' that all generations can enjoy together.
+2. **Fast-Paced Engagement**: PUBG Mobile features a rapid game tempo with frequent engagements, leading to an incredibly high level of concentration among the audience. The grand sound setup inside the arena maximized this immersion.
+3. **The Power of Local Communities**: Given that this is a region-based league, the solidarity of the fandom cheering for their local teams was strong. This demonstrates the massive growth potential for local esports businesses in the future.
+
+![Stage 1](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_08.jpg)
+![Stage 2](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_09.jpg)
+![Stage 3](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_10.jpg)
+
+---
+
+## Conclusion
+
+Attending the 2026 KEL PUBG Mobile Finals in Daejeon was a valuable experience that simultaneously showcased the excellent infrastructure of regional esports arenas and the passion of the mobile gaming fandom. I look forward to seeing more diverse esports events taking place in various regions, allowing more gamers to share these offline experiences and emotions.
+
+![Event Details 1](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_11.jpg)
+![Event Details 2](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_12.jpg)
+![Event Details 3](/assets/images/posts/2026-kel-pubg/KakaoTalk_20260729_124524689_13.jpg)
