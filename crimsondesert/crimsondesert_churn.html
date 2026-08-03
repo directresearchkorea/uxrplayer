@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTPLAYER // User Retention & Churn Analytics Dashboard</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Immediate Theme Initialization to prevent flashing
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <style>
+        /* Specific Layouts for User Dashboard */
+        .persona-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .persona-card:hover:not(.active) {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            background: var(--bg-color);
+        }
+        .persona-card.active {
+            border-color: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+            background: var(--bg-color);
+            cursor: default;
+        }
+        .persona-card-title {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .persona-card-desc {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-top: 4px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .persona-card-meta {
+            font-family: var(--font-mono);
+            font-size: 9.5px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 6px;
+        }
+        .dashboard-nav {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .nav-link {
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            padding: 4px 12px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--bg-color);
+            background-color: var(--text-primary);
+            border-color: var(--text-primary);
+            font-weight: 700;
+        }
+        
+        
+        /* Grid layout adjustments */
+        .split-row-layout {
+            display: grid;
+            grid-template-columns: 62% 38%;
+            gap: 32px;
+        }
+        @media(max-width: 1024px) {
+            .split-row-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* User profiles table */
+        .data-table-container {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 350px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            text-align: left;
+        }
+        .data-table th, .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .data-table th {
+            color: var(--text-secondary);
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            z-index: 10;
+        }
+        .data-table td {
+            color: var(--text-primary);
+        }
+        .data-table tbody tr {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+        .data-table tbody tr:hover {
+            background-color: var(--border-color);
+        }
+        .data-table tbody tr.selected {
+            background-color: var(--border-hover);
+        }
+        
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge.active {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+        .badge.inactive {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+        .badge.warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+        
+        /* Flow diagram SVG styling */
+        .flow-container {
+            background-color: var(--verbatim-bg);
+            border: 1px solid var(--border-color);
+            position: relative;
+            height: 450px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sankey-link {
+            fill: none;
+            stroke-opacity: 0.15;
+            transition: stroke-opacity 0.2s ease;
+        }
+        .sankey-link:hover {
+            stroke-opacity: 0.5;
+        }
+        .sankey-node {
+            fill: var(--text-primary);
+            stroke: var(--bg-color);
+            stroke-width: 1.5;
+        }
+        .sankey-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            fill: var(--text-secondary);
+            font-weight: bold;
+            pointer-events: none;
+        }
+        
+        /* Verbatim recovery card styling */
+        .recovery-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        @media(max-width: 768px) {
+            .recovery-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        .recovery-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+        .recovery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .recovery-flow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .recovery-step {
+            padding: 10px;
+            background-color: var(--verbatim-bg);
+            border-left: 3px solid var(--border-color);
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+        .recovery-step.neg {
+            border-left-color: #dc3545;
+        }
+        .recovery-step.pos {
+            border-left-color: #28a745;
+            color: var(--text-primary);
+        }
+        .recovery-title-mini {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="logo" style="line-height: 1; font-size: 13px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.5px;">GTPLAYER</span>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" style="padding: 3px 8px; font-size: 9px; height: 18px; display: flex; align-items: center; gap: 4px;">
+                        <span class="theme-icon" style="font-size: 9px;">☀</span>
+                        <span class="theme-label" style="font-size: 8.5px;">LIGHT</span>
+                    </button>
+                </div>
+                <span id="header-game-title" style="font-family: var(--font-sans); font-weight: 900; font-size: 24px; letter-spacing: -0.5px; color: var(--text-primary); line-height: 1.1; margin-top: 1px;">/ LOADING...</span>
+                <div class="dashboard-nav">
+                    <a href="index.html" class="nav-link">📊 POSTS TRENDS</a>
+                    <a href="crimsondesert_churn.html" class="nav-link active">👥 USER CHURN</a>
+                    <a href="crimsondesert_chat.html" class="nav-link">💬 PERSONA CHAT</a>
+                </div>
+            </div>
+            <div class="controls" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
+                <!-- Row 1: 데이터 누적 기간 & 기간 박스 (오른쪽에 나란히 배치) -->
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <span style="font-family: var(--font-sans); font-size: 11px; color: var(--text-secondary); font-weight: bold; width: 110px; display: inline-block; text-align: left;">데이터 누적 기간</span>
+                    <div class="quick-ranges interval-tabs" id="quick-ranges" style="display: flex;">
+                        <button class="tab-btn active" data-range="all">전체</button>
+                        <button class="tab-btn" data-range="6m">6개월</button>
+                        <button class="tab-btn" data-range="3m">3개월</button>
+                        <button class="tab-btn" data-range="1m">1개월</button>
+                    </div>
+                    <div class="date-inputs" style="display: flex; gap: 6px; align-items: center; margin-left: 6px;">
+                        <input type="date" id="start-date" class="clean-select" style="font-family: 'JetBrains Mono'; font-size: 11px; padding: 5px 10px; color: var(--text-primary); border-color: var(--border-color); background-color: var(--bg-color); height: 31px; box-sizing: border-box; outline: none;">
+                        <span style="color: var(--text-muted); font-size: 11px;">~</span>
+                        <input type="date" id="end-date" class="clean-select" style="font-family: 'JetBrains Mono'; font-size: 11px; padding: 5px 10px; color: var(--text-primary); border-color: var(--border-color); background-color: var(--bg-color); height: 31px; box-sizing: border-box; outline: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- KPI Cards Row -->
+        <section class="kpi-row">
+            <div class="kpi-card">
+                <span class="kpi-label">TOTAL TRACKED ACTIVE USERS</span>
+                <div class="kpi-value-container">
+                    <span id="kpi-users" class="kpi-value">-</span>
+                    <span class="kpi-unit">USERS</span>
+                </div>
+                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* 산정 기준: 글/댓글 합산 5회 이상 & 활동 기간(Span) 최소 3일 이상인 유저</div>
+            </div>
+            <div class="kpi-card" style="position: relative;">
+                <span class="kpi-label" id="kpi-sent-label">GAME SENTIMENT INDEX (일간)</span>
+                <div class="kpi-value-container" style="display: flex; align-items: baseline; gap: 8px;">
+                    <span id="kpi-sent-idx" class="kpi-value">-</span>
+                    <span id="kpi-sent-wow" style="font-family: var(--font-mono); font-size: 11px; font-weight: bold;">-</span>
+                </div>
+                <div class="granularity-toggle" style="position: absolute; top: 10px; right: 12px; display: flex; gap: 3px;">
+                    <button class="gran-btn active" data-gran="daily" style="font-size: 9px; padding: 2px 4px; background: var(--border-color); border: none; color: var(--text-primary); cursor: pointer; border-radius: 2px;">일간</button>
+                    <button class="gran-btn" data-gran="weekly" style="font-size: 9px; padding: 2px 4px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px;">주간</button>
+                    <button class="gran-btn" data-gran="monthly" style="font-size: 9px; padding: 2px 4px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px;">월간</button>
+                </div>
+                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* 산정 기준: KoELECTRA 딥러닝 분류기 신뢰도 0.75 이상 긍/부정 언급 비율</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">HIGH CHURN RISK RATE</span>
+                <div class="kpi-value-container">
+                    <span id="kpi-risk-rate" class="kpi-value">-</span>
+                    <span class="kpi-unit">%</span>
+                </div>
+                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* 지수 산정: 미활동일수(14일 초과 시 1.5점/일) + 부정문 비율(50점) + 이탈 단어 가산(30점)</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">SENTIMENT RECOVERY CASES</span>
+                <div class="kpi-value-container">
+                    <span id="kpi-recovery" class="kpi-value">-</span>
+                    <span class="kpi-unit">USERS</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Row 1: Flow Transition (Sankey Node representation) & At-Risk Users list -->
+        <div class="split-row-layout">
+            <!-- Left: Flow Diagram -->
+            <section class="chart-section card">
+                <div class="card-header">
+                    <h2 class="card-title">USER SENTIMENT & RETENTION FLOW (TRANSITIONS)</h2>
+                    <span class="card-subtitle" style="margin-bottom: 4px;">EARLY PHASE SENTIMENT ➡️ LATER PHASE STATE FLOW</span>
+                    <div style="font-size: 9.5px; color: var(--text-secondary); margin-top: 6px; line-height: 1.35;">
+                        * <strong>전이(Transition) 기준:</strong> 유저의 개별 활동 기간을 전/후반기로 나누어 [전반기 평균 감성] ➡️ [후반기 평균 감성]을 매핑합니다. 30일 이상 미활동 유저는 후반기가 <code>Inactive(이탈)</code>로 분류됩니다.
+                    </div>
+                </div>
+                <div class="flow-container">
+                    <svg id="sankey-svg" width="100%" height="100%"></svg>
+                </div>
+            </section>
+
+            <!-- Right: At-Risk Users Table -->
+            <section class="chart-section card" style="display: flex; flex-direction: column; min-width: 0;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2 class="card-title" id="flow-users-title" style="color: #ffc107;">HIGH CHURN RISK USERS</h2>
+                        <span class="card-subtitle" id="flow-users-subtitle">CHURN RISK INDEX >= 70</span>
+                    </div>
+                    <button id="reset-flow-btn" class="nav-link" style="padding: 2px 8px; font-size: 9px; display: none; margin-top: -2px; cursor: pointer;">RESET ↺</button>
+                </div>
+                <div class="data-table-container" style="flex-grow: 1;">
+                    <table class="data-table" id="at-risk-table">
+                        <thead>
+                            <tr>
+                                <th>NICKNAME</th>
+                                <th>SRC</th>
+                                <th style="text-align: right;">POSTS (COMMS)</th>
+                                <th style="text-align: right;">SENTIMENT INDEX</th>
+                                <th style="text-align: right;">CHURN INDEX</th>
+                            </tr>
+                        </thead>
+                        <tbody id="at-risk-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Row 2: User Matrix Scatter & Persona Profiles -->
+        <div class="split-row-layout" style="margin-top: 32px;">
+            <!-- Left: Scatter Plot Matrix -->
+            <section class="chart-section card">
+                <div class="card-header">
+                    <h2 class="card-title">USER CHURN RISK MATRIX (SCATTER PLOT)</h2>
+                    <span class="card-subtitle">CLICK A NODE TO LOAD THE SPECIFIC USER'S TIMELINE AND FEEDBACK</span>
+                    <div style="font-size: 9.5px; color: var(--text-secondary); margin-top: 6px; line-height: 1.35;">
+                        * <strong>군집화(Clustering) 산정 지표:</strong> 유저별 총 활동량($\log$), 활동 기간($\log$), 평균 감성 지수, 이탈 위험 지수 등 4가지 차원을 표준화(StandardScaler)한 후 K-Means ($K=4$) 알고리즘으로 군집화한 분포입니다.
+                    </div>
+                </div>
+                <div class="chart-container" style="height: 380px;">
+                    <canvas id="userScatterChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Right: User Persona Profile Cards -->
+            <section class="chart-section card" style="display: flex; flex-direction: column; min-width: 0;">
+                <div class="card-header" style="padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 10px;">
+                    <h2 class="card-title" style="color: #4CAF50;">👥 PERSONAS</h2>
+                </div>
+                <div class="persona-cards-container" id="persona-cards-container" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; overflow-y: auto; max-height: 380px; padding-right: 4px;">
+                    <!-- Dynamically populated persona cards or single group detail -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Row 3: Sentiment Recovery (Negative -> Positive) cases -->
+        <section class="chart-section card">
+            <div class="card-header" style="border-bottom-color: #28a745;">
+                <h2 class="card-title" style="color: #28a745;">👍 SENTIMENT RECOVERY VERBATIMS (부정 ➡️ 긍정 전환 사례)</h2>
+                <span class="card-subtitle">불만을 가졌으나 패치/공략법 터득으로 긍정적으로 돌아선 실제 발언사례</span>
+            </div>
+            <div class="recovery-cards" id="recovery-cards-container" style="margin-top: 20px;">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- Row 4: User Profile & Verbatim Details (Full Width at the absolute bottom) -->
+        <section class="chart-section card" style="display: flex; flex-direction: column; min-width: 0; margin-top: 32px; width: 100%;" id="user-details-card">
+            <div class="card-header">
+                <h2 class="card-title" id="detail-title" style="color: var(--text-primary);">USER DETAILS // SELECT A NODE OR PERSONA CARD</h2>
+                <span class="card-subtitle" id="detail-subtitle">PROFILE DETAILS AND VERBATIMS</span>
+            </div>
+            <div id="detail-content" style="display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; max-height: 480px; padding-right: 4px; padding-top: 12px;">
+                <div class="no-data">산점도 차트에서 유저 노드를 클릭하거나 우측의 페르소나 카드들 중 하나를 선택하시면 상세 정보가 여기에 로드됩니다.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <span>GTPLAYER RETENTION ENGINE v1.0</span>
+            <span>DATA SOURCE: INVEN & RULIWEB INTEGRATION DATA</span>
+        </div>
+    </footer>
+
+    <!-- Load data dynamically -->
+    <script>
+        const GAMES_LIST = [
+            { id: '붉은사막', name: '붉은사막 (Crimson Desert)' },
+            { id: '솔 인챈트', name: '솔 인챈트 (Sol Enchant)' },
+            { id: 'AION2', name: 'AION 2' },
+            { id: 'LoL', name: 'LoL' },
+            { id: 'Overwatch2', name: 'Overwatch 2' },
+            { id: '메이플스토리', name: '메이플스토리 (MapleStory)' },
+            { id: '발로란트', name: '발로란트 (Valorant)' },
+            { id: '배틀그라운드', name: '배틀그라운드 (PUBG)' },
+            { id: 'FCOnline', name: 'FC Online' }
+        ];
+
+        let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        localStorage.setItem('selectedGame', selectedGame);
+
+        window.switchTab = function(tabName) {
+            const tabPersonas = document.getElementById('tab-personas');
+            const tabUserDetail = document.getElementById('tab-user-detail');
+            const contentPersonas = document.getElementById('tab-content-personas');
+            const contentUserDetail = document.getElementById('tab-content-user-detail');
+            
+            if (tabName === 'personas') {
+                if (tabPersonas) tabPersonas.classList.add('active');
+                if (tabUserDetail) tabUserDetail.classList.remove('active');
+                if (contentPersonas) contentPersonas.style.display = 'flex';
+                if (contentUserDetail) contentUserDetail.style.display = 'none';
+            } else if (tabName === 'user-detail') {
+                if (tabPersonas) tabPersonas.classList.remove('active');
+                if (tabUserDetail) tabUserDetail.classList.add('active');
+                if (contentPersonas) contentPersonas.style.display = 'none';
+                if (contentUserDetail) contentUserDetail.style.display = 'flex';
+            }
+        };
+
+        function loadGameData(game, callback) {
+            const oldScript = document.getElementById('dynamic-data-script');
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.id = 'dynamic-data-script';
+            script.src = `data_${game}.js`;
+            script.onload = () => {
+                if (typeof DASHBOARD_DATA !== 'undefined') {
+                    callback(DASHBOARD_DATA);
+                } else {
+                    console.error("DASHBOARD_DATA not defined in loaded script.");
+                }
+            };
+            script.onerror = () => {
+                console.error(`Failed to load data for game: ${game}`);
+                alert(`게임 데이터를 불러올 수 없습니다: data_${game}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
+                if (game !== '붉은사막') {
+                    localStorage.setItem('selectedGame', '붉은사막');
+                    window.location.search = `?game=붉은사막`;
+                }
+            };
+            document.body.appendChild(script);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update header title based on game name
+            const headerTitle = document.getElementById('header-game-title');
+            if (headerTitle) {
+                const gameNames = {
+                    '붉은사막': 'CRIMSON DESERT',
+                    '솔 인챈트': 'SOL ENCHANT',
+                    'AION2': 'AION 2',
+                    'LoL': 'LOL',
+                    'Overwatch2': 'OVERWATCH 2',
+                    '메이플스토리': 'MAPLE STORY',
+                    '발로란트': 'VALORANT',
+                    '배틀그라운드': 'PUBG',
+                    'FCOnline': 'FC ONLINE'
+                };
+                headerTitle.textContent = `/ ${gameNames[selectedGame] || selectedGame.toUpperCase()}`;
+            }
+
+            loadGameData(selectedGame, (data) => {
+            const profiles = data.user_profiles || [];
+            let transitions = data.user_transitions || {};
+            const recoveries = data.user_verbatims_recovery || [];
+            
+            let filteredProfiles = [...profiles];
+            let filteredRecoveries = [...recoveries];
+            let currentGranularity = 'daily';
+            
+            let lockedTransition = null;
+            let lockedPath = null;
+            let selectedClusterId = null;
+
+            // Calculate minDate and maxDate dynamically from daily_summary
+            let minDate = '2026-03-03';
+            let maxDate = '2026-07-30';
+            if (data.daily_summary && data.daily_summary.length > 0) {
+                const dates = data.daily_summary.map(d => d.date).sort();
+                minDate = dates[0];
+                maxDate = dates[dates.length - 1];
+            }
+
+            let startDateStr = minDate;
+            let endDateStr = maxDate;
+
+            // Bind start and end date input controls
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            if (startDateInput && endDateInput) {
+                startDateInput.value = startDateStr;
+                endDateInput.value = endDateStr;
+                startDateInput.min = minDate;
+                startDateInput.max = maxDate;
+                endDateInput.min = minDate;
+                endDateInput.max = maxDate;
+            }
+            
+            // Helper to get theme colors dynamically
+            function getThemeColors() {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                return {
+                    isLight,
+                    textPrimary: isLight ? '#000000' : '#FFFFFF',
+                    textSecondary: isLight ? '#555555' : '#888888',
+                    textMuted: isLight ? '#888888' : '#444444',
+                    gridColor: isLight ? '#E5E5E5' : '#1A1A1A',
+                    borderColor: isLight ? '#E5E5E5' : '#1A1A1A',
+                    scatterPointBg: isLight ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+                    scatterPointBorder: isLight ? '#000000' : '#FFFFFF',
+                    riskPointBg: '#dc3545',
+                    riskPointBorder: '#dc3545',
+                    recoverPointBg: '#28a745',
+                    recoverPointBorder: '#28a745'
+                };
+            }
+            
+            // Initialize KPIs
+            const metrics = data.game_metrics || {
+                daily: { sentiment_index: 0.0, sentiment_index_wow: 0.0, label: '어제 대비' },
+                weekly: { sentiment_index: 0.0, sentiment_index_wow: 0.0, label: '지난주 대비' },
+                monthly: { sentiment_index: 0.0, sentiment_index_wow: 0.0, label: '지난달 대비' },
+                active_users: profiles.length,
+                high_risk_rate: 0.0
+            };
+            
+            document.getElementById('kpi-users').textContent = metrics.active_users.toLocaleString();
+            document.getElementById('kpi-risk-rate').textContent = metrics.high_risk_rate;
+            document.getElementById('kpi-recovery').textContent = recoveries.length.toLocaleString();
+            
+            // Function to dynamically update the Sentiment KPI card content
+            function updateSentimentKPI(gran) {
+                const item = metrics[gran] || { sentiment_index: 0.0, sentiment_index_wow: 0.0, label: '' };
+                document.getElementById('kpi-sent-idx').textContent = item.sentiment_index;
+                
+                const sentWowEl = document.getElementById('kpi-sent-wow');
+                const labelMap = { 'daily': '일간', 'weekly': '주간', 'monthly': '월간' };
+                document.getElementById('kpi-sent-label').textContent = `GAME SENTIMENT INDEX (${labelMap[gran]})`;
+                
+                if (item.sentiment_index_wow >= 0) {
+                    sentWowEl.textContent = `▲ +${item.sentiment_index_wow}% ${item.label}`;
+                    sentWowEl.style.color = '#28a745';
+                } else {
+                    sentWowEl.textContent = `▼ ${item.sentiment_index_wow}% ${item.label}`;
+                    sentWowEl.style.color = '#dc3545';
+                }
+            }
+            
+            // Set initial state to daily
+            updateSentimentKPI('daily');
+            
+            // Bind click events to granularity buttons
+            document.querySelectorAll('.gran-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.gran-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.style.background = 'transparent';
+                        b.style.color = 'var(--text-secondary)';
+                    });
+                    btn.classList.add('active');
+                    btn.style.background = 'var(--border-color)';
+                    btn.style.color = 'var(--text-primary)';
+                    
+                    const gran = btn.getAttribute('data-gran');
+                    currentGranularity = gran;
+                    updateSentimentKPI(gran);
+                });
+            });
+
+            function updateDashboard() {
+                // Filter profiles where at least one verbatim falls within the range
+                filteredProfiles = profiles.filter(p => {
+                    if (!p.verbatims || p.verbatims.length === 0) return false;
+                    return p.verbatims.some(v => {
+                        const vDate = v.date ? v.date.split(' ')[0] : '';
+                        return vDate >= startDateStr && vDate <= endDateStr;
+                    });
+                });
+
+                // Filter recoveries based on active users in this period
+                filteredRecoveries = recoveries.filter(r => {
+                    return filteredProfiles.some(p => p.author === r.author);
+                });
+
+                // Recalculate transition flows
+                transitions = {
+                    'Positive -> Positive': 0,
+                    'Positive -> Negative': 0,
+                    'Positive -> Neutral': 0,
+                    'Positive -> Inactive': 0,
+                    'Negative -> Positive': 0,
+                    'Negative -> Negative': 0,
+                    'Negative -> Neutral': 0,
+                    'Negative -> Inactive': 0,
+                    'Neutral -> Positive': 0,
+                    'Neutral -> Negative': 0,
+                    'Neutral -> Neutral': 0,
+                    'Neutral -> Inactive': 0
+                };
+                filteredProfiles.forEach(p => {
+                    if (p.transition && transitions.hasOwnProperty(p.transition)) {
+                        transitions[p.transition]++;
+                    }
+                });
+
+                // Update KPIs
+                const activeUsersCount = filteredProfiles.length;
+                const highRiskCount = filteredProfiles.filter(p => p.churn_index >= 70).length;
+                const riskRate = activeUsersCount > 0 ? (highRiskCount / activeUsersCount * 100).toFixed(1) : '0.0';
+
+                document.getElementById('kpi-users').textContent = activeUsersCount.toLocaleString();
+                document.getElementById('kpi-risk-rate').textContent = riskRate + '%';
+                document.getElementById('kpi-recovery').textContent = filteredRecoveries.length.toLocaleString();
+
+                updateSentimentKPI(currentGranularity);
+
+                // Re-render sub-components
+                showHighChurnRiskUsers();
+                renderRecoveryCards();
+                drawSankey();
+                drawScatterPlot();
+                drawClusteringChart();
+            }
+
+            // Quick Range Presets Click Listener
+            const quickRanges = document.getElementById('quick-ranges');
+            if (quickRanges) {
+                quickRanges.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('tab-btn')) {
+                        document.querySelectorAll('#quick-ranges .tab-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        const range = e.target.dataset.range;
+                        
+                        if (range === 'all') {
+                            startDateStr = minDate;
+                            endDateStr = maxDate;
+                        } else {
+                            const end = new Date(maxDate);
+                            let months = 1;
+                            if (range === '1m') months = 1;
+                            if (range === '3m') months = 3;
+                            if (range === '6m') months = 6;
+                            
+                            const start = new Date(end.setMonth(end.getMonth() - months));
+                            const startStr = start.toISOString().split('T')[0];
+                            startDateStr = startStr < minDate ? minDate : startStr;
+                            endDateStr = maxDate;
+                        }
+                        
+                        startDateInput.value = startDateStr;
+                        endDateInput.value = endDateStr;
+                        updateDashboard();
+                    }
+                });
+            }
+
+            // Date Inputs Change Listeners
+            if (startDateInput) {
+                startDateInput.addEventListener('change', (e) => {
+                    document.querySelectorAll('#quick-ranges .tab-btn').forEach(b => b.classList.remove('active'));
+                    startDateStr = e.target.value;
+                    updateDashboard();
+                });
+            }
+
+            if (endDateInput) {
+                endDateInput.addEventListener('change', (e) => {
+                    document.querySelectorAll('#quick-ranges .tab-btn').forEach(b => b.classList.remove('active'));
+                    endDateStr = e.target.value;
+                    updateDashboard();
+                });
+            }
+            
+            // --- Render Users List (Default & Flow Filtering) ---
+            function showHighChurnRiskUsers() {
+                lockedTransition = null;
+                lockedPath = null;
+                
+                const titleEl = document.getElementById('flow-users-title');
+                const subtitleEl = document.getElementById('flow-users-subtitle');
+                const resetBtn = document.getElementById('reset-flow-btn');
+                
+                titleEl.textContent = 'HIGH CHURN RISK USERS';
+                titleEl.style.color = '#ffc107';
+                subtitleEl.textContent = 'CHURN RISK INDEX >= 70';
+                if (resetBtn) resetBtn.style.display = 'none';
+                
+                // Reset paths opacity in Sankey
+                document.querySelectorAll('.sankey-link').forEach(l => l.style.strokeOpacity = '');
+
+                const riskTbody = document.getElementById('at-risk-tbody');
+                riskTbody.innerHTML = '';
+                const highRiskUsers = filteredProfiles.filter(p => p.churn_index >= 70);
+                
+                if (highRiskUsers.length === 0) {
+                    riskTbody.innerHTML = '<tr><td colspan="5" class="no-data">위험 지수 70점 이상의 이탈 위험 유저가 없습니다.</td></tr>';
+                } else {
+                    highRiskUsers.slice(0, 150).forEach(u => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: bold; color: var(--text-primary);">${u.author}</td>
+                            <td style="color: var(--text-secondary);">${u.source}</td>
+                            <td style="text-align: right; color: var(--text-secondary);">${u.posts_count !== undefined ? u.posts_count : 0} (${u.comments_count !== undefined ? u.comments_count : 0})</td>
+                            <td style="text-align: right; color: ${u.sentiment_index < 0 ? '#dc3545' : '#28a745'};">${u.sentiment_index}</td>
+                            <td style="text-align: right; font-weight: bold; color: #ffc107;">${u.churn_index}</td>
+                        `;
+                        tr.addEventListener('click', () => {
+                            showUserProfile(u.author, u.source);
+                            // Also highlight row
+                            document.querySelectorAll('#at-risk-tbody tr').forEach(r => r.classList.remove('selected'));
+                            tr.classList.add('selected');
+                        });
+                        riskTbody.appendChild(tr);
+                    });
+                }
+            }
+
+            function showFlowUsers(transitionStr, autoSelect = true) {
+                const titleEl = document.getElementById('flow-users-title');
+                const subtitleEl = document.getElementById('flow-users-subtitle');
+                const resetBtn = document.getElementById('reset-flow-btn');
+                
+                // Translate transition state to Korean
+                const stateMap = {
+                    'Positive': '긍정',
+                    'Negative': '부정',
+                    'Neutral': '중립',
+                    'Inactive': '이탈'
+                };
+                const [fromS, toS] = transitionStr.split(' -> ');
+                const koTransition = `${stateMap[fromS] || fromS} ➡️ ${stateMap[toS] || toS}`;
+                
+                titleEl.textContent = `FLOW USERS: ${koTransition}`;
+                titleEl.style.color = '#28a745';
+                if (transitionStr.includes('Inactive') || transitionStr.includes('Negative')) {
+                    titleEl.style.color = '#dc3545';
+                }
+                
+                const matchingUsers = filteredProfiles.filter(p => p.transition === transitionStr);
+                subtitleEl.textContent = `총 ${matchingUsers.length}명의 유저가 탐지됨`;
+                if (resetBtn) resetBtn.style.display = 'inline-block';
+                
+                const riskTbody = document.getElementById('at-risk-tbody');
+                riskTbody.innerHTML = '';
+                
+                if (matchingUsers.length === 0) {
+                    riskTbody.innerHTML = '<tr><td colspan="5" class="no-data">해당 흐름에 매칭되는 유저가 없습니다.</td></tr>';
+                } else {
+                    matchingUsers.slice(0, 300).forEach(u => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: bold; color: var(--text-primary);">${u.author}</td>
+                            <td style="color: var(--text-secondary);">${u.source}</td>
+                            <td style="text-align: right; color: var(--text-secondary);">${u.posts_count !== undefined ? u.posts_count : 0} (${u.comments_count !== undefined ? u.comments_count : 0})</td>
+                            <td style="text-align: right; color: ${u.sentiment_index < 0 ? '#dc3545' : '#28a745'};">${u.sentiment_index}</td>
+                            <td style="text-align: right; font-weight: bold; color: var(--text-primary);">${u.churn_index}</td>
+                        `;
+                        tr.addEventListener('click', () => {
+                            showUserProfile(u.author, u.source);
+                            // Also highlight row
+                            document.querySelectorAll('#at-risk-tbody tr').forEach(r => r.classList.remove('selected'));
+                            tr.classList.add('selected');
+                        });
+                        riskTbody.appendChild(tr);
+                    });
+                }
+                
+                // Automatically display first user details if autoSelect is true
+                if (autoSelect && matchingUsers.length > 0) {
+                    showUserProfile(matchingUsers[0].author, matchingUsers[0].source);
+                }
+            }
+
+            // Bind Reset button click event
+            const resetBtn = document.getElementById('reset-flow-btn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    showHighChurnRiskUsers();
+                });
+            }
+
+            // Load initial High Churn Risk users list
+            showHighChurnRiskUsers();
+
+
+
+            // Render Recovery Cards
+            function renderRecoveryCards() {
+                const recoveryContainer = document.getElementById('recovery-cards-container');
+                recoveryContainer.innerHTML = '';
+                if (filteredRecoveries.length === 0) {
+                    recoveryContainer.innerHTML = '<div class="no-data">부정에서 긍정으로 전환된 유저 데이터 사례가 부족합니다.</div>';
+                } else {
+                    filteredRecoveries.slice(0, 4).forEach(r => {
+                        const card = document.createElement('div');
+                        card.className = 'recovery-card';
+                        card.innerHTML = `
+                            <div class="recovery-header">
+                                <span style="font-weight: bold; color: var(--text-primary);">👤 ${r.author} (${r.source})</span>
+                                <span style="color: #28a745; font-weight: bold;">감정 전환 성공 💡</span>
+                            </div>
+                            <div class="recovery-flow-grid">
+                                <div>
+                                    <div class="recovery-title-mini">전기 불만 표출 (1st Half)</div>
+                                    <div class="recovery-step neg">"${r.first_text}"</div>
+                                </div>
+                                <div>
+                                    <div class="recovery-title-mini">후기 긍정 피드백 (2nd Half)</div>
+                                    <div class="recovery-step pos">"${r.second_text}"</div>
+                                </div>
+                            </div>
+                            ${r.url ? `<a href="${r.url}" target="_blank" style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: right; text-decoration: underline; margin-top: 4px;">상세 글 확인하기 ↗</a>` : ''}
+                        `;
+                        recoveryContainer.appendChild(card);
+                    });
+                }
+            }
+
+            // --- Draw SVG-based Sankey/Flow Chart ---
+            function drawSankey() {
+                const svg = document.getElementById('sankey-svg');
+                svg.innerHTML = '';
+                
+                // Clicking SVG background resets flow locks
+                svg.addEventListener('click', (e) => {
+                    if (e.target === svg) {
+                        showHighChurnRiskUsers();
+                    }
+                });
+
+                const width = svg.clientWidth || 700;
+                const height = svg.clientHeight || 450;
+                
+                // Nodes with expanded vertical spacing (y coordinate)
+                const leftNodes = [
+                    { id: 'Pos_L', label: '전기: 긍정', count: transitions['Positive -> Positive'] + transitions['Positive -> Negative'] + transitions['Positive -> Neutral'] + transitions['Positive -> Inactive'], color: '#28a745', y: 0.12 },
+                    { id: 'Neu_L', label: '전기: 중립', count: transitions['Neutral -> Positive'] + transitions['Neutral -> Negative'] + transitions['Neutral -> Neutral'] + transitions['Neutral -> Inactive'], color: '#555555', y: 0.50 },
+                    { id: 'Neg_L', label: '전기: 부정', count: transitions['Negative -> Positive'] + transitions['Negative -> Negative'] + transitions['Negative -> Neutral'] + transitions['Negative -> Inactive'], color: '#dc3545', y: 0.88 }
+                ];
+                
+                const rightNodes = [
+                    { id: 'Pos_R', label: '후기: 긍정', count: transitions['Positive -> Positive'] + transitions['Negative -> Positive'] + transitions['Neutral -> Positive'], color: '#28a745', y: 0.12 },
+                    { id: 'Neu_R', label: '후기: 중립', count: transitions['Positive -> Neutral'] + transitions['Negative -> Neutral'] + transitions['Neutral -> Neutral'], color: '#555555', y: 0.38 },
+                    { id: 'Neg_R', label: '후기: 부정', count: transitions['Positive -> Negative'] + transitions['Negative -> Negative'] + transitions['Neutral -> Negative'], color: '#dc3545', y: 0.64 },
+                    { id: 'Inact_R', label: '이탈 (Inactive)', count: transitions['Positive -> Inactive'] + transitions['Negative -> Inactive'] + transitions['Neutral -> Inactive'], color: '#ffc107', y: 0.88 }
+                ];
+                
+                // Node spacing
+                const xLeft = 100;
+                const xRight = width - 200;
+                
+                // Draw Links
+                const linkColors = {
+                    'Positive -> Positive': '#28a745',
+                    'Positive -> Negative': '#dc3545',
+                    'Positive -> Neutral': '#555555',
+                    'Positive -> Inactive': '#ffc107',
+                    
+                    'Negative -> Positive': '#28a745', // Highlight sentiment recovery!
+                    'Negative -> Negative': '#dc3545',
+                    'Negative -> Neutral': '#555555',
+                    'Negative -> Inactive': '#ffc107',
+                    
+                    'Neutral -> Positive': '#28a745',
+                    'Neutral -> Negative': '#dc3545',
+                    'Neutral -> Neutral': '#555555',
+                    'Neutral -> Inactive': '#ffc107'
+                };
+                
+                const totalTransitionCount = Object.values(transitions).reduce((sum, c) => sum + c, 0);
+                
+                if (totalTransitionCount > 0) {
+                    Object.entries(transitions).forEach(([transitionStr, count]) => {
+                        if (count === 0) return;
+                        
+                        const [fromLab, toLab] = transitionStr.split(' -> ');
+                        const fromNodeId = fromLab === 'Positive' ? 'Pos_L' : (fromLab === 'Negative' ? 'Neg_L' : 'Neu_L');
+                        const toNodeId = toLab === 'Positive' ? 'Pos_R' : (toLab === 'Negative' ? 'Neg_R' : (toLab === 'Neutral' ? 'Neu_R' : 'Inact_R'));
+                        
+                        const fromNode = leftNodes.find(n => n.id === fromNodeId);
+                        const toNode = rightNodes.find(n => n.id === toNodeId);
+                        
+                        if (!fromNode || !toNode) return;
+                        
+                        const y1 = fromNode.y * height;
+                        const y2 = toNode.y * height;
+                        
+                        // 1. Draw Visual Link
+                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        const strokeWidth = Math.max(1.5, (count / totalTransitionCount) * 120);
+                        const d = `M ${xLeft} ${y1} C ${(xLeft+xRight)/2} ${y1}, ${(xLeft+xRight)/2} ${y2}, ${xRight} ${y2}`;
+                        path.setAttribute('d', d);
+                        path.setAttribute('class', 'sankey-link');
+                        path.setAttribute('stroke', linkColors[transitionStr]);
+                        path.setAttribute('stroke-width', strokeWidth);
+                        svg.appendChild(path);
+                        
+                        // 2. Draw Transparent Hit Target (Wider stroke for easy hover & click!)
+                        const hitPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        hitPath.setAttribute('d', d);
+                        hitPath.setAttribute('stroke', 'transparent');
+                        hitPath.setAttribute('stroke-width', Math.max(24, strokeWidth + 12));
+                        hitPath.setAttribute('fill', 'none');
+                        hitPath.style.cursor = 'pointer';
+                        
+                        // Hover-to-preview & Click-to-lock event listeners
+                        hitPath.addEventListener('mouseenter', () => {
+                            if (lockedTransition) return; // Ignore if locked
+                            document.querySelectorAll('.sankey-link').forEach(l => l.style.strokeOpacity = '0.05');
+                            path.style.strokeOpacity = '0.9';
+                            showFlowUsers(transitionStr, false); // Preview without force-changing details panel
+                        });
+                        
+                        hitPath.addEventListener('mouseleave', () => {
+                            if (lockedTransition) return;
+                            document.querySelectorAll('.sankey-link').forEach(l => l.style.strokeOpacity = '');
+                            showHighChurnRiskUsers();
+                        });
+                        
+                        hitPath.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            lockedTransition = transitionStr;
+                            lockedPath = path;
+                            document.querySelectorAll('.sankey-link').forEach(l => l.style.strokeOpacity = '0.05');
+                            path.style.strokeOpacity = '0.95';
+                            showFlowUsers(transitionStr, true); // Lock list and select first user
+                        });
+
+                        // Add interactive title
+                        const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                        title.textContent = `${transitionStr}: ${count}명 (${(count/totalTransitionCount*100).toFixed(1)}%) - 호버시 임시보기, 클릭시 고정`;
+                        hitPath.appendChild(title);
+                        
+                        svg.appendChild(hitPath);
+                    });
+                }
+                
+                // Draw Node Rects and Labels
+                leftNodes.concat(rightNodes).forEach(node => {
+                    const isLeft = node.id.endsWith('_L');
+                    const x = isLeft ? xLeft : xRight;
+                    const y = node.y * height;
+                    
+                    // Node bar
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', isLeft ? x - 10 : x);
+                    rect.setAttribute('y', y - 20);
+                    rect.setAttribute('width', 10);
+                    rect.setAttribute('height', 40);
+                    rect.setAttribute('fill', node.color);
+                    rect.setAttribute('class', 'sankey-node');
+                    svg.appendChild(rect);
+                    
+                    // Node Label
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', isLeft ? x - 20 : x + 20);
+                    text.setAttribute('y', y + 5);
+                    text.setAttribute('text-anchor', isLeft ? 'end' : 'start');
+                    text.setAttribute('class', 'sankey-label');
+                    text.textContent = `${node.label} (${node.count}명)`;
+                    svg.appendChild(text);
+                });
+            }
+
+            // Show User Profile Detail
+            function showUserProfile(author, source, shouldScroll = true) {
+                const detailTitle = document.getElementById('detail-title');
+                const detailSubtitle = document.getElementById('detail-subtitle');
+                const detailContent = document.getElementById('detail-content');
+                
+                const matchedProfile = profiles.find(p => p.author === author && p.source === source);
+                if (!matchedProfile) return;
+                
+                // Mark row in tables
+                const rows = document.querySelectorAll('.data-table tbody tr');
+                rows.forEach(r => r.classList.remove('selected'));
+                
+                // Highlight profile in risk table
+                const riskRows = document.getElementById('at-risk-tbody').rows;
+                for (let i = 0; i < riskRows.length; i++) {
+                    if (riskRows[i].cells[0] && riskRows[i].cells[0].textContent === author) {
+                        riskRows[i].classList.add('selected');
+                    }
+                }
+                
+                detailTitle.textContent = `USER PROFILE: ${author}`;
+                detailSubtitle.textContent = `PLATFORM: ${source.toUpperCase()} // ACTIVE STATE`;
+                
+                // Find all aspects belonging to this user
+                let verbatimHTML = '';
+                const userVerbs = matchedProfile.verbatims || [];
+
+                userVerbs.forEach(v => {
+                    const cardClass = v.sentiment === 'POSITIVE' ? 'pos-card' : (v.sentiment === 'NEGATIVE' ? 'neg-card' : 'neu-card');
+                    verbatimHTML += `
+                        <div class="verbatim-card ${cardClass}" style="cursor: ${v.url ? 'pointer' : 'default'}; font-size: 11.5px; margin-bottom: 8px;" onclick="${v.url ? `window.open('${v.url}', '_blank')` : ''}">
+                            <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); margin-bottom: 4px;">
+                                <span>TAG: ${v.category}</span>
+                                <span>SENTIMENT: ${v.sentiment} (${v.date ? v.date.substring(0, 10) : 'N/A'})</span>
+                            </div>
+                            <div>"${v.text}"</div>
+                        </div>
+                    `;
+                });
+                
+                if (!verbatimHTML) {
+                    verbatimHTML = '<div class="no-data">유저가 작성한 개별 문장 Aspect 발언 정보가 없습니다.</div>';
+                }
+                
+                const sColor = matchedProfile.sentiment_index < 0 ? '#dc3545' : '#28a745';
+                const cColor = matchedProfile.churn_index >= 70 ? '#ffc107' : '#888888';
+                
+                detailContent.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background-color: var(--verbatim-bg); padding: 16px; border: 1px solid var(--border-color);">
+                        <div>
+                            <div class="kpi-label" style="font-size: 9px;">SENTIMENT INDEX</div>
+                            <div style="font-size: 24px; font-weight: bold; font-family: var(--font-mono); color: ${sColor};">${matchedProfile.sentiment_index}</div>
+                        </div>
+                        <div>
+                            <div class="kpi-label" style="font-size: 9px;">CHURN RISK INDEX</div>
+                            <div style="font-size: 24px; font-weight: bold; font-family: var(--font-mono); color: ${cColor};">${matchedProfile.churn_index}</div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="kpi-label" style="font-size: 9px;">INACTIVITY PERIOD</div>
+                            <div style="font-size: 14px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${matchedProfile.days_inactive}일째 미활동</div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="kpi-label" style="font-size: 9px;">CURRENT STATUS</div>
+                            <div><span class="badge ${matchedProfile.status === 'Active' ? 'active' : 'inactive'}">${matchedProfile.status}</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="kpi-label" style="margin-bottom: 8px; font-size: 9px;">REPRESENTATIVE PLATFORM FEEDBACK TIMELINE (TIMELINE VERBATIMS)</div>
+                        <div style="max-height: 200px; overflow-y: auto; padding-right: 4px;">
+                            ${verbatimHTML}
+                        </div>
+                    </div>
+                `;
+                
+                // Update side panel detail content
+                const sideDetailContent = document.getElementById('side-detail-content');
+                const sideDetailSubtitle = document.getElementById('side-detail-subtitle');
+                if (sideDetailSubtitle) {
+                    sideDetailSubtitle.textContent = `USER PROFILE: ${author} (${source.toUpperCase()})`;
+                }
+                if (sideDetailContent) {
+                    sideDetailContent.innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background-color: var(--verbatim-bg); padding: 10px; border: 1px solid var(--border-color);">
+                            <div>
+                                <div class="kpi-label" style="font-size: 8px;">SENTIMENT INDEX</div>
+                                <div style="font-size: 16px; font-weight: bold; font-family: var(--font-mono); color: ${sColor};">${matchedProfile.sentiment_index}</div>
+                            </div>
+                            <div>
+                                <div class="kpi-label" style="font-size: 8px;">CHURN RISK INDEX</div>
+                                <div style="font-size: 16px; font-weight: bold; font-family: var(--font-mono); color: ${cColor};">${matchedProfile.churn_index}</div>
+                            </div>
+                            <div style="margin-top: 4px;">
+                                <div class="kpi-label" style="font-size: 8px;">INACTIVITY PERIOD</div>
+                                <div style="font-size: 11px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${matchedProfile.days_inactive}일째 미활동</div>
+                            </div>
+                            <div style="margin-top: 4px;">
+                                <div class="kpi-label" style="font-size: 8px;">CURRENT STATUS</div>
+                                <div><span class="badge ${matchedProfile.status === 'Active' ? 'active' : 'inactive'}" style="font-size: 9px; padding: 2px 6px;">${matchedProfile.status}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="kpi-label" style="margin-bottom: 6px; font-size: 8px;">REPRESENTATIVE VERBATIMS</div>
+                            <div style="max-height: 180px; overflow-y: auto; padding-right: 4px;">
+                                ${verbatimHTML}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Auto-switch to user detail tab
+                switchTab('user-detail');
+
+                // Scroll to verbatim details block smoothly only on smaller screens if requested
+                if (shouldScroll && window.innerWidth <= 1024) {
+                    document.getElementById('user-details-card').scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            // --- Draw User Scatter Plot ---
+            let scatterChart;
+            function drawScatterPlot() {
+                const colors = getThemeColors();
+                const ctx = document.getElementById('userScatterChart').getContext('2d');
+                
+                // Set color profiles based on persona types
+                const clusterMeta = USER_CLUSTERS_DATA.map(c => {
+                    let color = '#2196F3'; // Blue for Casual
+                    if (c.persona.includes('이탈')) {
+                        color = '#F44336'; // Red for Churn Risk
+                    } else if (c.persona.includes('충성')) {
+                        color = '#4CAF50'; // Green for Loyal Core
+                    } else if (c.persona.includes('비판')) {
+                        color = '#FF9800'; // Orange for Critics
+                    }
+                    return { 
+                        id: c.id, 
+                        label: c.persona.split(' (')[0], 
+                        color: color, 
+                        centroidX: c.avg_sent, 
+                        centroidY: c.avg_churn 
+                    };
+                });
+                
+                // Group users into datasets corresponding to their K-Means cluster labels
+                const datasets = clusterMeta.map(cm => {
+                    const points = filteredProfiles.filter(p => {
+                        const cid = typeof USER_CLUSTER_MAP !== 'undefined' ? USER_CLUSTER_MAP[p.author] : -1;
+                        return cid === cm.id;
+                    }).map(p => ({
+                        x: p.sentiment_index,
+                        y: p.churn_index,
+                        author: p.author,
+                        source: p.source,
+                        total: p.total_aspects
+                    }));
+                    
+                    return {
+                        label: cm.label,
+                        data: points,
+                        backgroundColor: cm.color,
+                        borderColor: colors.isLight ? '#ffffff' : '#111111',
+                        borderWidth: 1,
+                        pointRadius: points.map(p => Math.min(12, 3.5 + p.total / 8)),
+                        hoverRadius: 9
+                    };
+                });
+                
+                // Generate ellipse boundary overlays around cluster centroids
+                const annotations = {};
+                clusterMeta.forEach(cm => {
+                    let key = `ellipse_${cm.id}`;
+                    let rX = 22; // Horizontal scaling
+                    let rY = 12; // Vertical scaling
+                    
+                    if (cm.label.includes('이탈')) {
+                        rX = 26;
+                        rY = 15;
+                    } else if (cm.label.includes('충성')) {
+                        rX = 20;
+                        rY = 10;
+                    }
+                    
+                    annotations[key] = {
+                        type: 'ellipse',
+                        xMin: cm.centroidX - rX,
+                        xMax: cm.centroidX + rX,
+                        yMin: Math.max(0, cm.centroidY - rY),
+                        yMax: Math.min(100, cm.centroidY + rY),
+                        backgroundColor: 'transparent', // Will compute hex with alpha below
+                        borderColor: cm.color,
+                        borderWidth: 1,
+                        borderDash: [5, 5],
+                        label: {
+                            display: true,
+                            content: cm.label,
+                            color: cm.color,
+                            font: { family: 'Inter', size: 9, weight: 'bold' },
+                            position: 'center'
+                        }
+                    };
+                });
+                
+                // Hex translation utility for boundary background fills
+                function hexToRgba(hex, alpha) {
+                    const r = parseInt(hex.slice(1, 3), 16);
+                    const g = parseInt(hex.slice(3, 5), 16);
+                    const b = parseInt(hex.slice(5, 7), 16);
+                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                }
+                
+                Object.keys(annotations).forEach(k => {
+                    const id = parseInt(k.split('_')[1]);
+                    const cm = clusterMeta.find(item => item.id === id);
+                    if (cm) {
+                        annotations[k].backgroundColor = hexToRgba(cm.color, 0.05);
+                        annotations[k].borderColor = hexToRgba(cm.color, 0.25);
+                    }
+                });
+                
+                if (scatterChart) scatterChart.destroy();
+                scatterChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: { datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: colors.textSecondary,
+                                    font: { family: 'Inter', size: 9, weight: 'bold' },
+                                    boxWidth: 8,
+                                    usePointStyle: true
+                                }
+                            },
+                            annotation: { annotations: annotations },
+                            tooltip: {
+                                backgroundColor: colors.isLight ? 'rgba(255, 255, 255, 0.95)' : 'rgba(10, 10, 10, 0.95)',
+                                titleColor: colors.textPrimary,
+                                bodyColor: colors.textSecondary,
+                                borderColor: colors.borderColor,
+                                borderWidth: 1,
+                                cornerRadius: 4,
+                                titleFont: { family: 'JetBrains Mono', size: 11, weight: 'bold' },
+                                bodyFont: { family: 'JetBrains Mono', size: 10 },
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const p = tooltipItems[0].raw;
+                                        return `👤 ${p.author} (${p.source})`;
+                                    },
+                                    label: function(tooltipItem) {
+                                        const p = tooltipItem.raw;
+                                        return [
+                                            `Sentiment Index: ${p.x}`,
+                                            `Churn Risk Index: ${p.y}`,
+                                            `Total Analyzed: ${p.total} sentences`
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '◀ NEGATIVE SENTIMENT  |  POSITIVE SENTIMENT ▶',
+                                    color: colors.textSecondary,
+                                    font: { family: 'Inter', size: 9, weight: 'bold' }
+                                },
+                                min: -100,
+                                max: 100,
+                                grid: { color: colors.gridColor },
+                                ticks: { color: colors.textSecondary, font: { family: 'JetBrains Mono', size: 9 } }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'CHURN RISK INDEX (이탈 위험 지수) ▶',
+                                    color: colors.textSecondary,
+                                    font: { family: 'Inter', size: 9, weight: 'bold' }
+                                },
+                                min: 0,
+                                max: 100,
+                                grid: { color: colors.gridColor },
+                                ticks: { color: colors.textSecondary, font: { family: 'JetBrains Mono', size: 9 } }
+                            }
+                        },
+                        onClick: (e, active) => {
+                            if (active.length) {
+                                const datasetIndex = active[0].datasetIndex;
+                                const index = active[0].index;
+                                const p = scatterChart.data.datasets[datasetIndex].data[index];
+                                showUserProfile(p.author, p.source);
+                                if (typeof USER_CLUSTER_MAP !== 'undefined') {
+                                    const cid = USER_CLUSTER_MAP[p.author];
+                                    if (cid !== undefined && cid !== -1) {
+                                        showClusterVerbatims(cid, false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Theme toggle mapping
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                const icon = themeToggleBtn.querySelector('.theme-icon');
+                const label = themeToggleBtn.querySelector('.theme-label');
+                if (newTheme === 'light') {
+                    if (icon) icon.textContent = '🌙';
+                    if (label) label.textContent = 'DARK';
+                } else {
+                    if (icon) icon.textContent = '☀';
+                    if (label) label.textContent = 'LIGHT';
+                }
+                
+                drawScatterPlot();
+                drawSankey();
+            });
+
+            window.addEventListener('resize', () => {
+                drawSankey();
+            });
+            
+            const initTheme = localStorage.getItem('theme') || 'dark';
+            const icon = themeToggleBtn.querySelector('.theme-icon');
+            const label = themeToggleBtn.querySelector('.theme-label');
+            if (initTheme === 'light') {
+                if (icon) icon.textContent = '🌙';
+                if (label) label.textContent = 'DARK';
+            } else {
+                if (icon) icon.textContent = '☀';
+                if (label) label.textContent = 'LIGHT';
+            }
+
+            drawSankey();
+            drawScatterPlot();
+            
+            // --- Donut Chart and Interactive Card logic for User Clustering ---
+            let clusteringChart = null;
+            
+            function drawClusteringChart() {
+                const ctx = document.getElementById('userClusteringChart').getContext('2d');
+                if (clusteringChart) clusteringChart.destroy();
+                
+                const labels = USER_CLUSTERS_DATA.map(c => c.persona.split(' (')[0]);
+                
+                // Calculate size and ratio dynamically based on filteredProfiles
+                const sizes = USER_CLUSTERS_DATA.map(c => {
+                    return filteredProfiles.filter(p => {
+                        const cid = typeof USER_CLUSTER_MAP !== 'undefined' ? USER_CLUSTER_MAP[p.author] : -1;
+                        return cid === c.id;
+                    }).length;
+                });
+                const totalFiltered = sizes.reduce((a, b) => a + b, 0);
+                const dataRatio = sizes.map(s => totalFiltered > 0 ? ((s / totalFiltered) * 100).toFixed(1) : 0);
+                
+                clusteringChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: dataRatio,
+                            backgroundColor: ['#4CAF50', '#2196F3', '#FF9800', '#F44336'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: '#888888',
+                                    font: { family: 'Inter', size: 9.5 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        const idx = tooltipItem.dataIndex;
+                                        return ` ${tooltipItem.label}: ${tooltipItem.raw}% (${sizes[idx]}명)`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '65%'
+                    }
+                });
+            }
+            
+            function renderPersonaCards() {
+                const container = document.getElementById('persona-cards-container');
+                if (!container) return;
+                container.style.display = 'grid';
+                container.innerHTML = '';
+                
+                USER_CLUSTERS_DATA.forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = 'persona-card';
+                    card.setAttribute('data-id', c.id);
+                    card.id = `persona-card-${c.id}`;
+                    
+                    card.innerHTML = `
+                        <div>
+                            <div class="persona-card-title">${c.persona}</div>
+                            <div class="persona-card-desc">${c.desc}</div>
+                        </div>
+                        <div class="persona-card-meta" id="persona-meta-${c.id}">
+                            <span>규모: ${c.size}명 (${c.ratio}%)</span>
+                            <span style="font-weight: bold; color: ${c.avg_sent >= 0 ? '#28a745' : '#dc3545'};">감성지수: ${c.avg_sent}</span>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showClusterVerbatims(c.id, false);
+                    });
+                    
+                    container.appendChild(card);
+                });
+            }
+            
+            window.showClusterVerbatims = function(clusterId, shouldScroll = true) {
+                const c = USER_CLUSTERS_DATA.find(item => item.id === clusterId);
+                if (!c) return;
+                
+                selectedClusterId = clusterId;
+                
+                const container = document.getElementById('persona-cards-container');
+                if (!container) return;
+                
+                container.style.display = 'block';
+                container.innerHTML = '';
+                
+                // Back button
+                const backBtn = document.createElement('button');
+                backBtn.style.padding = '5px 10px';
+                backBtn.style.fontSize = '11px';
+                backBtn.style.borderRadius = '3px';
+                backBtn.style.cursor = 'pointer';
+                backBtn.style.marginBottom = '12px';
+                backBtn.style.fontWeight = 'bold';
+                backBtn.style.backgroundColor = 'var(--bg-color)';
+                backBtn.style.color = 'var(--text-primary)';
+                backBtn.style.border = '1px solid var(--border-color)';
+                backBtn.innerHTML = '← 돌아가기';
+                backBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectedClusterId = null;
+                    renderPersonaCards();
+                });
+                container.appendChild(backBtn);
+                
+                let detailedText = '';
+                if (c.id === 0) {
+                    detailedText = `
+                        <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
+                            <strong>💡 특성 & 대응 방안:</strong> 게임에 깊이 몰입한 핵심 오피니언 리더층입니다. 무조건적인 찬사보다는 냉철하게 시스템을 즐기며, 이탈률이 매우 낮아 든든한 버팀목이 됩니다. 지속적인 만족도를 유지하기 위해 심도 있는 엔드게임 콘텐츠와 정교한 밸런싱이 요구됩니다.
+                        </div>
+                    `;
+                } else if (c.id === 1) {
+                    detailedText = `
+                        <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
+                            <strong>💡 특성 & 대응 방안:</strong> 가장 큰 비중을 차지하는 일반 유저군으로, 주로 가벼운 소통과 질문/잡담을 나눕니다. 감성은 긍정적이지만 로열티가 낮아 흥미가 떨어지면 조용히 이탈하는 성향이 강합니다. 지속적인 접속 유도를 위한 일일 보상 및 커뮤니티 이벤트가 유용합니다.
+                        </div>
+                    `;
+                } else if (c.id === 2) {
+                    detailedText = `
+                        <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
+                            <strong>💡 특성 & 대응 방안:</strong> 감성이 극도로 부정적이며 이미 이탈했거나 이탈 직전인 초고위험 관리군입니다. 최적화 불만이나 버그 등 구체적 페인 포인트(Pain Point)로 인한 실망이 큽니다. 이들의 구체적 발언을 바탕으로 한 패치 적용 시 메일링이나 푸시로 복귀를 타겟팅해야 합니다.
+                        </div>
+                    `;
+                } else if (c.id === 3) {
+                    detailedText = `
+                        <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
+                            <strong>💡 특성 & 대응 방안:</strong> 활동 기간이 가장 길고 활발하지만 시스템 단점과 최적화에 비판적인 '애정 어린 비판가' 그룹입니다. 이탈 위험 지수(${c.avg_churn}%)가 군집 중 최저일 정도로 충성도가 높습니다. 이들의 버그 및 기믹 피드백을 신속히 반영하면 커뮤니티 전반의 여론이 빠르게 정화됩니다.
+                        </div>
+                    `;
+                }
+
+                // Generate verbatims HTML for side panel
+                let sideVerbatimHTML = '';
+                if (c.verbatims && c.verbatims.length > 0) {
+                    c.verbatims.forEach(v => {
+                        sideVerbatimHTML += `
+                            <div class="verbatim-card ${v.sentiment === 'POSITIVE' ? 'pos-card' : 'neg-card'}" style="cursor: ${v.url ? 'pointer' : 'default'}; padding: 8px; border-radius: 4px; margin-bottom: 8px; background: var(--bg-color); border-left: 3px solid ${v.sentiment === 'POSITIVE' ? '#28a745' : '#dc3545'}; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 11px;" ${v.url ? `onclick="window.open('${v.url}', '_blank')"` : ''}>
+                                <div style="font-size: 11.5px; line-height: 1.4; color: var(--text-primary); margin-bottom: 4px;">"${v.text}"</div>
+                                <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                                    <span>🏷️ ${v.category} | ${v.date}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    sideVerbatimHTML = '<div class="no-data">Verbatim 정보가 없습니다.</div>';
+                }
+
+                const infoDiv = document.createElement('div');
+                infoDiv.innerHTML = `
+                    <div style="background-color: var(--verbatim-bg); padding: 12px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 12px;">
+                        <div style="font-size: 14px; font-weight: bold; color: var(--text-primary); margin-bottom: 6px;">${c.persona}</div>
+                        <div style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">${c.desc}</div>
+                        ${detailedText}
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 8px;">
+                            <div>
+                                <div class="kpi-label" style="font-size: 8.5px; color: var(--text-secondary);">GROUP SIZE</div>
+                                <div style="font-size: 13.5px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${c.size}명 (${c.ratio}%)</div>
+                            </div>
+                            <div>
+                                <div class="kpi-label" style="font-size: 8.5px; color: var(--text-secondary);">AVG SENTIMENT</div>
+                                <div style="font-size: 13.5px; font-weight: bold; font-family: var(--font-mono); color: ${c.avg_sent >= 0 ? '#28a745' : '#dc3545'};">${c.avg_sent}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="kpi-label" style="margin-bottom: 6px; font-size: 8.5px; color: var(--text-secondary);">REPRESENTATIVE GROUP VERBATIMS</div>
+                        <div style="padding-right: 4px;">
+                            ${sideVerbatimHTML}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(infoDiv);
+
+                // Scroll to verbatim details block smoothly on smaller screens if requested
+                if (shouldScroll && window.innerWidth <= 1024) {
+                    const detailCard = document.getElementById('user-details-card');
+                    if (detailCard) detailCard.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+            
+            
+            // Initial load via updateDashboard
+            if (typeof USER_CLUSTERS_DATA !== 'undefined') {
+                renderPersonaCards();
+            }
+            updateDashboard();
+            
+            if (profiles.length > 0) {
+                showUserProfile(profiles[0].author, profiles[0].source, false);
+                // Keep default load of persona cards without auto-expanding to detail view initially
+            }
+            });
+        });
+    </script>
+</body>
+</html>
