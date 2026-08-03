@@ -301,7 +301,7 @@
             { id: 'FCOnline', name: 'FC Online' }
         ];
 
-        let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        let selectedGame = '붉은사막';
         localStorage.setItem('selectedGame', selectedGame);
 
         function loadGameData(game, callback) {
