@@ -95,8 +95,8 @@
         /* Grid layout adjustments */
         .split-row-layout {
             display: grid;
-            grid-template-columns: 62% 38%;
-            gap: 32px;
+            grid-template-columns: 62fr 38fr;
+            gap: 20px;
         }
         @media(max-width: 1024px) {
             .split-row-layout {
@@ -108,7 +108,7 @@
         .data-table-container {
             width: 100%;
             overflow-x: auto;
-            max-height: 350px;
+            max-height: 450px;
         }
         .data-table {
             width: 100%;
@@ -264,10 +264,20 @@
             <div class="brand" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span class="logo" style="line-height: 1; font-size: 13px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.5px;">GTPLAYER</span>
-                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" style="padding: 3px 8px; font-size: 9px; height: 18px; display: flex; align-items: center; gap: 4px;">
-                        <span class="theme-icon" style="font-size: 9px;">☀</span>
-                        <span class="theme-label" style="font-size: 8.5px;">LIGHT</span>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+                        <span class="theme-icon">☀</span>
+                        <span class="theme-label">LIGHT</span>
                     </button>
+                    <script>
+                        (function() {
+                            const initTheme = localStorage.getItem('theme') || 'dark';
+                            const btn = document.getElementById('theme-toggle');
+                            if (initTheme === 'light') {
+                                btn.querySelector('.theme-icon').textContent = '☾';
+                                btn.querySelector('.theme-label').textContent = 'DARK';
+                            }
+                        })();
+                    </script>
                 </div>
                 <span id="header-game-title" style="font-family: var(--font-sans); font-weight: 900; font-size: 24px; letter-spacing: -0.5px; color: var(--text-primary); line-height: 1.1; margin-top: 1px;">/ LOADING...</span>
                 <div class="dashboard-nav">
@@ -277,14 +287,14 @@
                 </div>
             </div>
             <div class="controls" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
-                <!-- Row 1: 데이터 누적 기간 & 기간 박스 (오른쪽에 나란히 배치) -->
+                <!-- Row 1: DATA PERIOD & DATE BOXES -->
                 <div style="display: flex; gap: 12px; align-items: center;">
-                    <span style="font-family: var(--font-sans); font-size: 11px; color: var(--text-secondary); font-weight: bold; width: 110px; display: inline-block; text-align: left;">데이터 누적 기간</span>
+                    <span style="font-family: var(--font-sans); font-size: 11px; color: var(--text-secondary); font-weight: bold; width: 110px; display: inline-block; text-align: left;">DATA PERIOD</span>
                     <div class="quick-ranges interval-tabs" id="quick-ranges" style="display: flex;">
-                        <button class="tab-btn active" data-range="all">전체</button>
-                        <button class="tab-btn" data-range="6m">6개월</button>
-                        <button class="tab-btn" data-range="3m">3개월</button>
-                        <button class="tab-btn" data-range="1m">1개월</button>
+                        <button class="tab-btn active" data-range="all">ALL</button>
+                        <button class="tab-btn" data-range="6m">6M</button>
+                        <button class="tab-btn" data-range="3m">3M</button>
+                        <button class="tab-btn" data-range="1m">1M</button>
                     </div>
                     <div class="date-inputs" style="display: flex; gap: 6px; align-items: center; margin-left: 6px;">
                         <input type="date" id="start-date" class="clean-select" style="font-family: 'JetBrains Mono'; font-size: 11px; padding: 5px 10px; color: var(--text-primary); border-color: var(--border-color); background-color: var(--bg-color); height: 31px; box-sizing: border-box; outline: none;">
@@ -305,20 +315,20 @@
                     <span id="kpi-users" class="kpi-value">-</span>
                     <span class="kpi-unit">USERS</span>
                 </div>
-                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* 산정 기준: 글/댓글 합산 5회 이상 & 활동 기간(Span) 최소 3일 이상인 유저</div>
+                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* Criteria: Users with 5+ posts/comments & active span of 3+ days.</div>
             </div>
             <div class="kpi-card" style="position: relative;">
-                <span class="kpi-label" id="kpi-sent-label">GAME SENTIMENT INDEX (일간)</span>
+                <span class="kpi-label" id="kpi-sent-label">GAME SENTIMENT INDEX (DAILY)</span>
                 <div class="kpi-value-container" style="display: flex; align-items: baseline; gap: 8px;">
                     <span id="kpi-sent-idx" class="kpi-value">-</span>
                     <span id="kpi-sent-wow" style="font-family: var(--font-mono); font-size: 11px; font-weight: bold;">-</span>
                 </div>
                 <div class="granularity-toggle" style="position: absolute; top: 10px; right: 12px; display: flex; gap: 3px;">
-                    <button class="gran-btn active" data-gran="daily" style="font-size: 9px; padding: 2px 4px; background: var(--border-color); border: none; color: var(--text-primary); cursor: pointer; border-radius: 2px;">일간</button>
-                    <button class="gran-btn" data-gran="weekly" style="font-size: 9px; padding: 2px 4px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px;">주간</button>
-                    <button class="gran-btn" data-gran="monthly" style="font-size: 9px; padding: 2px 4px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px;">월간</button>
+                    <button class="gran-btn active" data-gran="daily" style="font-size: 9px; padding: 2px 4px; background: var(--border-color); border: none; color: var(--text-primary); cursor: pointer; border-radius: 2px;">DAILY</button>
+                    <button class="gran-btn" data-gran="weekly" style="font-size: 9px; padding: 2px 4px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px;">WEEKLY</button>
+                    <button class="gran-btn" data-gran="monthly" style="font-size: 9px; padding: 2px 4px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px;">MONTHLY</button>
                 </div>
-                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* 산정 기준: KoELECTRA 딥러닝 분류기 신뢰도 0.75 이상 긍/부정 언급 비율</div>
+                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* Criteria: Ratio of positive/negative aspects with KoELECTRA model confidence >= 0.75.</div>
             </div>
             <div class="kpi-card">
                 <span class="kpi-label">HIGH CHURN RISK RATE</span>
@@ -326,7 +336,7 @@
                     <span id="kpi-risk-rate" class="kpi-value">-</span>
                     <span class="kpi-unit">%</span>
                 </div>
-                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* 지수 산정: 미활동일수(14일 초과 시 1.5점/일) + 부정문 비율(50점) + 이탈 단어 가산(30점)</div>
+                <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.2;">* Index Calculation: Inactivity days (starts over 14 days, 1.5 points/day) + negative ratio (50 points) + explicit churn words (30 points)</div>
             </div>
             <div class="kpi-card">
                 <span class="kpi-label">SENTIMENT RECOVERY CASES</span>
@@ -345,7 +355,7 @@
                     <h2 class="card-title">USER SENTIMENT & RETENTION FLOW (TRANSITIONS)</h2>
                     <span class="card-subtitle" style="margin-bottom: 4px;">EARLY PHASE SENTIMENT ➡️ LATER PHASE STATE FLOW</span>
                     <div style="font-size: 9.5px; color: var(--text-secondary); margin-top: 6px; line-height: 1.35;">
-                        * <strong>전이(Transition) 기준:</strong> 유저의 개별 활동 기간을 전/후반기로 나누어 [전반기 평균 감성] ➡️ [후반기 평균 감성]을 매핑합니다. 30일 이상 미활동 유저는 후반기가 <code>Inactive(이탈)</code>로 분류됩니다.
+                        * <strong>Transition Rule:</strong> Splits each user's active span into early/late phases and maps [Early Sentiment] ➡️ [Late Sentiment]. Users inactive for 30+ days are classified as <code>Inactive</code> in the late phase.
                     </div>
                 </div>
                 <div class="flow-container">
@@ -411,8 +421,8 @@
         <!-- Row 3: Sentiment Recovery (Negative -> Positive) cases -->
         <section class="chart-section card">
             <div class="card-header" style="border-bottom-color: #28a745;">
-                <h2 class="card-title" style="color: #28a745;">👍 SENTIMENT RECOVERY VERBATIMS (부정 ➡️ 긍정 전환 사례)</h2>
-                <span class="card-subtitle">불만을 가졌으나 패치/공략법 터득으로 긍정적으로 돌아선 실제 발언사례</span>
+                <h2 class="card-title" style="color: #28a745;">👍 SENTIMENT RECOVERY VERBATIMS</h2>
+                <span class="card-subtitle">Actual feedback of users who turned positive after finding patches or gameplay guides</span>
             </div>
             <div class="recovery-cards" id="recovery-cards-container" style="margin-top: 20px;">
                 <!-- Populated dynamically -->
@@ -426,7 +436,7 @@
                 <span class="card-subtitle" id="detail-subtitle">PROFILE DETAILS AND VERBATIMS</span>
             </div>
             <div id="detail-content" style="display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; max-height: 480px; padding-right: 4px; padding-top: 12px;">
-                <div class="no-data">산점도 차트에서 유저 노드를 클릭하거나 우측의 페르소나 카드들 중 하나를 선택하시면 상세 정보가 여기에 로드됩니다.</div>
+                <div class="no-data">Click a user node on the scatter plot or select one of the persona tabs to load details here.</div>
             </div>
         </section>
     </main>
@@ -452,7 +462,7 @@
             { id: 'FCOnline', name: 'FC Online' }
         ];
 
-        let selectedGame = '붉은사막';
+        let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
         localStorage.setItem('selectedGame', selectedGame);
 
         window.switchTab = function(tabName) {
@@ -593,7 +603,7 @@
                 document.getElementById('kpi-sent-idx').textContent = item.sentiment_index;
                 
                 const sentWowEl = document.getElementById('kpi-sent-wow');
-                const labelMap = { 'daily': '일간', 'weekly': '주간', 'monthly': '월간' };
+                const labelMap = { 'daily': 'DAILY', 'weekly': 'WEEKLY', 'monthly': 'MONTHLY' };
                 document.getElementById('kpi-sent-label').textContent = `GAME SENTIMENT INDEX (${labelMap[gran]})`;
                 
                 if (item.sentiment_index_wow >= 0) {
@@ -753,7 +763,7 @@
                 const highRiskUsers = filteredProfiles.filter(p => p.churn_index >= 70);
                 
                 if (highRiskUsers.length === 0) {
-                    riskTbody.innerHTML = '<tr><td colspan="5" class="no-data">위험 지수 70점 이상의 이탈 위험 유저가 없습니다.</td></tr>';
+                    riskTbody.innerHTML = '<tr><td colspan="5" class="no-data">No high churn risk users with index >= 70 found.</td></tr>';
                 } else {
                     highRiskUsers.slice(0, 150).forEach(u => {
                         const tr = document.createElement('tr');
@@ -780,31 +790,36 @@
                 const subtitleEl = document.getElementById('flow-users-subtitle');
                 const resetBtn = document.getElementById('reset-flow-btn');
                 
-                // Translate transition state to Korean
+                // Translate transition state
                 const stateMap = {
-                    'Positive': '긍정',
-                    'Negative': '부정',
-                    'Neutral': '중립',
-                    'Inactive': '이탈'
+                    'Positive': 'Positive',
+                    'Negative': 'Negative',
+                    'Neutral': 'Neutral',
+                    'Inactive': 'Inactive'
                 };
                 const [fromS, toS] = transitionStr.split(' -> ');
                 const koTransition = `${stateMap[fromS] || fromS} ➡️ ${stateMap[toS] || toS}`;
                 
                 titleEl.textContent = `FLOW USERS: ${koTransition}`;
-                titleEl.style.color = '#28a745';
-                if (transitionStr.includes('Inactive') || transitionStr.includes('Negative')) {
+                if (toS === 'Positive') {
+                    titleEl.style.color = '#28a745';
+                } else if (toS === 'Negative') {
                     titleEl.style.color = '#dc3545';
+                } else if (toS === 'Neutral') {
+                    titleEl.style.color = 'var(--text-secondary)';
+                } else if (toS === 'Inactive') {
+                    titleEl.style.color = '#ffc107';
                 }
                 
                 const matchingUsers = filteredProfiles.filter(p => p.transition === transitionStr);
-                subtitleEl.textContent = `총 ${matchingUsers.length}명의 유저가 탐지됨`;
+                subtitleEl.textContent = `Total of ${matchingUsers.length} users detected`;
                 if (resetBtn) resetBtn.style.display = 'inline-block';
                 
                 const riskTbody = document.getElementById('at-risk-tbody');
                 riskTbody.innerHTML = '';
                 
                 if (matchingUsers.length === 0) {
-                    riskTbody.innerHTML = '<tr><td colspan="5" class="no-data">해당 흐름에 매칭되는 유저가 없습니다.</td></tr>';
+                    riskTbody.innerHTML = '<tr><td colspan="5" class="no-data">No users match this flow.</td></tr>';
                 } else {
                     matchingUsers.slice(0, 300).forEach(u => {
                         const tr = document.createElement('tr');
@@ -849,7 +864,7 @@
                 const recoveryContainer = document.getElementById('recovery-cards-container');
                 recoveryContainer.innerHTML = '';
                 if (filteredRecoveries.length === 0) {
-                    recoveryContainer.innerHTML = '<div class="no-data">부정에서 긍정으로 전환된 유저 데이터 사례가 부족합니다.</div>';
+                    recoveryContainer.innerHTML = '<div class="no-data">No sentiment recovery cases found in the selected range.</div>';
                 } else {
                     filteredRecoveries.slice(0, 4).forEach(r => {
                         const card = document.createElement('div');
@@ -857,19 +872,19 @@
                         card.innerHTML = `
                             <div class="recovery-header">
                                 <span style="font-weight: bold; color: var(--text-primary);">👤 ${r.author} (${r.source})</span>
-                                <span style="color: #28a745; font-weight: bold;">감정 전환 성공 💡</span>
+                                <span style="color: #28a745; font-weight: bold;">Sentiment Recovered 💡</span>
                             </div>
                             <div class="recovery-flow-grid">
                                 <div>
-                                    <div class="recovery-title-mini">전기 불만 표출 (1st Half)</div>
+                                    <div class="recovery-title-mini">Early Phase Complaints (1st Half)</div>
                                     <div class="recovery-step neg">"${r.first_text}"</div>
                                 </div>
                                 <div>
-                                    <div class="recovery-title-mini">후기 긍정 피드백 (2nd Half)</div>
+                                    <div class="recovery-title-mini">Later Phase Praise (2nd Half)</div>
                                     <div class="recovery-step pos">"${r.second_text}"</div>
                                 </div>
                             </div>
-                            ${r.url ? `<a href="${r.url}" target="_blank" style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: right; text-decoration: underline; margin-top: 4px;">상세 글 확인하기 ↗</a>` : ''}
+                            ${r.url ? `<a href="${r.url}" target="_blank" style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: right; text-decoration: underline; margin-top: 4px;">View Post ↗</a>` : ''}
                         `;
                         recoveryContainer.appendChild(card);
                     });
@@ -893,20 +908,20 @@
                 
                 // Nodes with expanded vertical spacing (y coordinate)
                 const leftNodes = [
-                    { id: 'Pos_L', label: '전기: 긍정', count: transitions['Positive -> Positive'] + transitions['Positive -> Negative'] + transitions['Positive -> Neutral'] + transitions['Positive -> Inactive'], color: '#28a745', y: 0.12 },
-                    { id: 'Neu_L', label: '전기: 중립', count: transitions['Neutral -> Positive'] + transitions['Neutral -> Negative'] + transitions['Neutral -> Neutral'] + transitions['Neutral -> Inactive'], color: '#555555', y: 0.50 },
-                    { id: 'Neg_L', label: '전기: 부정', count: transitions['Negative -> Positive'] + transitions['Negative -> Negative'] + transitions['Negative -> Neutral'] + transitions['Negative -> Inactive'], color: '#dc3545', y: 0.88 }
+                    { id: 'Pos_L', label: 'Positive', count: transitions['Positive -> Positive'] + transitions['Positive -> Negative'] + transitions['Positive -> Neutral'] + transitions['Positive -> Inactive'], color: '#28a745', y: 0.12 },
+                    { id: 'Neu_L', label: 'Neutral', count: transitions['Neutral -> Positive'] + transitions['Neutral -> Negative'] + transitions['Neutral -> Neutral'] + transitions['Neutral -> Inactive'], color: '#555555', y: 0.50 },
+                    { id: 'Neg_L', label: 'Negative', count: transitions['Negative -> Positive'] + transitions['Negative -> Negative'] + transitions['Negative -> Neutral'] + transitions['Negative -> Inactive'], color: '#dc3545', y: 0.88 }
                 ];
                 
                 const rightNodes = [
-                    { id: 'Pos_R', label: '후기: 긍정', count: transitions['Positive -> Positive'] + transitions['Negative -> Positive'] + transitions['Neutral -> Positive'], color: '#28a745', y: 0.12 },
-                    { id: 'Neu_R', label: '후기: 중립', count: transitions['Positive -> Neutral'] + transitions['Negative -> Neutral'] + transitions['Neutral -> Neutral'], color: '#555555', y: 0.38 },
-                    { id: 'Neg_R', label: '후기: 부정', count: transitions['Positive -> Negative'] + transitions['Negative -> Negative'] + transitions['Neutral -> Negative'], color: '#dc3545', y: 0.64 },
-                    { id: 'Inact_R', label: '이탈 (Inactive)', count: transitions['Positive -> Inactive'] + transitions['Negative -> Inactive'] + transitions['Neutral -> Inactive'], color: '#ffc107', y: 0.88 }
+                    { id: 'Pos_R', label: 'Positive', count: transitions['Positive -> Positive'] + transitions['Negative -> Positive'] + transitions['Neutral -> Positive'], color: '#28a745', y: 0.12 },
+                    { id: 'Neu_R', label: 'Neutral', count: transitions['Positive -> Neutral'] + transitions['Negative -> Neutral'] + transitions['Neutral -> Neutral'], color: '#555555', y: 0.38 },
+                    { id: 'Neg_R', label: 'Negative', count: transitions['Positive -> Negative'] + transitions['Negative -> Negative'] + transitions['Neutral -> Negative'], color: '#dc3545', y: 0.64 },
+                    { id: 'Inact_R', label: 'Inactive', count: transitions['Positive -> Inactive'] + transitions['Negative -> Inactive'] + transitions['Neutral -> Inactive'], color: '#ffc107', y: 0.88 }
                 ];
                 
                 // Node spacing
-                const xLeft = 100;
+                const xLeft = 160;
                 const xRight = width - 200;
                 
                 // Draw Links
@@ -988,7 +1003,7 @@
 
                         // Add interactive title
                         const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-                        title.textContent = `${transitionStr}: ${count}명 (${(count/totalTransitionCount*100).toFixed(1)}%) - 호버시 임시보기, 클릭시 고정`;
+                        title.textContent = `${transitionStr}: ${count} users (${(count/totalTransitionCount*100).toFixed(1)}%) - Hover to preview, Click to lock`;
                         hitPath.appendChild(title);
                         
                         svg.appendChild(hitPath);
@@ -1017,9 +1032,32 @@
                     text.setAttribute('y', y + 5);
                     text.setAttribute('text-anchor', isLeft ? 'end' : 'start');
                     text.setAttribute('class', 'sankey-label');
-                    text.textContent = `${node.label} (${node.count}명)`;
+                    text.textContent = `${node.label} (${node.count} users)`;
                     svg.appendChild(text);
                 });
+
+                // Draw Column Headers over early and late nodes
+                const earlyHeader = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                earlyHeader.setAttribute('x', '90');
+                earlyHeader.setAttribute('y', '22');
+                earlyHeader.setAttribute('text-anchor', 'middle');
+                earlyHeader.setAttribute('font-family', 'var(--font-mono)');
+                earlyHeader.setAttribute('font-size', '9.5px');
+                earlyHeader.setAttribute('font-weight', '900');
+                earlyHeader.setAttribute('fill', 'var(--text-muted)');
+                earlyHeader.textContent = 'EARLY PHASE';
+                svg.appendChild(earlyHeader);
+
+                const lateHeader = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                lateHeader.setAttribute('x', xRight + 35);
+                lateHeader.setAttribute('y', '22');
+                lateHeader.setAttribute('text-anchor', 'middle');
+                lateHeader.setAttribute('font-family', 'var(--font-mono)');
+                lateHeader.setAttribute('font-size', '9.5px');
+                lateHeader.setAttribute('font-weight', '900');
+                lateHeader.setAttribute('fill', 'var(--text-muted)');
+                lateHeader.textContent = 'LATER PHASE';
+                svg.appendChild(lateHeader);
             }
 
             // Show User Profile Detail
@@ -1064,7 +1102,7 @@
                 });
                 
                 if (!verbatimHTML) {
-                    verbatimHTML = '<div class="no-data">유저가 작성한 개별 문장 Aspect 발언 정보가 없습니다.</div>';
+                    verbatimHTML = '<div class="no-data">No aspect feedback comments found for this user.</div>';
                 }
                 
                 const sColor = matchedProfile.sentiment_index < 0 ? '#dc3545' : '#28a745';
@@ -1082,7 +1120,7 @@
                         </div>
                         <div style="margin-top: 10px;">
                             <div class="kpi-label" style="font-size: 9px;">INACTIVITY PERIOD</div>
-                            <div style="font-size: 14px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${matchedProfile.days_inactive}일째 미활동</div>
+                            <div style="font-size: 14px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${matchedProfile.days_inactive} days inactive</div>
                         </div>
                         <div style="margin-top: 10px;">
                             <div class="kpi-label" style="font-size: 9px;">CURRENT STATUS</div>
@@ -1116,7 +1154,7 @@
                             </div>
                             <div style="margin-top: 4px;">
                                 <div class="kpi-label" style="font-size: 8px;">INACTIVITY PERIOD</div>
-                                <div style="font-size: 11px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${matchedProfile.days_inactive}일째 미활동</div>
+                                <div style="font-size: 11px; font-weight: bold; font-family: var(--font-mono); color: var(--text-primary);">${matchedProfile.days_inactive} days inactive</div>
                             </div>
                             <div style="margin-top: 4px;">
                                 <div class="kpi-label" style="font-size: 8px;">CURRENT STATUS</div>
@@ -1342,7 +1380,7 @@
                 const icon = themeToggleBtn.querySelector('.theme-icon');
                 const label = themeToggleBtn.querySelector('.theme-label');
                 if (newTheme === 'light') {
-                    if (icon) icon.textContent = '🌙';
+                    if (icon) icon.textContent = '☾';
                     if (label) label.textContent = 'DARK';
                 } else {
                     if (icon) icon.textContent = '☀';
@@ -1361,7 +1399,7 @@
             const icon = themeToggleBtn.querySelector('.theme-icon');
             const label = themeToggleBtn.querySelector('.theme-label');
             if (initTheme === 'light') {
-                if (icon) icon.textContent = '🌙';
+                if (icon) icon.textContent = '☾';
                 if (label) label.textContent = 'DARK';
             } else {
                 if (icon) icon.textContent = '☀';
@@ -1443,8 +1481,8 @@
                             <div class="persona-card-desc">${c.desc}</div>
                         </div>
                         <div class="persona-card-meta" id="persona-meta-${c.id}">
-                            <span>규모: ${c.size}명 (${c.ratio}%)</span>
-                            <span style="font-weight: bold; color: ${c.avg_sent >= 0 ? '#28a745' : '#dc3545'};">감성지수: ${c.avg_sent}</span>
+                            <span>Size: ${c.size} users (${c.ratio}%)</span>
+                            <span style="font-weight: bold; color: ${c.avg_sent >= 0 ? '#28a745' : '#dc3545'};">Sentiment: ${c.avg_sent}</span>
                         </div>
                     `;
                     
@@ -1480,7 +1518,7 @@
                 backBtn.style.backgroundColor = 'var(--bg-color)';
                 backBtn.style.color = 'var(--text-primary)';
                 backBtn.style.border = '1px solid var(--border-color)';
-                backBtn.innerHTML = '← 돌아가기';
+                backBtn.innerHTML = '← Back';
                 backBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     selectedClusterId = null;
@@ -1492,29 +1530,29 @@
                 if (c.id === 0) {
                     detailedText = `
                         <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
-                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
-                            <strong>💡 특성 & 대응 방안:</strong> 게임에 깊이 몰입한 핵심 오피니언 리더층입니다. 무조건적인 찬사보다는 냉철하게 시스템을 즐기며, 이탈률이 매우 낮아 든든한 버팀목이 됩니다. 지속적인 만족도를 유지하기 위해 심도 있는 엔드게임 콘텐츠와 정교한 밸런싱이 요구됩니다.
+                            <strong>📊 Group Metrics:</strong> Avg Activities ${c.avg_act} times, Avg Activity Span ${c.avg_span} days, Avg Sentiment ${c.avg_sent}, Avg Churn Risk ${c.avg_churn}%<br>
+                            <strong>💡 Characteristics & Action Plan:</strong> Core opinion leaders deeply immersed in the game. They enjoy the system critically rather than giving unconditional praise, serving as a reliable backbone with very low churn. Maintaining their satisfaction requires deep endgame content and precise balancing.
                         </div>
                     `;
                 } else if (c.id === 1) {
                     detailedText = `
                         <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
-                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
-                            <strong>💡 특성 & 대응 방안:</strong> 가장 큰 비중을 차지하는 일반 유저군으로, 주로 가벼운 소통과 질문/잡담을 나눕니다. 감성은 긍정적이지만 로열티가 낮아 흥미가 떨어지면 조용히 이탈하는 성향이 강합니다. 지속적인 접속 유도를 위한 일일 보상 및 커뮤니티 이벤트가 유용합니다.
+                            <strong>📊 Group Metrics:</strong> Avg Activities ${c.avg_act} times, Avg Activity Span ${c.avg_span} days, Avg Sentiment ${c.avg_sent}, Avg Churn Risk ${c.avg_churn}%<br>
+                            <strong>💡 Characteristics & Action Plan:</strong> General players representing the largest share, mostly engaging in casual chats, Q&As, and discussions. While their sentiment is generally positive, their loyalty is low, meaning they tend to quit quietly once interest fades. Daily retention rewards and community events are highly effective.
                         </div>
                     `;
                 } else if (c.id === 2) {
                     detailedText = `
                         <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
-                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
-                            <strong>💡 특성 & 대응 방안:</strong> 감성이 극도로 부정적이며 이미 이탈했거나 이탈 직전인 초고위험 관리군입니다. 최적화 불만이나 버그 등 구체적 페인 포인트(Pain Point)로 인한 실망이 큽니다. 이들의 구체적 발언을 바탕으로 한 패치 적용 시 메일링이나 푸시로 복귀를 타겟팅해야 합니다.
+                            <strong>📊 Group Metrics:</strong> Avg Activities ${c.avg_act} times, Avg Activity Span ${c.avg_span} days, Avg Sentiment ${c.avg_sent}, Avg Churn Risk ${c.avg_churn}%<br>
+                            <strong>💡 Characteristics & Action Plan:</strong> Extreme high-risk segment with highly negative sentiment, either already inactive or on the verge of churn. They feel deep frustration over specific pain points like optimization or bugs. Targeted recovery outreach (push alerts, emails) works best once these pain points are patched.
                         </div>
                     `;
                 } else if (c.id === 3) {
                     detailedText = `
                         <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
-                            <strong>📊 그룹 상세 지표:</strong> 활동 횟수 평균 ${c.avg_act}회, 활동 기간 평균 ${c.avg_span}일, 평균 감성 지수 ${c.avg_sent}, 평균 이탈 위험 지수 ${c.avg_churn}%<br>
-                            <strong>💡 특성 & 대응 방안:</strong> 활동 기간이 가장 길고 활발하지만 시스템 단점과 최적화에 비판적인 '애정 어린 비판가' 그룹입니다. 이탈 위험 지수(${c.avg_churn}%)가 군집 중 최저일 정도로 충성도가 높습니다. 이들의 버그 및 기믹 피드백을 신속히 반영하면 커뮤니티 전반의 여론이 빠르게 정화됩니다.
+                            <strong>📊 Group Metrics:</strong> Avg Activities ${c.avg_act} times, Avg Activity Span ${c.avg_span} days, Avg Sentiment ${c.avg_sent}, Avg Churn Risk ${c.avg_churn}%<br>
+                            <strong>💡 Characteristics & Action Plan:</strong> Active and long-term critics who express sharp feedback on system flaws and optimization out of affection. Their churn risk is the lowest among all clusters, highlighting high loyalty. Quickly resolving their bug and gameplay reports can rapidly improve community sentiment.
                         </div>
                     `;
                 }
@@ -1533,7 +1571,7 @@
                         `;
                     });
                 } else {
-                    sideVerbatimHTML = '<div class="no-data">Verbatim 정보가 없습니다.</div>';
+                    sideVerbatimHTML = '<div class="no-data">No verbatim feedback found.</div>';
                 }
 
                 const infoDiv = document.createElement('div');

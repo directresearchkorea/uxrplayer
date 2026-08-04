@@ -476,14 +476,25 @@ input[type="date"].clean-select::-webkit-calendar-picker-indicator {
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 6px 12px;
+    font-size: 8.5px;
+    padding: 3px 8px;
+    height: 18px;
+    line-height: 1;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     outline: none;
+    border-radius: 2px;
+}
+
+.theme-toggle-btn .theme-icon {
+    font-size: 9px;
+}
+
+.theme-toggle-btn .theme-label {
+    font-size: 8.5px;
 }
 
 .theme-toggle-btn:hover {

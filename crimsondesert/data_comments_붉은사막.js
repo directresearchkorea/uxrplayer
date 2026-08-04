@@ -2293,13 +2293,23 @@ const COMMENT_DASHBOARD_DATA = {
   },
   {
     "date": "2026-08-03",
-    "total_posts_with_comments": 1,
-    "total_comments": 1,
+    "total_posts_with_comments": 3,
+    "total_comments": 8,
     "total_replies": 0,
     "rejection_count": 0,
     "defense_count": 0,
     "agreement_count": 0,
-    "neutral_count": 1
+    "neutral_count": 3
+  },
+  {
+    "date": "2026-08-04",
+    "total_posts_with_comments": 0,
+    "total_comments": 0,
+    "total_replies": 0,
+    "rejection_count": 0,
+    "defense_count": 0,
+    "agreement_count": 0,
+    "neutral_count": 0
   }
 ],
     top_controversial_posts: [
@@ -3202,6 +3212,38 @@ const COMMENT_DASHBOARD_DATA = {
     "controversy_score": 25
   },
   {
+    "post_id": "6794",
+    "title": "둘다 버그인가요?",
+    "source": "inven",
+    "url": "https://www.inven.co.kr/board/crimson/6246/6794",
+    "date": "2026-08-03",
+    "views": 186,
+    "recommends": 0,
+    "total_comments": 2,
+    "reply_count": 0,
+    "post_sentiment": -1,
+    "comment_sentiment": 0.0,
+    "discrepancy_label": "중립 (Neutral)",
+    "discrepancy_score": -1.0,
+    "controversy_score": 10
+  },
+  {
+    "post_id": "15778",
+    "title": "[잡담] 묵혀둔 붉사... 드디어 시작했습니다 ㅎㅎ [5]",
+    "source": "ruliweb",
+    "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15778",
+    "date": "2026-08-03",
+    "views": 638,
+    "recommends": 1,
+    "total_comments": 5,
+    "reply_count": 0,
+    "post_sentiment": 1,
+    "comment_sentiment": 0.0,
+    "discrepancy_label": "중립 (Neutral)",
+    "discrepancy_score": 1.0,
+    "controversy_score": 25
+  },
+  {
     "post_id": "6731",
     "title": "신규유저인데 어비스 아티펙트 노가다",
     "source": "inven",
@@ -3232,38 +3274,6 @@ const COMMENT_DASHBOARD_DATA = {
     "discrepancy_label": "동조 (Agreement - Neg)",
     "discrepancy_score": -0.75,
     "controversy_score": 20
-  },
-  {
-    "post_id": "15728",
-    "title": "[잡담] 혹시..이거 버그인가요? [4]",
-    "source": "ruliweb",
-    "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15728",
-    "date": "2026-07-25",
-    "views": 415,
-    "recommends": 0,
-    "total_comments": 4,
-    "reply_count": 1,
-    "post_sentiment": -1,
-    "comment_sentiment": -0.25,
-    "discrepancy_label": "동조 (Agreement - Neg)",
-    "discrepancy_score": -0.75,
-    "controversy_score": 30
-  },
-  {
-    "post_id": "15752",
-    "title": "[잡담] 원소와 쿠쿠새 무기는 언제 얻을 수 있나요? [4]",
-    "source": "ruliweb",
-    "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15752",
-    "date": "2026-07-30",
-    "views": 233,
-    "recommends": 0,
-    "total_comments": 4,
-    "reply_count": 2,
-    "post_sentiment": 1,
-    "comment_sentiment": 0.25,
-    "discrepancy_label": "동조 (Agreement - Pos)",
-    "discrepancy_score": 0.75,
-    "controversy_score": 40
   }
 ],
     top_best_comments: [

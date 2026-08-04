@@ -444,10 +444,20 @@
             <div class="brand" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span class="logo" style="line-height: 1; font-size: 13px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.5px;">GTPLAYER</span>
-                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" style="padding: 3px 8px; font-size: 9px; height: 18px; line-height: 1; display: flex; align-items: center; gap: 4px;">
-                        <span class="theme-icon" style="font-size: 9px;">☀</span>
-                        <span class="theme-label" style="font-size: 8.5px;">LIGHT</span>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+                        <span class="theme-icon">☀</span>
+                        <span class="theme-label">LIGHT</span>
                     </button>
+                    <script>
+                        (function() {
+                            const initTheme = localStorage.getItem('theme') || 'dark';
+                            const btn = document.getElementById('theme-toggle');
+                            if (initTheme === 'light') {
+                                btn.querySelector('.theme-icon').textContent = '☾';
+                                btn.querySelector('.theme-label').textContent = 'DARK';
+                            }
+                        })();
+                    </script>
                 </div>
                 <span id="header-game-title" style="font-family: var(--font-sans); font-weight: 900; font-size: 24px; letter-spacing: -0.5px; color: var(--text-primary); line-height: 1.1; margin-top: 1px;">/ LOADING...</span>
                 <div class="dashboard-nav">
@@ -467,7 +477,7 @@
         <section class="panel sidebar-panel">
             <div class="panel-header">
                 <h2 class="panel-title">USER PERSONA SEGMENTS</h2>
-                <p class="panel-subtitle">대화할 사용자 군집을 선택하세요.</p>
+                <p class="panel-subtitle">Select a user segment to chat with</p>
             </div>
             <div class="sidebar-scroll" id="personas-list-container">
                 <!-- Populated Dynamically -->
@@ -480,7 +490,7 @@
                 <div class="chat-header-user">
                     <div class="avatar" id="active-avatar">👤</div>
                     <div class="chat-header-info">
-                        <span class="chat-header-name" id="active-persona-name">유저 페르소나</span>
+                        <span class="chat-header-name" id="active-persona-name">User Persona</span>
                         <div class="chat-header-status">
                             <span class="status-dot"></span>
                             <span id="active-status-text">ONLINE</span>
@@ -490,7 +500,7 @@
                 <div class="engine-controls">
                     <span style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">ENGINE:</span>
                     <select class="engine-select" id="engine-selector">
-                        <option value="local_rag">Direct Client-RAG (무설치 브라우저 엔진)</option>
+                        <option value="local_rag">Direct Client-RAG (Browser-side Engine)</option>
                         <option value="api_backend">Local Backend API (Ollama/FastAPI)</option>
                     </select>
                 </div>
@@ -508,7 +518,7 @@
 
             <!-- Message Input Area -->
             <div class="chat-input-container">
-                <textarea class="chat-textarea" id="chat-input" placeholder="이탈 유저 페르소나에게 질문해 보세요..." rows="1"></textarea>
+                <textarea class="chat-textarea" id="chat-input" placeholder="Ask a question to the user persona segment..." rows="1"></textarea>
                 <button class="send-btn" id="send-btn">SEND</button>
             </div>
         </section>
@@ -517,12 +527,12 @@
         <section class="panel evidence-panel">
             <div class="panel-header">
                 <h2 class="panel-title">Grounding Verbatim Evidence</h2>
-                <p class="panel-subtitle">답변 생성 시 근거가 된 실제 유저 원문</p>
+                <p class="panel-subtitle">Source feedback used as grounding for responses</p>
             </div>
             <div class="evidence-scroll" id="evidence-container">
                 <!-- Populated Dynamically with quotes matching response -->
                 <div class="no-evidence" id="evidence-placeholder">
-                    대화창에서 질문을 전송하시면,<br>해당 페르소나 집단 내에서 참고한<br>실제 인벤/루리웹 유저의 원문(Verbatim)<br>구절이 여기에 매핑됩니다.
+                    Once you send a message,<br>the actual user comments (verbatims)<br>referenced from community posts<br>will be displayed here as grounding evidence.
                 </div>
             </div>
         </section>
@@ -549,7 +559,7 @@
             { id: 'FCOnline', name: 'FC Online' }
         ];
 
-        let selectedGame = '붉은사막';
+        let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
         localStorage.setItem('selectedGame', selectedGame);
 
         function loadGameData(game, callback) {
@@ -604,7 +614,7 @@
 
             function updateThemeUI(theme) {
                 if (theme === 'light') {
-                    themeIcon.textContent = '🌙';
+                    themeIcon.textContent = '☾';
                     themeLabel.textContent = 'DARK';
                 } else {
                     themeIcon.textContent = '☀';
@@ -954,7 +964,8 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 cluster_id: activeClusterId,
-                                message: text
+                                message: text,
+                                game: selectedGame
                             })
                         });
 
