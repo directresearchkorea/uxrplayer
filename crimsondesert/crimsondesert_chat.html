@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script>
+        // 백엔드 API 서버 주소 (로컬 테스트용: localhost, 클라우드 배포 시 도메인 주소로 변경 가능)
+        const BACKEND_API_URL = 'http://localhost:5000';
+
         // Immediate Theme Initialization to prevent flashing
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -687,7 +690,7 @@
 
                 // Auto-detect and switch to backend RAG if the server is alive
                 try {
-                    const check = await fetch('http://localhost:5000/api/chat', {
+                    const check = await fetch(`${BACKEND_API_URL}/api/chat``, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message: 'ping', cluster_id: 0, game: selectedGame })
@@ -997,7 +1000,7 @@
                 } else {
                     // API Backend Mode: HTTP Request to localhost server
                     try {
-                        const res = await fetch('http://localhost:5000/api/chat', {
+                        const res = await fetch(`${BACKEND_API_URL}/api/chat``, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
