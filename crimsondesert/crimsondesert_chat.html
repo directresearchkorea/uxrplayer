@@ -587,7 +587,7 @@
 
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${game}.js`;
+            script.src = `data_${game}.js?v=${new Date().getTime()}`;
             script.onload = () => {
                 if (typeof DASHBOARD_DATA !== 'undefined') {
                     callback(DASHBOARD_DATA);
@@ -658,7 +658,7 @@
             // -------------------------------------------------------------
             // PERSONA CHAT BUSINESS LOGIC
             // -------------------------------------------------------------
-            const clusters = USER_CLUSTERS_DATA || [];
+            const clusters = typeof USER_CLUSTERS_DATA !== 'undefined' ? USER_CLUSTERS_DATA : [];
             let activeClusterId = 0;
             let chatHistories = {}; // Map of clusterId -> array of messages [{sender: 'persona'|'user', text: '', time: ''}]
 
