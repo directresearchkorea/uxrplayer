@@ -308,8 +308,7 @@
             background-color: var(--card-bg);
             display: flex;
             gap: 8px;
-            overflow-x: auto;
-            white-space: nowrap;
+            flex-wrap: wrap;
         }
 
         .prompt-suggestions::-webkit-scrollbar {
@@ -499,9 +498,10 @@
                 </div>
                 <div class="engine-controls">
                     <span style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">ENGINE:</span>
-                    <select class="engine-select" id="engine-selector">
-                        <option value="local_rag">Direct Client-RAG (Browser-side Engine)</option>
-                        <option value="api_backend">Local Backend API (Ollama/FastAPI)</option>
+                                        <select class="engine-select" id="engine-selector">
+                        <option value="local_rag" selected>Direct Client-RAG (Browser-side Engine)</option>
+                        <option value="ollama_backend">Local Offline AI (Ollama)</option>
+                        <option value="gemini_backend">Cloud AI (Gemini API)</option>
                     </select>
                 </div>
             </div>
@@ -656,38 +656,50 @@
             // Quick prompts tailored per persona type
             const personaPrompts = {
                 0: [ // Active Critics
-                    "최근 밸런스 패치에 대해 어떻게 생각하나요?",
-                    "현 과금 시스템(BM)의 핵심 문제는 무엇인가요?",
-                    "개발진에게 전하고 싶은 가장 시급한 개선 요구 사항은?",
-                    "이 게임을 그만두지 않고 계속 플레이하게 만드는 요소는 있나요?"
+                    "전투 조작감이 너무 복잡하고 피로감이 크다고 느끼시나요?",
+                    "보스전 난이도 조절 실패나 불합리한 기믹이 있었나요?",
+                    "그래픽은 만족스럽지만 최적화와 프레임 드랍이 심하다고 보시나요?"
                 ],
                 1: [ // Casual Socializers
-                    "주로 접속해서 어떤 콘텐츠를 즐기시나요?",
-                    "게임 커뮤니티나 정보 공유는 주로 어디서 얻나요?",
-                    "게임 가이드나 팁 글들이 플레이에 도움이 되었나요?",
-                    "크림슨 데저트를 가볍게 즐기기에 적절한가요?"
+                    "지스타 시연 빌드를 플레이할 때 난이도가 너무 어렵게 느껴졌나요?",
+                    "PC와 콘솔 플랫폼 동시 출시일 일정에 대해 어떻게 생각하시나요?",
+                    "시연 후 게임 커뮤니티에서 가장 많이 이야기하는 주제가 무엇인가요?"
                 ],
                 2: [ // Loyal Power Users
-                    "크림슨 데저트에 이렇게 깊은 호감을 갖게 된 원동력은?",
-                    "가장 아끼는 보스 레이드나 스토리 챕터는 무엇인가요?",
-                    "게임의 그래픽과 비주얼 퀄리티를 평가해준다면?",
-                    "초보 유저들에게 추천해 주고 싶은 이 게임의 매력은?"
+                    "공개된 보스전의 전투 연출과 그래픽 중 어떤 부분이 가장 만족스럽나요?",
+                    "넓은 오픈월드 탐험 요소와 다양한 이동 액션에 대해 어떻게 평가하시나요?",
+                    "이번 트레일러 디테일을 보았을 때 게임의 완성도와 출시 기대감은 어느 정도인가요?"
                 ],
                 3: [ // High Churn Risks
-                    "최근 게임 접속이 뜸해지거나 플레이를 접은 구체적 계기는 무엇인가요?",
-                    "시스템 오류(버그, 조작 먹통 등)로 겪은 피로도가 컸나요?",
-                    "게임 복귀를 고려하게 만들기 위해 필요한 최우선 조건은?",
-                    "이탈 결정을 내리게 만든 결정적 불만 한 가지만 꼽는다면?"
+                    "시연 중 조작 불가 버그나 크래시 등 치명적인 문제를 경험하신 적이 있나요?",
+                    "잦은 출시일 연기로 인해 게임에 대한 신뢰도나 구매 의향이 많이 떨어졌나요?",
+                    "게임의 진입 장벽이 너무 높아 일반 유저들이 적응하기 어렵다고 생각하시나요?"
                 ]
             };
+                    
+                    chatHistories[c.id] = [
+                        { sender: 'persona', text: welcomeMsgs[c.id] || "안녕하세요.", time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) }
+                    ];
+                });
 
-            // Avatar symbols for each cluster
-            const clusterAvatars = { 0: "🛠️", 1: "💬", 2: "👑", 3: "⚠️" };
+                renderPersonaList();
+                selectPersona(0);
 
-            // Initialize chat histories and render persona list
-            function init() {
-                clusters.forEach(c => {
-                    const welcomeMsgs = {
+                // Auto-detect and switch to backend RAG if the server is alive
+                try {
+                    const check = await fetch('http://localhost:5000/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: 'ping', cluster_id: 0, game: selectedGame })
+                    });
+                    if (check.ok) {
+                        // engineSelector.value = 'ollama_backend';
+                        console.log("[Auto-Switch] Backend server detected. Engine changed to api_backend.");
+                    }
+                } catch(e) {
+                    console.log("[Auto-Switch] Backend server offline. Using client-side local_rag engine.");
+                }
+            }sgs = {
                         0: "안녕하세요. 붉은사막을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성, 불합리한 전투 매커니즘 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
                         1: "반가워요! 가볍게 메인 퀘스트 밀면서 맵 돌아다니는 라이트 유저예요. 가방 비우는 법이나 예구 쉴드 받는 법 같은 소소한 질문 글도 올리고 유저들이랑 잡담하는 걸 좋아해요.",
                         2: "반갑습니다! 파이웰 대륙의 광활한 비주얼과 압도적인 보스 레이드 전투에 매료되어 매일 즐겁게 플레이하는 코어 팬입니다. 이 게임의 훌륭한 시스템과 앞으로의 성장에 대해 기쁘게 대화 나누고 싶네요.",
@@ -778,7 +790,7 @@
                         <div class="message-bubble">
                             <div>${msg.text}</div>
                             <div class="message-meta">
-                                <span>${msg.sender === 'user' ? 'PM' : 'User Persona'}</span>
+                                <span>${msg.sender === 'user' ? 'PM' : (msg.engine === 'ollama_backend' ? 'Ollama (gemma2:2b)' : (msg.engine === 'gemini_backend' ? 'Gemini API' : (msg.engine === 'local_rag' ? 'Client-side RAG' : 'User Persona')))}</span>
                                 <span>${msg.time}</span>
                             </div>
                         </div>
@@ -826,21 +838,47 @@
                     };
                 }
 
-                // Simplified tokenizer
-                const keywords = userInput.toLowerCase()
+                // Intent Mapping Layer (Category Inference)
+                const categoryKeywords = {
+                    'OPTIMIZATION': ['최적화', '렉', '버그', '프레임', '팅김', '드랍', '로딩', '끊겨', '오류', '발열', '크래시'],
+                    'GAMEPLAY': ['전투', '타격감', '액션', '스킬', '보스', '조작', '난이도', '콤보', '패턴', '파밍', '밸런스'],
+                    'MONETIZATION': ['과금', 'bm', '가챠', '뽑기', '유료', '결제', '돈', '확률', '현질'],
+                    'GRAPHIC': ['그래픽', '비주얼', '캐릭터', '배경', '텍스처', '모션', '애니메이션', '디자인', '퀄리티'],
+                    'STORY': ['스토리', '세계관', '퀘스트', '주인공', '대사', '내용', '연출', '서사']
+                };
+
+                let inferredCategories = new Set();
+                let userInputLower = userInput.toLowerCase();
+                
+                for (const [cat, keywordsList] of Object.entries(categoryKeywords)) {
+                    for (const kw of keywordsList) {
+                        if (userInputLower.includes(kw)) {
+                            inferredCategories.add(cat);
+                        }
+                    }
+                }
+
+                // Simplified tokenizer for keyword fallback
+                const keywords = userInputLower
                     .replace(/[?.,!#\/$%^&*@;:{}=\-_`~()]/g, "")
                     .split(/\s+/).filter(word => word.length > 1);
 
-                // Score verbatims based on keyword overlap
+                // Score verbatims based on category intent + keyword overlap
                 let scoredVerbatims = c.verbatims.map(v => {
                     let score = 0;
+                    
+                    // Heavy bonus if the verbatim's category matches the inferred intent
+                    if (inferredCategories.has(v.category)) {
+                        score += 10.0;
+                    }
+                    
+                    // Standard keyword overlap scoring
                     keywords.forEach(kw => {
                         if (v.text.toLowerCase().includes(kw)) {
                             score += 1.5;
-                            // Exact segment matching extra bonus
-                            if (v.category.toLowerCase().includes(kw)) score += 0.5;
                         }
                     });
+                    
                     return { verbatim: v, score: score };
                 });
 
@@ -965,7 +1003,8 @@
                             body: JSON.stringify({
                                 cluster_id: activeClusterId,
                                 message: text,
-                                game: selectedGame
+                                game: selectedGame,
+                                engine: selectedEngine
                             })
                         });
 
@@ -975,7 +1014,7 @@
                         evidenceList = data.evidence || [];
                     } catch (err) {
                         console.error('Error fetching backend API:', err);
-                        personaMsgText = `❌ <strong>로컬 API 연동 실패:</strong> <code>execution/persona_chat_server.py</code> 백엔드 서버가 실행 중이지 않거나, 로컬 LLM(Ollama)이 정상적으로 켜져 있지 않습니다.<br><br>Direct Client-RAG (무설치 브라우저 엔진) 모드로 설정을 다시 변경하시면 로컬 오프라인 데이터로 즉시 대화하실 수 있습니다.`;
+                        personaMsgText = `❌ <strong>로컬 API 연동 실패:</strong> <code>execution/persona_chat_server.py</code> 백엔드 서버가 실행 중이지 않거나, 설정하신 AI 엔진이 정상적으로 켜져 있지 않습니다.<br><br>서버 구동을 확인하시거나 터미널에서 파이썬 서버가 켜져 있는지 체크해 주세요.`;
                         evidenceList = [];
                     }
                 }
@@ -988,6 +1027,7 @@
                 const responseMsg = {
                     sender: 'persona',
                     text: personaMsgText,
+                    engine: selectedEngine,
                     time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
                 };
                 chatHistories[activeClusterId].push(responseMsg);
