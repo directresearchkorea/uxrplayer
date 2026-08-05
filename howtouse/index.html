@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uxrplayer analytics - How to Use</title>
+    <style>
+        :root {
+            --primary: #FF5722;
+            --primary-light: #FFF0ED;
+            --bg-color: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border-color: #E2E8F0;
+            --accent-pos: #28a745;
+            --accent-neu: #888888;
+            --accent-neg: #dc3545;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2.5rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar .brand {
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: 0.8px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: lowercase;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: all 0.25s;
+        }
+
+        .nav-links li a:hover {
+            background-color: var(--bg-color);
+            color: var(--primary);
+        }
+        
+        .nav-links li a.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            box-shadow: inset 3px 0 0 var(--primary);
+        }
+
+        /* Language Picker */
+        .lang-selector-container {
+            margin-top: auto;
+            padding: 1rem 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .lang-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .lang-select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .lang-select:focus {
+            border-color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 4rem 5rem;
+            width: calc(100% - var(--sidebar-width));
+            max-width: 1200px;
+        }
+
+        header {
+            margin-bottom: 4rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.75rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -0.75px;
+            margin-bottom: 0.75rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+        }
+
+        /* Content Sections */
+        .tab-section {
+            margin-bottom: 5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .tab-section-header {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .tab-section-header i {
+            color: var(--primary);
+        }
+
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015), 0 2px 8px rgba(0, 0, 0, 0.01);
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+        }
+
+        .content-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .text-block h4 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+            font-weight: 700;
+        }
+
+        .text-block h4:first-child {
+            margin-top: 0;
+        }
+
+        .text-block p {
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .text-block ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .text-block li {
+            margin-bottom: 0.8rem;
+            font-size: 1.02rem;
+        }
+
+        /* Clean Screenshot Container */
+        .screenshot-container {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.01);
+            background: #FFFFFF;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+        
+        .badge.ai {
+            background: #E8F5E9;
+            color: var(--accent-pos);
+        }
+        
+        .algo-box {
+            background-color: #F8FAFC;
+            border-left: 4px solid var(--primary);
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        .algo-box code {
+            background-color: #E2E8F0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #0f172a;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 2rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation (All links remain static in English as requested) -->
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fas fa-layer-group"></i> <span>uxrplayer analytics</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#overview"><i class="fas fa-brain"></i> <span>PLATFORM OVERVIEW</span></a></li>
+            <li><a href="#posts-trends"><i class="fas fa-chart-line"></i> <span>POSTS TRENDS</span></a></li>
+            <li><a href="#user-churn"><i class="fas fa-users-slash"></i> <span>USER CHURN</span></a></li>
+            <li><a href="#persona-chat"><i class="fas fa-comments"></i> <span>PERSONA CHAT</span></a></li>
+        </ul>
+        
+        <!-- Language Selector -->
+        <div class="lang-selector-container">
+            <label class="lang-label" for="lang-selector">Language</label>
+            <select class="lang-select" id="lang-selector">
+                <option value="ko" selected>한국어</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="zh">简体中文</option>
+                <option value="id">Bahasa Indonesia</option>
+            </select>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header id="overview">
+            <span class="badge" data-key="header_badge">How to Use</span>
+            <h1 data-key="header_title">대시보드 이용 방법</h1>
+            <p data-key="header_subtitle">데이터 기반의 커뮤니티 동향 및 유저 반응 분석 시스템 사용 가이드라인</p>
+        </header>
+
+        <!-- OVERVIEW SECTION -->
+        <section class="section">
+            <div class="content-grid">
+                <div class="text-block">
+                    <span class="badge ai" data-key="ai_badge">Gemma 로컬 AI 모델 탑재</span>
+                    <h4 data-key="overview_title">AI 기반 심층 텍스트 분석 아키텍처</h4>
+                    <p data-key="overview_desc">본 대시보드는 수집된 유저 피드백의 심층 분석을 위해 로컬 환경에 최적화된 Gemma(제마) 모델과 고성능 머신러닝 알고리즘을 활용합니다.</p>
+                    <ul>
+                        <li data-key="overview_bullet_1"><strong>정밀한 감성 분류:</strong> 단순 키워드를 넘어 문맥을 이해하여 긍정(Positive), 부정(Negative), 중립(Neutral)으로 텍스트 뉘앙스를 자동 분류합니다.</li>
+                        <li data-key="overview_bullet_2"><strong>다차원 카테고리 태깅:</strong> 게임플레이, 그래픽, 최적화 등 핵심 카테고리별로 유저 피드백을 맵핑하여 항목별 여론을 정량화합니다.</li>
+                        <li data-key="overview_bullet_3"><strong>과학적 이탈 예측 및 페르소나 군집화:</strong> 단순 통계가 아닌 데이터 사이언스 기법(StandardScaler, K-Means Clustering)을 적용하여 유저를 정밀하게 세분화합니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- POSTS TRENDS SECTION -->
+        <div class="tab-section" id="posts-trends">
+            <h2 class="tab-section-header"><i class="fas fa-chart-line"></i> <span data-key="sec_trends_header">1. POSTS TRENDS 탭</span></h2>
+            
+            <section class="section">
+                <h3 data-key="sec_trends_s1_title">기간 설정 및 트래픽 트렌드 추적</h3>
+                <div class="content-grid">
+                    <div class="text-block">
+                        <h4 data-key="sec_trends_s1_h1">컨트롤 패널 활용</h4>
+                        <p data-key="sec_trends_s1_p1">상단의 데이터 누적 기간 컨트롤을 통해 1개월, 3개월 등 특정 이벤트를 전후로 기간을 좁혀 데이터를 재계산할 수 있습니다. 일별, 주별 분석 단위를 조절하여 데이터의 노이즈를 제어하세요.</p>
+                        <h4 data-key="sec_trends_s1_h2">트래픽 트렌드와 업데이트 맵핑</h4>
+                        <p data-key="sec_trends_s1_p2">주황색 점(Dot)으로 표기된 구간은 개발사의 실제 패치나 공지사항 배포 시점입니다. 액션이 발생했을 때 커뮤니티 트래픽과 여론이 어떻게 연동되어 반응하는지 상관 관계를 직관적으로 확인할 수 있습니다.</p>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="../images/traffic_trends.png" alt="Traffic Trends Screenshot">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h3 data-key="sec_trends_s2_title">심층 감성 분석 (Aspect-based Sentiment)</h3>
+                <div class="content-grid">
+                    <div class="text-block">
+                        <h4 data-key="sec_trends_s2_h1">항목별 감성 분포도 (100% 누적 차트)</h4>
+                        <p data-key="sec_trends_s2_p1">게임 내 요소(스토리, 전투 등)별로 긍부정 비율을 파악합니다. 막대를 클릭하면 해당 항목에 대한 유저 원문 피드백이 하단에 즉시 필터링되어 노출됩니다.</p>
+                        <h4 data-key="sec_trends_s2_h2">감성 비율 시계열 트렌드</h4>
+                        <p data-key="sec_trends_s2_p2">긍/부정 여론의 비율 변동 추이를 시간 흐름에 따라 퍼센트(%)로 표시하여 안정적인 여론 흐름을 유지하고 있는지 모니터링합니다.</p>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="../images/sentiment_analysis.png" alt="Sentiment Analysis Screenshot">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- USER CHURN SECTION -->
+        <div class="tab-section" id="user-churn">
+            <h2 class="tab-section-header"><i class="fas fa-users-slash"></i> <span data-key="sec_churn_header">2. USER CHURN 탭 (리텐션 및 이탈 예측)</span></h2>
+            
+            <section class="section">
+                <h3 data-key="sec_churn_s1_title">핵심 이탈 지표 (KPIs) 및 감성 전이 흐름</h3>
+                <div class="content-grid">
+                    <div class="text-block">
+                        <h4 data-key="sec_churn_s1_h1">주요 모니터링 지표</h4>
+                        <p data-key="sec_churn_s1_p1">총 활동 유저 수, 게임 감성 지수(Game Sentiment Index), 고위험 이탈률(High Churn Risk Rate)을 상단에서 일간/주간/월간 단위로 요약해 보여줍니다.</p>
+                        
+                        <div class="algo-box">
+                            <strong data-key="sec_churn_s1_algo_title">이탈 위험 지수 산식:</strong><br>
+                            <span data-key="sec_churn_s1_algo_desc">최근 14일 초과 미활동 시 일별 가중치 + 부정문 비율 가중치 + 특정 이탈 키워드 등장 시 가산점 알고리즘으로 산출.</span>
+                        </div>
+
+                        <h4 data-key="sec_churn_s1_h2">Sankey Flow Diagram (유저 상태 전이 흐름)</h4>
+                        <p data-key="sec_churn_s1_p2">유저들의 초기 감성(예: Positive)이 후반기에 어떻게 전이(예: Negative 또는 Inactive)되는지 흐름을 추적합니다. (※ 30일 이상 미활동 유저는 Inactive로 간주)</p>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="../images/churn_flow.png" alt="Sankey Flow Diagram Screenshot">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h3 data-key="sec_churn_s2_title">다차원 리스크 매트릭스 (K-Means Clustering)</h3>
+                <div class="content-grid">
+                    <div class="text-block">
+                        <h4 data-key="sec_churn_s2_h1">유저 군집화 산점도 차트</h4>
+                        <p data-key="sec_churn_s2_p1">AI 머신러닝(K-Means)이 유저들을 4가지 페르소나 군집으로 묶어 산점도 상에 배치합니다. 노드를 클릭하면 해당 유저의 상세 활동 내역과 원문 프로필을 우측과 하단에서 확인할 수 있습니다.</p>
+                        
+                        <div class="algo-box">
+                            <strong data-key="sec_churn_s2_algo_title">군집화 차원 변수 (4-Dimension StandardScaler):</strong><br>
+                            <span data-key="sec_churn_s2_algo_desc"><code>log(총 활동량)</code>, <code>log(활동 기간)</code>, <code>평균 감성 지수</code>, <code>이탈 위험 지수</code> 차원으로 분석.</span>
+                        </div>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="../images/churn_matrix.png" alt="User Scatter Matrix Screenshot">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PERSONA CHAT SECTION -->
+        <div class="tab-section" id="persona-chat">
+            <h2 class="tab-section-header"><i class="fas fa-comments"></i> <span data-key="sec_chat_header">3. PERSONA CHAT 탭 (페르소나 챗봇)</span></h2>
+            
+            <section class="section">
+                <h3 data-key="sec_chat_s1_title">Gemma 기반 유저 페르소나 인터뷰</h3>
+                <div class="content-grid">
+                    <div class="text-block">
+                        <h4 data-key="sec_chat_s1_h1">유저 세그먼트 (Sidebar)</h4>
+                        <p data-key="sec_chat_s1_p1">K-Means로 분류된 4가지 집단(활발한 비판가, 라이트 소셜 유저, 코어 팬층, 이탈 고위험군) 중 하나를 선택하여 해당 페르소나와 직접 가상 인터뷰를 진행할 수 있습니다.</p>
+
+                        <h4 data-key="sec_chat_s1_h2">맞춤형 챗 인터페이스 (Chat UI)</h4>
+                        <p data-key="sec_chat_s1_p2">선택한 군집의 성향에 맞는 추천 질문(Quick Prompts)이 하단에 제공됩니다. 예를 들어 이탈 고위험군에게는 "접속이 뜸해진 구체적 계기가 무엇인가요?"를 물어 즉각적인 텍스트 인사이트를 얻을 수 있습니다.</p>
+                        
+                        <h4 data-key="sec_chat_s1_h3">추론 엔진 선택 (Engine Selector)</h4>
+                        <p data-key="sec_chat_s1_p3">화면 상단의 엔진 선택 옵션을 통해 답변 생성용 백엔드 파워를 제어할 수 있습니다.</p>
+                        <ul>
+                            <li data-key="sec_chat_s1_bullet_1"><strong>Direct Client-RAG:</strong> 브라우저 내장 검색 엔진으로, 외부 서버 통신 없이 클라이언트 환경에서 로컬 데이터를 매핑하여 즉각적인 답변을 제공합니다.</li>
+                            <li data-key="sec_chat_s1_bullet_2:"><strong>Local Backend API:</strong> 로컬 서버 (Ollama 또는 FastAPI) 상에서 구동 중인 Gemma 모델을 실시간 호출하여 문맥 지향적인 생성형 답변을 제공합니다.</li>
+                        </ul>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="../images/chat_interface.png" alt="Persona Chat Interface Screenshot">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h3 data-key="sec_chat_s2_title">신뢰성 검증 (Grounding Evidence)</h3>
+                <div class="content-grid">
+                    <div class="text-block">
+                        <h4 data-key="sec_chat_s2_h1">증강 검색 기반 근거 제시 (Evidence Panel)</h4>
+                        <p data-key="sec_chat_s2_p1">AI가 임의로 답변을 지어내는 환각(Hallucination) 현상을 방지하기 위해 RAG(검색 증강 생성) 기술이 적용되어 있습니다.</p>
+                        <p data-key="sec_chat_s2_p2">챗봇이 대답할 때마다 해당 페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트에 확실하게 근거하고 있는지 검증할 수 있습니다.</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 2rem; justify-content: center; align-items: center; background: #F8FAFC; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); flex-wrap: wrap;">
+                        <div class="text-block" style="flex: 1; min-width: 300px;">
+                            <strong data-key="sec_chat_s2_ex_title">[실제 Verbatim 매핑 화면 예시]</strong>
+                            <p style="font-size: 0.95rem; margin-top: 0.5rem; color: var(--text-secondary);" data-key="sec_chat_s2_ex_desc">우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다.</p>
+                        </div>
+                        <div class="screenshot-container" style="width: 400px; margin-top: 0;">
+                            <img src="../images/chat_evidence.png" alt="Grounding Evidence Card Screenshot">
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Language Translation Script -->
+    <script>
+        const translations = {
+            ko: {
+                header_badge: "How to Use",
+                header_title: "대시보드 이용 방법",
+                header_subtitle: "데이터 기반의 커뮤니티 동향 및 유저 반응 분석 시스템 사용 가이드라인",
+                ai_badge: "Gemma 로컬 AI 모델 탑재",
+                overview_title: "AI 기반 심층 텍스트 분석 아키텍처",
+                overview_desc: "본 대시보드는 수집된 유저 피드백의 심층 분석을 위해 로컬 환경에 최적화된 Gemma(제마) 모델과 고성능 머신러닝 알고리즘을 활용합니다.",
+                overview_bullet_1: "<strong>정밀한 감성 분류:</strong> 단순 키워드를 넘어 문맥을 이해하여 긍정(Positive), 부정(Negative), 중립(Neutral)으로 텍스트 뉘앙스를 자동 분류합니다.",
+                overview_bullet_2: "<strong>다차원 카테고리 태깅:</strong> 게임플레이, 그래픽, 최적화 등 핵심 카테고리별로 유저 피드백을 맵핑하여 항목별 여론을 정량화합니다.",
+                overview_bullet_3: "<strong>과학적 이탈 예측 및 페르소나 군집화:</strong> 단순 통계가 아닌 데이터 사이언스 기법(StandardScaler, K-Means Clustering)을 적용하여 유저를 정밀하게 세분화합니다.",
+                sec_trends_header: "1. POSTS TRENDS 탭",
+                sec_trends_s1_title: "기간 설정 및 트래픽 트렌드 추적",
+                sec_trends_s1_h1: "컨트롤 패널 활용",
+                sec_trends_s1_p1: "상단의 데이터 누적 기간 컨트롤을 통해 1개월, 3개월 등 특정 이벤트를 전후로 기간을 좁혀 데이터를 재계산할 수 있습니다. 일별, 주별 분석 단위를 조절하여 데이터의 노이즈를 제어하세요.",
+                sec_trends_s1_h2: "트래픽 트렌드와 업데이트 맵핑",
+                sec_trends_s1_p2: "주황색 점(Dot)으로 표기된 구간은 개발사의 실제 패치나 공지사항 배포 시점입니다. 액션이 발생했을 때 커뮤니티 트래픽과 여론이 어떻게 연동되어 반응하는지 상관 관계를 직관적으로 확인할 수 있습니다.",
+                sec_trends_s2_title: "심층 감성 분석 (Aspect-based Sentiment)",
+                sec_trends_s2_h1: "항목별 감성 분포도 (100% 누적 차트)",
+                sec_trends_s2_p1: "게임 내 요소(스토리, 전투 등)별로 긍부정 비율을 파악합니다. 막대를 클릭하면 해당 항목에 대한 유저 원문 피드백이 하단에 즉시 필터링되어 노출됩니다.",
+                sec_trends_s2_h2: "감성 비율 시계열 트렌드",
+                sec_trends_s2_p2: "긍/부정 여론의 비율 변동 추이를 시간 흐름에 따라 퍼센트(%)로 표시하여 안정적인 여론 흐름을 유지하고 있는지 모니터링합니다.",
+                sec_churn_header: "2. USER CHURN 탭 (리텐션 및 이탈 예측)",
+                sec_churn_s1_title: "핵심 이탈 지표 (KPIs) 및 감성 전이 흐름",
+                sec_churn_s1_h1: "주요 모니터링 지표",
+                sec_churn_s1_p1: "총 활동 유저 수, 게임 감성 지수(Game Sentiment Index), 고위험 이탈률(High Churn Risk Rate)을 상단에서 일간/주간/월간 단위로 요약해 보여줍니다.",
+                sec_churn_s1_algo_title: "이탈 위험 지수 산식:",
+                sec_churn_s1_algo_desc: "최근 14일 초과 미활동 시 일별 가중치 + 부정문 비율 가중치 + 특정 이탈 키워드 등장 시 가산점 알고리즘으로 산출.",
+                sec_churn_s1_h2: "Sankey Flow Diagram (유저 상태 전이 흐름)",
+                sec_churn_s1_p2: "유저들의 초기 감성(예: Positive)이 후반기에 어떻게 전이(예: Negative 또는 Inactive)되는지 흐름을 추적합니다. (※ 30일 이상 미활동 유저는 Inactive로 간주)",
+                sec_churn_s2_title: "다차원 리스크 매트릭스 (K-Means Clustering)",
+                sec_churn_s2_h1: "유저 군집화 산점도 차트",
+                sec_churn_s2_p1: "AI 머신러닝(K-Means)이 유저들을 4가지 페르소나 군집으로 묶어 산점도 상에 배치합니다. 노드를 클릭하면 해당 유저의 상세 활동 내역과 원문 프로필을 우측과 하단에서 확인할 수 있습니다.",
+                sec_churn_s2_algo_title: "군집화 차원 변수 (4-Dimension StandardScaler):",
+                sec_churn_s2_algo_desc: "<code>log(총 활동량)</code>, <code>log(활동 기간)</code>, <code>평균 감성 지수</code>, <code>이탈 위험 지수</code> 차원으로 분석.",
+                sec_chat_header: "3. PERSONA CHAT 탭 (페르소나 챗봇)",
+                sec_chat_s1_title: "Gemma 기반 유저 페르소나 인터뷰",
+                sec_chat_s1_h1: "유저 세그먼트 (Sidebar)",
+                sec_chat_s1_p1: "K-Means로 분류된 4가지 집단(활발한 비판가, 라이트 소셜 유저, 코어 팬층, 이탈 고위험군) 중 하나를 선택하여 해당 페르소나와 직접 가상 인터뷰를 진행할 수 있습니다.",
+                sec_chat_s1_h2: "맞춤형 챗 인터페이스 (Chat UI)",
+                sec_chat_s1_p2: "선택한 군집의 성향에 맞는 추천 질문(Quick Prompts)이 하단에 제공됩니다. 예를 들어 이탈 고위험군에게는 \"접속이 뜸해진 구체적 계기가 무엇인가요?\"를 물어 즉각적인 텍스트 인사이트를 얻을 수 있습니다.",
+                sec_chat_s1_h3: "추론 엔진 선택 (Engine Selector)",
+                sec_chat_s1_p3: "화면 상단의 엔진 선택 옵션을 통해 답변 생성용 백엔드 파워를 제어할 수 있습니다.",
+                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 브라우저 내장 검색 엔진으로, 외부 서버 통신 없이 클라이언트 환경에서 로컬 데이터를 매핑하여 즉각적인 답변을 제공합니다.",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 로컬 서버(Ollama 또는 FastAPI) 상에서 구동 중인 Gemma 모델을 실시간 호출하여 문맥 지향적인 생성형 답변을 제공합니다.",
+                sec_chat_s2_title: "신뢰성 검증 (Grounding Evidence)",
+                sec_chat_s2_h1: "증강 검색 기반 근거 제시 (Evidence Panel)",
+                sec_chat_s2_p1: "AI가 임의로 답변을 지어내는 환각(Hallucination) 현상을 방지하기 위해 RAG(검색 증강 생성) 기술이 적용되어 있습니다.",
+                sec_chat_s2_p2: "챗봇이 대답할 때마다 해당 페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트에 확실하게 근거하고 있는지 검증할 수 있습니다.",
+                sec_chat_s2_ex_title: "[실제 Verbatim 매핑 화면 예시]",
+                sec_chat_s2_ex_desc: "우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다."
+            },
+            en: {
+                header_badge: "How to Use",
+                header_title: "How to Use Dashboard",
+                header_subtitle: "Guidelines for data-driven community trends and user response analysis system",
+                ai_badge: "Embedded Gemma Local AI Model",
+                overview_title: "AI-Powered Deep Text Analysis Architecture",
+                overview_desc: "This dashboard utilizes the Gemma model optimized for local environments and high-performance machine learning algorithms for in-depth analysis of collected user feedback.",
+                overview_bullet_1: "<strong>Precise Sentiment Classification:</strong> Understands the context beyond simple keywords to automatically classify text nuance into Positive, Negative, or Neutral.",
+                overview_bullet_2: "<strong>Multi-dimensional Category Tagging:</strong> Maps user feedback to core categories like Gameplay, Graphics, and Optimization to quantify aspects of public opinion.",
+                overview_bullet_3: "<strong>Scientific Churn Prediction & Persona Clustering:</strong> Uses data science methodologies (StandardScaler, K-Means Clustering) instead of basic statistics to segment users accurately.",
+                sec_trends_header: "1. POSTS TRENDS Tab",
+                sec_trends_s1_title: "Date Range Control & Traffic Trend Tracking",
+                sec_trends_s1_h1: "Utilizing the Control Panel",
+                sec_trends_s1_p1: "Adjust the time scope (e.g., 1 Month, 3 Months) using the data accumulation controls to recalculate data around specific events. Control the noise by toggling daily or weekly analysis units.",
+                sec_trends_s1_h2: "Traffic Trends and Update Mapping",
+                sec_trends_s1_p2: "The orange dots represent the actual dates of patches or announcements released by the developer. This allows you to immediately cross-analyze the impact of dev updates on community traffic.",
+                sec_trends_s2_title: "Aspect-Based Sentiment Analysis",
+                sec_trends_s2_h1: "Aspect Sentiment Distribution (100% Stacked Chart)",
+                sec_trends_s2_p1: "Identify the positive/negative ratio of specific game systems. Clicking any aspect bar immediately filters and shows corresponding user comments at the bottom.",
+                sec_trends_s2_h2: "Sentiment Ratio Time-Series Trends",
+                sec_trends_s2_p2: "Monitor whether the positive/negative opinions are maintained in a healthy trend over time as percentages (%).",
+                sec_churn_header: "2. USER CHURN Tab (Retention & Churn Prediction)",
+                sec_churn_s1_title: "Core Churn KPIs & Sentiment Transition Flow",
+                sec_churn_s1_h1: "Key Metrics to Monitor",
+                sec_churn_s1_p1: "Displays key summaries at the top including Total Tracked Active Users, Game Sentiment Index, and High Churn Risk Rate on a daily, weekly, or monthly basis.",
+                sec_churn_s1_algo_title: "Churn Risk Score Formula:",
+                sec_churn_s1_algo_desc: "Calculated based on daily penalty for inactivity >14 days + negative sentence ratio weight + penalty points for specific churn keywords.",
+                sec_churn_s1_h2: "Sankey Flow Diagram (User State Transitions)",
+                sec_churn_s1_p2: "Tracks how users' initial sentiments (e.g. Positive) transition later (e.g. Negative or Inactive). Users inactive for more than 30 days are classified as Inactive.",
+                sec_churn_s2_title: "Multi-dimensional Churn Risk Matrix (K-Means Clustering)",
+                sec_churn_s2_h1: "User Clustering Scatter Plot",
+                sec_churn_s2_p1: "AI clusters users into 4 distinct persona groups using K-Means and displays them on a scatter plot. Clicking a node loads the user's detailed timeline and profile.",
+                sec_churn_s2_algo_title: "Clustering Dimensions (4-Dimension StandardScaler):",
+                sec_churn_s2_algo_desc: "Analyzed using <code>log(Total Activity)</code>, <code>log(Activity Duration)</code>, <code>Average Sentiment Index</code>, <code>Churn Risk Index</code> dimensions.",
+                sec_chat_header: "3. PERSONA CHAT Tab (Persona Chatbot)",
+                sec_chat_s1_title: "Gemma-Based User Persona Interviews",
+                sec_chat_s1_h1: "User Persona Segments (Sidebar)",
+                sec_chat_s1_p1: "Select one of the 4 groups clustered by K-Means (Active Critics, Casual Socializers, Loyal Power Users, High Churn Risks) to conduct virtual interviews directly.",
+                sec_chat_s1_h2: "Tailored Chat Interface (Chat UI)",
+                sec_chat_s1_p2: "Recommended quick prompts are provided at the bottom of the chat panel. For instance, you can click on 'What made you stop playing?' for the high-risk group to get direct text insights.",
+                sec_chat_s1_h3: "Inference Engine Selector",
+                sec_chat_s1_p3: "Use the engine dropdown at the top to control the backend power for generating replies.",
+                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> Browser-native search engine. It maps local data instantly within the client sandbox without any external server communication.",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> Connects to a local server (Ollama or FastAPI) hosting the Gemma model to generate context-aware, creative responses in real-time.",
+                sec_chat_s2_title: "Reliability Verification (Grounding Evidence)",
+                sec_chat_s2_h1: "Retrieval-Augmented Grounding (Evidence Panel)",
+                sec_chat_s2_p1: "To prevent AI hallucinations, we employ RAG (Retrieval-Augmented Generation) technology.",
+                sec_chat_s2_p2: "Whenever a chatbot responds, the actual user comments (Verbatims) that triggered the answer are shown in the right panel in real-time, allowing you to cross-verify the insights against the actual raw data.",
+                sec_chat_s2_ex_title: "[Real Verbatim Mapping Example]",
+                sec_chat_s2_ex_desc: "As shown in the screenshot on the right, the date, category tags, and the exact comment that the AI based its reply on are displayed. Clicking the card opens the original community thread."
+            },
+            ja: {
+                header_badge: "How to Use",
+                header_title: "ダッシュボード利用方法",
+                header_subtitle: "データ駆動型のコミュニティ動向およびユーザー反応分析システムの使用ガイドライン",
+                ai_badge: "GemmaローカルAIモデル搭載",
+                overview_title: "AIベースの深層テキスト分析アーキテクチャ",
+                overview_desc: "本ダッシュボードは、収集されたユーザーフィードバック의 심층분석을 위해 로컬 환경에 최적화된 Gemma(제마) 모델과 고성능 머신러닝 알고리즘을 활용합니다.",
+                overview_bullet_1: "<strong>精密な感情分類:</strong> 単純なキーワードを超えて文脈を理解し、肯定（Positive）、否定（Negative）、中立（Neutral）にテキストのニュアンスを自動分類します。",
+                overview_bullet_2: "<strong>多次元カテゴリタグ付け:</strong> ゲームプレイ、グラフィック、最適化などのコアカтегоリ別に行動フィードバックをマッピングし、項目別の世論を定量化します。",
+                overview_bullet_3: "<strong>科学的離脱予測およびペルソナクラスタリング:</strong> 単純な統計ではなく、データサイエンス手法（StandardScaler、K-Means Clustering）を適用してユーザーを精密に細分化します。",
+                sec_trends_header: "1. POSTS TRENDS タブ",
+                sec_trends_s1_title: "期間設定とトラフィックトレンド追跡",
+                sec_trends_s1_h1: "コントロールパネルの活用",
+                sec_trends_s1_p1: "上部のデータ蓄積期間コントロールを通じて、1ヶ月、3ヶ月など特定のイベントの前後で期間を絞り、データを再計算できます。日別、週別の分析単位を調整してデータのノイズを制御します。",
+                sec_trends_s1_h2: "トラフィックトレンドとアップデートマッピング",
+                sec_trends_s1_p2: "オレンジ色の点（Dot）で表記された区間は、開発元の実際のパッチやお知らせ의 배포 시점입니다. 액션이 발생했을 때 커뮤니티 트래픽과 여론이 어떻게 연동되어 반응하는지 상관 관계를 직관적으로 확인할 수 있습니다.",
+                sec_trends_s2_title: "深層感情分析 (Aspect-based Sentiment)",
+                sec_trends_s2_h1: "項目別感情分布図 (100%累積チャート)",
+                sec_trends_s2_p1: "게임 내 요소(스토리, 전투 등)별로 긍부정 비율을 파악합니다. 막대를 클릭하면 해당 항목에 대한 유저 원문 피드백이 하단에 즉시 필터링되어 노출됩니다.",
+                sec_trends_s2_h2: "感情比率の時系列トレンド",
+                sec_trends_s2_p2: "긍/부정 여론의 비율 변동 추이를 시간 흐름에 따라 퍼센트(%)로 표시하여 안정적인 여론 흐름을 유지하고 있는지 모니터링합니다.",
+                sec_churn_header: "2. USER CHURN タブ (리텐션 및 이탈 예측)",
+                sec_churn_s1_title: "コア離脱指標 (KPI) と感情転移フロー",
+                sec_churn_s1_h1: "主要モニタリング指標",
+                sec_churn_s1_p1: "총 활동 유저 수, 게임 감성 지수(Game Sentiment Index), 고위험 이탈률(High Churn Risk Rate)을 상단에서 일간/주간/월간 단위로 요약해 보여줍니다.",
+                sec_churn_s1_algo_title: "離脱リスク指数の算出式:",
+                sec_churn_s1_algo_desc: "최근 14일 초과 미활동 시 일별 가중치 + 부정문 비율 가중치 + 특정 이탈 키워드 등장 시 가산점 알고리즘으로 산출.",
+                sec_churn_s1_h2: "Sankey Flow Diagram (ユーザー状態の転移フロー)",
+                sec_churn_s1_p2: "유저들의 초기 감성(예: Positive)이 후반기에 어떻게 전이(예: Negative 또는 Inactive)되는지 흐름을 추적합니다. (※ 30일 이상 미활동 유저는 Inactive로 간주)",
+                sec_churn_s2_title: "多次元リスクマトリクス (K-Means Clustering)",
+                sec_churn_s2_h1: "ユーザー群集化散布図チャート",
+                sec_churn_s2_p1: "AI 머신러닝(K-Means)이 유저들을 4가지 페르소나 군집으로 묶어 산점도 상에 배치합니다. 노드를 클릭하면 해당 유저의 상세 활동 내역과 원문 프로필을 우측과 하단에서 확인할 수 있습니다.",
+                sec_churn_s2_algo_title: "クラスタリング次元変数 (4-Dimension StandardScaler):",
+                sec_churn_s2_algo_desc: "<code>log(総活動量)</code>, <code>log(活動期間)</code>, <code>平均感情指数</code>, <code>離脱リスク指数</code> 차원으로 분석.",
+                sec_chat_header: "3. PERSONA CHAT タブ (페르소나 챗봇)",
+                sec_chat_s1_title: "Gemmaベースのユーザーペルソナインタビュー",
+                sec_chat_s1_h1: "ユーザーセグメント (Sidebar)",
+                sec_chat_s1_p1: "K-Means로 분류된 4가지 집단(활발한 비판가, 라이트 소셜 유저, 코어 팬층, 이탈 고위험군) 중 하나를 선택하여 해당 페르소나와 직접 가상 인터뷰를 진행할 수 있습니다.",
+                sec_chat_s1_h2: "カスタムチャットUI",
+                sec_chat_s1_p2: "선택한 군집의 성향에 맞는 추천 질문(Quick Prompts)이 하단에 제공됩니다. 예를 들어 이탈 고위험군에게는 \"접속이 뜸해진 구체적 계기가 무엇인가요?\"를 물어 즉각적인 텍스트 인사이트를 얻을 수 있습니다.",
+                sec_chat_s1_h3: "推論エンジンの選択 (Engine Selector)",
+                sec_chat_s1_p3: "화면 상단의 엔진 선택 옵션을 통해 답변 생성용 백엔드 파워를 제어할 수 있습니다.",
+                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 브라우저 내장 검색 엔진으로, 외부 서버 통신 없이 클라이언트 환경에서 로컬 데이터를 매핑하여 즉각적인 답변을 제공합니다.",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 로컬 서버(Ollama 또는 FastAPI) 상에서 구동 중인 Gemma 모델을 실시간 호출하여 문맥 지향적인 생성형 답변을 제공합니다.",
+                sec_chat_s2_title: "信頼性検証 (Grounding Evidence)",
+                sec_chat_s2_h1: "検索増強型根拠提示 (Evidence Panel)",
+                sec_chat_s2_p1: "AI가 임의로 답변을 지어내는 환각(Hallucination) 현상을 방지하기 위해 RAG(검색 증강 생성) 기술이 적용되어 있습니다.",
+                sec_chat_s2_p2: "챗봇이 대답할 때마다 해당 페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트에 확실하게 근거하고 있는지 검증할 수 있습니다.",
+                sec_chat_s2_ex_title: "[実際のVerbatimマッピング画面の例]",
+                sec_chat_s2_ex_desc: "우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다."
+            },
+            zh: {
+                header_badge: "How to Use",
+                header_title: "仪表板使用方法",
+                header_subtitle: "数据驱动的社区趋势与用户反应分析系统使用指南",
+                ai_badge: "搭载 Gemma 本地 AI 模型",
+                overview_title: "基于 AI 的深层文本分析架构",
+                overview_desc: "本仪表板利用针对本地环境优化的 Gemma 模型和高性能机器学习算法，对收集的用户反馈进行深度分析。",
+                overview_bullet_1: "<strong>精准的情感分类:</strong> 超越简单的关键字匹配，能够理解上下文并将文本语气自动分类为积极（Positive）、消极（Negative）或中立（Neutral）。",
+                overview_bullet_2: "<strong>多维类别标记:</strong> 将用户反馈映射到游戏玩法、图形、优化等核心类别，以量化特定方面的公众舆论。",
+                overview_bullet_3: "<strong>科学流失预测与画像聚类:</strong> 应用数据科学方法（StandardScaler、K-Means Clustering）而非基础统计对用户进行精确细分。",
+                sec_trends_header: "1. POSTS TRENDS 标签页",
+                sec_trends_s1_title: "时间范围控制与流量趋势跟踪",
+                sec_trends_s1_h1: "利用控制面板",
+                sec_trends_s1_p1: "通过顶部的“数据累积期间”控制，您可以缩小特定事件（如1个月、3个月）前后的范围来重新计算数据。调整日、周分析单位以控制数据噪音。",
+                sec_trends_s1_h2: "流量趋势与更新映射",
+                sec_trends_s1_p2: "标记为橙色圆点（Dot）的区间是开发商实际发布补丁或公告的时间点。这使您能够直观地交叉分析更新发布对社区流量的即时影响。",
+                sec_trends_s2_title: "基于特定维度的深层情感分析 (Aspect-based Sentiment)",
+                sec_trends_s2_h1: "维度情感分布（100% 堆叠条形图）",
+                sec_trends_s2_p1: "识别游戏内特定系统或元素的好坏比例。点击任何维度条形图可立即在底部筛选并显示相应的用户原始反馈。",
+                sec_trends_s2_h2: "情感比例时序趋势",
+                sec_trends_s2_p2: "以百分比（%）形式监测积极/消极舆论随时间的变动趋势，查看是否维持在健康的轨迹上。",
+                sec_churn_header: "2. USER CHURN 标签页（留存与流失预测）",
+                sec_churn_s1_title: "核心流失指标 (KPI) 与情感转移流",
+                sec_churn_s1_h1: "主要监控指标",
+                sec_churn_s1_p1: "在顶部摘要显示总活跃用户数、游戏情感指数（Game Sentiment Index）、高风险流失率（High Churn Risk Rate），可按日、周、月查看。",
+                sec_churn_s1_algo_title: "流失风险评分算式:",
+                sec_churn_s1_algo_desc: "根据最近 14 天以上未活跃的每日惩罚 + 否定句比例权重 + 出现特定流失关键词时的额外扣分综合算出。",
+                sec_churn_s1_h2: "Sankey 流量图（用户状态转移流）",
+                sec_churn_s1_p2: "追踪用户前期的情感（如 Positive）在后期如何转移（如 Negative 或 Inactive）。（注：30天以上未活跃的用户被归为 Inactive）",
+                sec_churn_s2_title: "多维风险矩阵（K-Means 聚类）",
+                sec_churn_s2_h1: "用户聚类散点图",
+                sec_churn_s2_p1: "AI 机器学习（K-Means）将用户划分为 4 个画像群组，并在散点图上进行排布。点击节点可查看该用户的详细活动和原文画像。",
+                sec_churn_s2_algo_title: "聚类维度变量 (4-Dimension StandardScaler):",
+                sec_churn_s2_algo_desc: "基于 <code>log(总活动量)</code>, <code>log(活动时长)</code>, <code>平均情感指数</code>, <code>流失风险指数</code> 维度进行分析。",
+                sec_chat_header: "3. PERSONA CHAT 标签页（画像聊天机器人）",
+                sec_chat_s1_title: "基于 Gemma 的用户画像访谈",
+                sec_chat_s1_h1: "用户群体细分 (Sidebar)",
+                sec_chat_s1_p1: "选择 K-Means 分类的 4 个群体之一（活跃批评者、轻度社交用户、核心粉丝、高流失风险者）直接与相应画像进行虚拟访谈。",
+                sec_chat_s1_h2: "定制聊天界面 (Chat UI)",
+                sec_chat_s1_p2: "聊天面板底部提供了符合该群体倾向的推荐提问（Quick Prompts）。例如，点击高风险群体的“最近不怎么玩游戏的原因是什么？”，可即时获取其核心诉求。",
+                sec_chat_s1_h3: "推理引擎选择 (Engine Selector)",
+                sec_chat_s1_p3: "通过顶部的引擎选择下拉菜单，可以控制回答生成后端的计算引擎。",
+                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 浏览器内置搜索引擎。无需任何外部服务器通信，直接在客户端环境下映射本地数据提供即时回答。",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 实时调用本地服务器（Ollama 或 FastAPI）上运行的 Gemma 模型，提供上下文感知的生成式回答。",
+                sec_chat_s2_title: "可靠性验证 (Grounding Evidence)",
+                sec_chat_s2_h1: "检索增强型证据提示 (Evidence Panel)",
+                sec_chat_s2_p1: "为了防止 AI 随意捏造回答的幻觉（Hallucination）现象，系统采用了 RAG（检索增强生成）技术。",
+                sec_chat_s2_p2: "每当聊天机器人回答时，作为回答依据的该画像群体内用户的真实原始评论（Verbatim）将实时映射在右侧面板上，以便交叉验证 AI 观点与原始数据的吻合度。",
+                sec_chat_s2_ex_title: "[真实 Verbatim 映射画面示例]",
+                sec_chat_s2_ex_desc: "如右侧截图示例所示，生成回答所依据的真实用户评论、日期和类别标签会清晰地显示出来。点击卡片可立即跳转到原社区帖子。"
+            },
+            id: {
+                header_badge: "How to Use",
+                header_title: "Cara Penggunaan Dasbor",
+                header_subtitle: "Panduan untuk tren komunitas berbasis data dan sistem analisis respons pengguna",
+                ai_badge: "Model AI Lokal Gemma Tertanam",
+                overview_title: "Arsitektur Analisis Teks Mendalam Berbasis AI",
+                overview_desc: "Dasbor ini menggunakan model Gemma yang dioptimalkan untuk lingkungan lokal dan algoritma pembelajaran mesin berkinerja tinggi untuk analisis mendalam terhadap umpan balik pengguna yang dikumpulkan.",
+                overview_bullet_1: "<strong>Klasifikasi Sentimen Presisi:</strong> Memahami konteks di luar pencocokan kata kunci sederhana untuk secara otomatis mengklasifikasikan nuansa teks menjadi Positif, Negatif, atau Netral.",
+                overview_bullet_2: "<strong>Penandaan Kategori Multidimensi:</strong> Memetakan umpan balik pengguna ke kategori utama seperti Gameplay, Grafik, dan Optimasi untuk mengukur opini publik pada aspek tertentu.",
+                overview_bullet_3: "<strong>Prediksi Churn Ilmiah & Pengelompokan Persona:</strong> Menerapkan metodologi sains data (StandardScaler, K-Means Clustering) alih-alih statistik dasar untuk mengelompokkan pengguna secara akurat.",
+                sec_trends_header: "1. Tab POSTS TRENDS",
+                sec_trends_s1_title: "Kontrol Rentang Tanggal & Pelacakan Tren Lalu Lintas",
+                sec_trends_s1_h1: "Memanfaatkan Panel Kontrol",
+                sec_trends_s1_p1: "Sesuaikan cakupan waktu (misalnya, 1 Bulan, 3 Bulan) menggunakan kontrol akumulasi data untuk menghitung ulang data di sekitar peristiwa tertentu. Kontrol derau dengan beralih unit analisis harian atau mingguan.",
+                sec_trends_s1_h2: "Tren Lalu Lintas dan Pemetaan Pembaruan",
+                sec_trends_s1_p2: "Titik oranye (Dot) mewakili tanggal rilis patch atau pengumuman aktual oleh pengembang. Ini memungkinkan Anda segera menganalisis dampak pembaruan dev terhadap lalu lintas komunitas.",
+                sec_trends_s2_title: "Analisis Sentimen Berbasis Aspek (Aspect-Based Sentiment)",
+                sec_trends_s2_h1: "Distribusi Sentimen Aspek (Bagan Tumpuk 100%)",
+                sec_trends_s2_p1: "Identifikasi rasio positif/negatif dari sistem game tertentu. Mengeklik bilah aspek apa pun akan segera memfilter dan menampilkan komentar pengguna asli yang sesuai di bagian bawah.",
+                sec_trends_s2_h2: "Tren Deret Waktu Rasio Sentimen",
+                sec_trends_s2_p2: "Pantau apakah opini positif/negatif dipertahankan dalam tren yang sehat dari waktu ke waktu dalam bentuk persentase (%).",
+                sec_churn_header: "2. Tab USER CHURN (Retensi & Prediksi Churn)",
+                sec_churn_s1_title: "Metrik Churn KPIs & Aliran Transisi Sentimen",
+                sec_churn_s1_h1: "Metrik Utama untuk Dipantau",
+                sec_churn_s1_p1: "Menampilkan ringkasan metrik utama di bagian atas termasuk Total Pengguna Aktif Terlacak, Indeks Sentimen Game, dan Tingkat Risiko Churn Tinggi secara harian, mingguan, atau bulanan.",
+                sec_churn_s1_algo_title: "Rumus Skor Risiko Churn:",
+                sec_churn_s1_algo_desc: "Dihitung berdasarkan penalti harian untuk ketidakaktifan >14 hari + bobot rasio kalimat negatif + poin penalti untuk kata kunci churn tertentu.",
+                sec_churn_s1_h2: "Diagram Alir Sankey (Transisi Status Pengguna)",
+                sec_churn_s1_p2: "Melacak bagaimana sentimen awal pengguna (misalnya Positif) bertransisi di kemudian hari (misalnya Negatif atau Inaktif). Pengguna yang tidak aktif lebih dari 30 hari diklasifikasikan sebagai Inaktif.",
+                sec_churn_s2_title: "Matriks Risiko Churn Multidimensi (K-Means Clustering)",
+                sec_churn_s2_h1: "Plot Sebar Pengelompokan Pengguna",
+                sec_churn_s2_p1: "AI mengelompokkan pengguna menjadi 4 grup persona berbeda menggunakan K-Means dan menampilkannya pada plot sebar. Mengeklik titik akan memuat garis waktu dan profil terperinci pengguna.",
+                sec_churn_s2_algo_title: "Dimensi Pengelompokan (4-Dimension StandardScaler):",
+                sec_churn_s2_algo_desc: "Dianalisis berdasarkan dimensi <code>log(Total Aktivitas)</code>, <code>log(Durasi Aktivitas)</code>, <code>Indeks Sentimen Rata-rata</code>, dan <code>Indeks Risiko Churn</code>.",
+                sec_chat_header: "3. Tab PERSONA CHAT (Persona Chatbot)",
+                sec_chat_s1_title: "Wawancara Persona Pengguna Berbasis Gemma",
+                sec_chat_s1_h1: "Segmen Persona Pengguna (Sidebar)",
+                sec_chat_s1_p1: "Pilih salah satu dari 4 kelompok hasil K-Means (Kritikus Aktif, Sosialis Kasual, Pengguna Core Loyal, Risiko Churn Tinggi) to conduct virtual interviews directly.",
+                sec_chat_s1_h2: "Antarmuka Obrolan Kustom (Chat UI)",
+                sec_chat_s1_p2: "Saran pertanyaan cepat disediakan di bagian bawah panel obrolan. Misalnya, klik 'Apa yang membuat Anda berhenti bermain?' pada kelompok risiko tinggi untuk mendapatkan wawasan teks langsung.",
+                sec_chat_s1_h3: "Pemilih Mesin Inferensi (Engine Selector)",
+                sec_chat_s1_p3: "Gunakan menu tarik-turun mesin di github untuk mengontrol backend pembuatan tanggapan.",
+                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> Mesin pencari bawaan browser. Ini memetakan data lokal secara instan dalam kotak pasir klien tanpa komunikasi server eksternal.",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> Menghubungkan ke server lokal (Ollama atau FastAPI) yang menghosting model Gemma untuk menghasilkan tanggapan kontekstual secara real-time.",
+                sec_chat_s2_title: "Verifikasi Keandalan (Grounding Evidence)",
+                sec_chat_s2_h1: "Presentasi Bukti Berbasis RAG (Evidence Panel)",
+                sec_chat_s2_p1: "Untuk mencegah halusinasi AI, kami menerapkan teknologi RAG (Retrieval-Augmented Generation).",
+                sec_chat_s2_p2: "Setiap kali chatbot menjawab, komentar pengguna asli (Verbatim) yang memicu jawaban tersebut akan ditampilkan di panel kanan secara real-time, memungkinkan Anda memverifikasi silang AI dari data mentah asli.",
+                sec_chat_s2_ex_title: "[Contoh Pemetaan Verbatim Nyata]",
+                sec_chat_s2_ex_desc: "Seperti yang ditunjukkan pada tangkapan layar di sebelah kanan, tanggal, tag kategori, dan komentar tepat yang menjadi dasar jawaban AI ditampilkan. Mengeklik kartu akan membuka thread komunitas asli."
+            }
+        };
+
+        const langSelector = document.getElementById('lang-selector');
+        
+        function changeLanguage(lang) {
+            const dictionary = translations[lang] || translations['ko'];
+            document.querySelectorAll('[data-key]').forEach(elem => {
+                const key = elem.getAttribute('data-key');
+                if (dictionary[key]) {
+                    elem.innerHTML = dictionary[key];
+                }
+            });
+            localStorage.setItem('guide_lang', lang);
+        }
+
+        langSelector.addEventListener('change', (e) => {
+            changeLanguage(e.target.value);
+        });
+
+        // Initialize language from localStorage or default to 'ko'
+        const savedLang = localStorage.getItem('guide_lang') || 'ko';
+        langSelector.value = savedLang;
+        changeLanguage(savedLang);
+
+        // Smooth scroll highlighting for sidebar links
+        const sections = document.querySelectorAll('.tab-section, #overview');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
