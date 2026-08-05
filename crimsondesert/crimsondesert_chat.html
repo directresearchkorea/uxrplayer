@@ -587,7 +587,9 @@
 
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${game}.js?v=${new Date().getTime()}`;
+            const isLocal = window.location.protocol === 'file:';
+            const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
+            script.src = `data_${game}.js${buster}`;
             script.onload = () => {
                 if (typeof DASHBOARD_DATA !== 'undefined') {
                     callback(DASHBOARD_DATA);
