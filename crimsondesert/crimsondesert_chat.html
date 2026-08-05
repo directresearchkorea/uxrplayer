@@ -466,7 +466,6 @@
                     <a href="index.html" class="nav-link">📊 POSTS TRENDS</a>
                     <a href="crimsondesert_churn.html" class="nav-link">👥 USER CHURN</a>
                     <a href="crimsondesert_chat.html" class="nav-link active">💬 PERSONA CHAT</a>
-                    <a href="../howtouse/" class="nav-link" target="_blank">📖 HOW TO USE</a>
                 </div>
             </div>
             <div class="controls" style="display: flex; gap: 20px; align-items: center;">
@@ -566,20 +565,38 @@
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
         localStorage.setItem('selectedGame', selectedGame);
 
-        function loadGameData(game, callback) {
-            const oldScript = document.getElementById('dynamic-data-script');
-            if (oldScript) oldScript.remove();
-
+        // Preload the script immediately to speed up download!
+        (function() {
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${game}.js`;
-            script.onload = () => {
+            script.src = `data_${selectedGame}.js`;
+            document.head.appendChild(script);
+        })();
+
+        function loadGameData(game, callback) {
+            let script = document.getElementById('dynamic-data-script');
+            
+            // If the game has changed, we need to load a new script
+            if (script && !script.src.includes(`data_${game}.js`)) {
+                script.remove();
+                script = null;
+            }
+
+            if (!script) {
+                script = document.createElement('script');
+                script.id = 'dynamic-data-script';
+                script.src = `data_${game}.js`;
+                document.head.appendChild(script);
+            }
+
+            const onScriptLoad = () => {
                 if (typeof DASHBOARD_DATA !== 'undefined') {
                     callback(DASHBOARD_DATA);
                 } else {
                     console.error("DASHBOARD_DATA not defined in loaded script.");
                 }
             };
+
             script.onerror = () => {
                 console.error(`Failed to load data for game: ${game}`);
                 alert(`게임 데이터를 불러올 수 없습니다: data_${game}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
@@ -588,7 +605,13 @@
                     window.location.search = `?game=붉은사막`;
                 }
             };
-            document.body.appendChild(script);
+
+            if (typeof DASHBOARD_DATA !== 'undefined') {
+                onScriptLoad();
+            } else {
+                // If it's already loading, attach event listener
+                script.addEventListener('load', onScriptLoad);
+            }
         }
     </script>
     <script>
