@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const errDiv = document.createElement('div');
+            errDiv.style.position = 'fixed';
+            errDiv.style.top = '0';
+            errDiv.style.left = '0';
+            errDiv.style.width = '100%';
+            errDiv.style.backgroundColor = '#f44336';
+            errDiv.style.color = 'white';
+            errDiv.style.padding = '15px';
+            errDiv.style.zIndex = '9999';
+            errDiv.style.fontSize = '14px';
+            errDiv.style.fontFamily = 'monospace';
+            errDiv.innerHTML = '<strong>[JS ERROR]</strong> ' + message + ' (Line: ' + lineno + ')';
+            document.body.appendChild(errDiv);
+            alert("JS Error: " + message + " (Line: " + lineno + ")");
+            return false;
+        };
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GTPLAYER // Persona Chat Room</title>
@@ -691,6 +711,11 @@
 
             // Initialize chat histories and render persona list
             function init() {
+                if (typeof USER_CLUSTERS_DATA === 'undefined') {
+                    alert("⚠️ 경고: USER_CLUSTERS_DATA가 로드되지 않았습니다! data_붉은사막.js 파일 경로를 확인해 주세요.");
+                } else if (!USER_CLUSTERS_DATA || USER_CLUSTERS_DATA.length === 0) {
+                    alert("⚠️ 경고: USER_CLUSTERS_DATA 배열이 비어 있습니다!");
+                }
                 clusters.forEach(c => {
                     const welcomeMsgs = {
                         'critics': "안녕하세요. 붉은사막을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성, 불합리한 전투 매커니즘 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
