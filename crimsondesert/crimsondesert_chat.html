@@ -10,9 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script>
-        // 백엔드 API 서버 주소 (로컬 테스트용: localhost, 클라우드 배포 시 도메인 주소로 변경 가능)
-        const BACKEND_API_URL = 'http://localhost:5000';
-
         // Immediate Theme Initialization to prevent flashing
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -501,10 +498,9 @@
                 </div>
                 <div class="engine-controls">
                     <span style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">ENGINE:</span>
-                                                            <select class="engine-select" id="engine-selector">
-                        <option value="local_rag" selected>Direct Client-RAG (Browser-side Engine)</option>
-                        <option value="ollama_backend">Local Offline AI (Ollama)</option>
-                        <option value="gemini_backend">Cloud AI (Gemini API)</option>
+                    <select class="engine-select" id="engine-selector">
+                        <option value="local_rag">Direct Client-RAG (Browser-side Engine)</option>
+                        <option value="api_backend">Local Backend API (Ollama/FastAPI)</option>
                     </select>
                 </div>
             </div>
@@ -565,38 +561,20 @@
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
         localStorage.setItem('selectedGame', selectedGame);
 
-        // Preload the script immediately to speed up download!
-        (function() {
+        function loadGameData(game, callback) {
+            const oldScript = document.getElementById('dynamic-data-script');
+            if (oldScript) oldScript.remove();
+
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${selectedGame}.js`;
-            document.head.appendChild(script);
-        })();
-
-        function loadGameData(game, callback) {
-            let script = document.getElementById('dynamic-data-script');
-            
-            // If the game has changed, we need to load a new script
-            if (script && !script.src.includes(`data_${game}.js`)) {
-                script.remove();
-                script = null;
-            }
-
-            if (!script) {
-                script = document.createElement('script');
-                script.id = 'dynamic-data-script';
-                script.src = `data_${game}.js`;
-                document.head.appendChild(script);
-            }
-
-            const onScriptLoad = () => {
+            script.src = `data_${game}.js`;
+            script.onload = () => {
                 if (typeof DASHBOARD_DATA !== 'undefined') {
                     callback(DASHBOARD_DATA);
                 } else {
                     console.error("DASHBOARD_DATA not defined in loaded script.");
                 }
             };
-
             script.onerror = () => {
                 console.error(`Failed to load data for game: ${game}`);
                 alert(`게임 데이터를 불러올 수 없습니다: data_${game}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
@@ -605,13 +583,7 @@
                     window.location.search = `?game=붉은사막`;
                 }
             };
-
-            if (typeof DASHBOARD_DATA !== 'undefined') {
-                onScriptLoad();
-            } else {
-                // If it's already loading, attach event listener
-                script.addEventListener('load', onScriptLoad);
-            }
+            document.body.appendChild(script);
         }
     </script>
     <script>
@@ -680,61 +652,56 @@
             const evidenceContainer = document.getElementById('evidence-container');
             const engineSelector = document.getElementById('engine-selector');
 
+            function getPersonaKey(personaName) {
+                if (!personaName) return 'casual';
+                const name = personaName.toLowerCase();
+                if (name.includes('비판') || name.includes('critic')) return 'critics';
+                if (name.includes('라이트') || name.includes('casual') || name.includes('소통')) return 'casual';
+                if (name.includes('코어') || name.includes('loyal') || name.includes('충성')) return 'core';
+                if (name.includes('이탈') || name.includes('churn') || name.includes('위험')) return 'churn';
+                return 'casual';
+            }
+
             // Quick prompts tailored per persona type
             const personaPrompts = {
-                0: [ // Active Critics
+                'critics': [
                     "전투 조작감이 너무 복잡하고 피로감이 크다고 느끼시나요?",
                     "보스전 난이도 조절 실패나 불합리한 기믹이 있었나요?",
                     "그래픽은 만족스럽지만 최적화와 프레임 드랍이 심하다고 보시나요?"
                 ],
-                1: [ // Casual Socializers
+                'casual': [
                     "지스타 시연 빌드를 플레이할 때 난이도가 너무 어렵게 느껴졌나요?",
                     "PC와 콘솔 플랫폼 동시 출시일 일정에 대해 어떻게 생각하시나요?",
                     "시연 후 게임 커뮤니티에서 가장 많이 이야기하는 주제가 무엇인가요?"
                 ],
-                2: [ // Loyal Power Users
+                'core': [
                     "공개된 보스전의 전투 연출과 그래픽 중 어떤 부분이 가장 만족스럽나요?",
                     "넓은 오픈월드 탐험 요소와 다양한 이동 액션에 대해 어떻게 평가하시나요?",
                     "이번 트레일러 디테일을 보았을 때 게임의 완성도와 출시 기대감은 어느 정도인가요?"
                 ],
-                3: [ // High Churn Risks
+                'churn': [
                     "시연 중 조작 불가 버그나 크래시 등 치명적인 문제를 경험하신 적이 있나요?",
                     "잦은 출시일 연기로 인해 게임에 대한 신뢰도나 구매 의향이 많이 떨어졌나요?",
                     "게임의 진입 장벽이 너무 높아 일반 유저들이 적응하기 어렵다고 생각하시나요?"
                 ]
             };
-                    
-                    chatHistories[c.id] = [
-                        { sender: 'persona', text: welcomeMsgs[c.id] || "안녕하세요.", time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) }
-                    ];
-                });
 
-                renderPersonaList();
-                selectPersona(0);
+            // Avatar symbols for each cluster type
+            const clusterAvatars = { 'critics': "🛠️", 'casual': "💬", 'core': "👑", 'churn': "⚠️" };
 
-                // Auto-detect and switch to backend RAG if the server is alive
-                try {
-                    const check = await fetch(`${BACKEND_API_URL}/api/chat``, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: 'ping', cluster_id: 0, game: selectedGame })
-                    });
-                    if (check.ok) {
-                        engineSelector.value = 'ollama_backend';
-                        console.log("[Auto-Switch] Backend server detected. Engine changed to api_backend.");
-                    }
-                } catch(e) {
-                    console.log("[Auto-Switch] Backend server offline. Using client-side local_rag engine.");
-                }
-            }sgs = {
-                        0: "안녕하세요. 붉은사막을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성, 불합리한 전투 매커니즘 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
-                        1: "반가워요! 가볍게 메인 퀘스트 밀면서 맵 돌아다니는 라이트 유저예요. 가방 비우는 법이나 예구 쉴드 받는 법 같은 소소한 질문 글도 올리고 유저들이랑 잡담하는 걸 좋아해요.",
-                        2: "반갑습니다! 파이웰 대륙의 광활한 비주얼과 압도적인 보스 레이드 전투에 매료되어 매일 즐겁게 플레이하는 코어 팬입니다. 이 게임의 훌륭한 시스템과 앞으로의 성장에 대해 기쁘게 대화 나누고 싶네요.",
-                        3: "솔직히 더 이상 게임에 접속하고 싶지 않네요. 지난번 가판대 근처 조작 불가 현상이나 끼임 버그로 캐릭터 사망했을 때 부활도 안 되던 경험을 겪고 나니 의욕이 싹 사라졌습니다. 왜 이탈하게 되었는지 말씀드리죠."
+            // Initialize chat histories and render persona list
+            function init() {
+                clusters.forEach(c => {
+                    const welcomeMsgs = {
+                        'critics': "안녕하세요. 붉은사막을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성, 불합리한 전투 매커니즘 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
+                        'casual': "반가워요! 가볍게 메인 퀘스트 밀면서 맵 돌아다니는 라이트 유저예요. 가방 비우는 법이나 예구 쉴드 받는 법 같은 소소한 질문 글도 올리고 유저들이랑 잡담하는 걸 좋아해요.",
+                        'core': "반갑습니다! 파이웰 대륙의 광활한 비주얼과 압도적인 보스 레이드 전투에 매료되어 매일 즐겁게 플레이하는 코어 팬입니다. 이 게임의 훌륭한 시스템과 앞으로의 성장에 대해 기쁘게 대화 나누고 싶네요.",
+                        'churn': "솔직히 더 이상 게임에 접속하고 싶지 않네요. 지난번 가판대 근처 조작 불가 현상이나 끼임 버그로 캐릭터 사망했을 때 부활도 안 되던 경험을 겪고 나니 의욕 싹 사라졌습니다. 왜 이탈하게 되었는지 말씀드리죠."
                     };
                     
+                    const key = getPersonaKey(c.persona);
                     chatHistories[c.id] = [
-                        { sender: 'persona', text: welcomeMsgs[c.id] || "안녕하세요.", time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) }
+                        { sender: 'persona', text: welcomeMsgs[key] || "안녕하세요.", time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) }
                     ];
                 });
 
@@ -777,12 +744,13 @@
                 if (selectedItem) selectedItem.classList.add('active');
 
                 // Update Header info
-                activeAvatar.textContent = clusterAvatars[clusterId] || "👤";
-                activeAvatar.className = `avatar cluster-${clusterId}`;
                 const c = clusters.find(item => item.id === clusterId);
+                const key = c ? getPersonaKey(c.persona) : 'casual';
+                activeAvatar.textContent = clusterAvatars[key] || "👤";
+                activeAvatar.className = `avatar cluster-${clusterId}`;
                 activePersonaName.textContent = c ? c.persona.split(' (')[0] : "유저 페르소나";
                 
-                if (clusterId === 3) {
+                if (key === 'churn') {
                     document.getElementById('active-status-text').textContent = "INACTIVE / RISK HIGH";
                     document.getElementById('active-status-text').style.color = "#F44336";
                     document.querySelector('.chat-header-status .status-dot').style.backgroundColor = "#F44336";
@@ -831,7 +799,9 @@
 
             function renderSuggestions() {
                 promptSuggestionsContainer.innerHTML = '';
-                const prompts = personaPrompts[activeClusterId] || [];
+                const c = clusters.find(item => item.id === activeClusterId);
+                const key = c ? getPersonaKey(c.persona) : 'casual';
+                const prompts = personaPrompts[key] || [];
                 
                 prompts.forEach(p => {
                     const chip = document.createElement('button');
@@ -865,47 +835,21 @@
                     };
                 }
 
-                // Intent Mapping Layer (Category Inference)
-                const categoryKeywords = {
-                    'OPTIMIZATION': ['최적화', '렉', '버그', '프레임', '팅김', '드랍', '로딩', '끊겨', '오류', '발열', '크래시'],
-                    'GAMEPLAY': ['전투', '타격감', '액션', '스킬', '보스', '조작', '난이도', '콤보', '패턴', '파밍', '밸런스'],
-                    'MONETIZATION': ['과금', 'bm', '가챠', '뽑기', '유료', '결제', '돈', '확률', '현질'],
-                    'GRAPHIC': ['그래픽', '비주얼', '캐릭터', '배경', '텍스처', '모션', '애니메이션', '디자인', '퀄리티'],
-                    'STORY': ['스토리', '세계관', '퀘스트', '주인공', '대사', '내용', '연출', '서사']
-                };
-
-                let inferredCategories = new Set();
-                let userInputLower = userInput.toLowerCase();
-                
-                for (const [cat, keywordsList] of Object.entries(categoryKeywords)) {
-                    for (const kw of keywordsList) {
-                        if (userInputLower.includes(kw)) {
-                            inferredCategories.add(cat);
-                        }
-                    }
-                }
-
-                // Simplified tokenizer for keyword fallback
-                const keywords = userInputLower
+                // Simplified tokenizer
+                const keywords = userInput.toLowerCase()
                     .replace(/[?.,!#\/$%^&*@;:{}=\-_`~()]/g, "")
                     .split(/\s+/).filter(word => word.length > 1);
 
-                // Score verbatims based on category intent + keyword overlap
+                // Score verbatims based on keyword overlap
                 let scoredVerbatims = c.verbatims.map(v => {
                     let score = 0;
-                    
-                    // Heavy bonus if the verbatim's category matches the inferred intent
-                    if (inferredCategories.has(v.category)) {
-                        score += 10.0;
-                    }
-                    
-                    // Standard keyword overlap scoring
                     keywords.forEach(kw => {
                         if (v.text.toLowerCase().includes(kw)) {
                             score += 1.5;
+                            // Exact segment matching extra bonus
+                            if (v.category.toLowerCase().includes(kw)) score += 0.5;
                         }
                     });
-                    
                     return { verbatim: v, score: score };
                 });
 
@@ -1024,7 +968,7 @@
                 } else {
                     // API Backend Mode: HTTP Request to localhost server
                     try {
-                        const res = await fetch(`${BACKEND_API_URL}/api/chat``, {
+                        const res = await fetch(`${BACKEND_API_URL}/api/chat`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
