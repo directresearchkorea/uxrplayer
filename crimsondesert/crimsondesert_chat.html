@@ -498,7 +498,7 @@
                 </div>
                 <div class="engine-controls">
                     <span style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">ENGINE:</span>
-                                        <select class="engine-select" id="engine-selector">
+                                                            <select class="engine-select" id="engine-selector">
                         <option value="local_rag" selected>Direct Client-RAG (Browser-side Engine)</option>
                         <option value="ollama_backend">Local Offline AI (Ollama)</option>
                         <option value="gemini_backend">Cloud AI (Gemini API)</option>
@@ -693,7 +693,7 @@
                         body: JSON.stringify({ message: 'ping', cluster_id: 0, game: selectedGame })
                     });
                     if (check.ok) {
-                        // engineSelector.value = 'ollama_backend';
+                        engineSelector.value = 'ollama_backend';
                         console.log("[Auto-Switch] Backend server detected. Engine changed to api_backend.");
                     }
                 } catch(e) {
@@ -1014,7 +1014,7 @@
                         evidenceList = data.evidence || [];
                     } catch (err) {
                         console.error('Error fetching backend API:', err);
-                        personaMsgText = `❌ <strong>로컬 API 연동 실패:</strong> <code>execution/persona_chat_server.py</code> 백엔드 서버가 실행 중이지 않거나, 설정하신 AI 엔진이 정상적으로 켜져 있지 않습니다.<br><br>서버 구동을 확인하시거나 터미널에서 파이썬 서버가 켜져 있는지 체크해 주세요.`;
+                        personaMsgText = `❌ <strong>로컬 API 연동 실패:</strong> <code>execution/persona_chat_server.py</code> 백엔드 서버가 실행 중이지 않거나, 설정하신 AI 엔진이 정상적으로 켜져 있지 않습니다.<br><br>서버 구동을 확인하시거나 Direct Client-RAG (Browser-side Engine) 모드로 설정을 다시 변경해 주세요.`;
                         evidenceList = [];
                     }
                 }
