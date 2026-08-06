@@ -312,6 +312,9 @@
         ];
 
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        if (selectedGame === '붉은사막_Qwen') {
+            selectedGame = '붉은사막';
+        }
         localStorage.setItem('selectedGame', selectedGame);
 
         // Preload the script immediately to speed up download!

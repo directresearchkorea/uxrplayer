@@ -30,6 +30,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script>
+        let BACKEND_API_URL = (function() {
+            const customUrl = localStorage.getItem('custom_backend_url');
+            if (customUrl) return customUrl.trim();
+            
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:5000';
+            }
+            return 'https://api.uxrplayer.com';
+        })();
         // Immediate Theme Initialization to prevent flashing
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -519,8 +528,9 @@
                 <div class="engine-controls">
                     <span style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">ENGINE:</span>
                     <select class="engine-select" id="engine-selector">
-                        <option value="local_rag">Direct Client-RAG (Browser-side Engine)</option>
-                        <option value="api_backend">Local Backend API (Ollama/FastAPI)</option>
+                        <option value="local_rag" selected>Direct Client-RAG (브라우저 자체 매칭 RAG)</option>
+                        <option value="ollama_backend">로컬 오프라인 AI (Ollama 연동)</option>
+                        <option value="gemini_backend">클라우드 AI (Gemini API 연동)</option>
                     </select>
                 </div>
             </div>
@@ -579,6 +589,9 @@
         ];
 
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        if (selectedGame === '붉은사막_Qwen') {
+            selectedGame = '붉은사막';
+        }
         localStorage.setItem('selectedGame', selectedGame);
 
         function loadGameData(game, callback) {
@@ -656,6 +669,8 @@
                 // Fire a custom event to notify scripts (if any other charts exist)
                 window.dispatchEvent(new Event('themeChanged'));
             });
+
+
 
             // -------------------------------------------------------------
             // PERSONA CHAT BUSINESS LOGIC
@@ -812,7 +827,7 @@
                         <div class="message-bubble">
                             <div>${msg.text}</div>
                             <div class="message-meta">
-                                <span>${msg.sender === 'user' ? 'PM' : (msg.engine === 'ollama_backend' ? 'Ollama (gemma2:2b)' : (msg.engine === 'gemini_backend' ? 'Gemini API' : (msg.engine === 'local_rag' ? 'Client-side RAG' : 'User Persona')))}</span>
+                                <span>${msg.sender === 'user' ? 'PM' : (msg.engine === 'ollama_backend' ? 'Ollama (Qwen)' : (msg.engine === 'gemini_backend' ? 'Gemini API' : (msg.engine === 'local_rag' ? 'Client-side RAG' : 'User Persona')))}</span>
                                 <span>${msg.time}</span>
                             </div>
                         </div>
