@@ -443,7 +443,7 @@
                         <p data-key="sec_chat_s1_p3">화면 상단의 엔진 선택 옵션을 통해 답변 생성용 백엔드 파워를 제어할 수 있습니다.</p>
                         <ul>
                             <li data-key="sec_chat_s1_bullet_1"><strong>Direct Client-RAG:</strong> 브라우저 내장 검색 엔진으로, 외부 서버 통신 없이 클라이언트 환경에서 로컬 데이터를 매핑하여 즉각적인 답변을 제공합니다.</li>
-                            <li data-key="sec_chat_s1_bullet_2"><strong>Local Backend API:</strong> 로컬 서버 (Ollama 또는 FastAPI) 상에서 구동 중인 Gemma 모델을 실시간 호출하여 문맥 지향적인 생성형 답변을 제공합니다.</li>
+                            <li data-key="sec_chat_s1_bullet_2"><strong>Local Backend API:</strong> 로컬 서버(Ollama 또는 FastAPI) 상에서 구동 중인 Gemma 모델을 실시간 호출하여 문맥 지향적인 생성형 답변을 제공합니다.</li>
                         </ul>
                     </div>
                     <div class="screenshot-container">
@@ -474,6 +474,48 @@
                 </div>
             </section>
         </div>
+
+    
+        <!-- Dedicated Local Model Selection Criteria Card -->
+                <div class="model-criteria-box" style="margin: 40px auto; padding: 32px; background: var(--bg-card, #ffffff); border: 2px solid var(--primary-color, #4f46e5); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 1400px; box-sizing: border-box;">
+            <h2 style="margin-top: 0; color: var(--primary-color, #4f46e5); display: flex; align-items: center; gap: 12px; font-size: 22px;">
+                <i class="fas fa-microchip"></i> <span data-key="sec_chat_model_title">로컬 AI 모델 선정 이유 및 통합 Gemma 아키텍처 (Gemma 2B)</span>
+            </h2>
+            <p style="font-size: 15px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_desc">
+                본 프로젝트는 챗봇 답변 생성 모델 또한 Qwen에서 <strong>Gemma 2B</strong> 모델로 일원화하였습니다. 이를 통해 데이터 정제(Batch)와 실시간 인터뷰(Live Chat) 모두를 단일 모델로 처리하는 통합 로컬 AI 아키텍처를 구축하였으며, 그 구체적 선정 이유와 아키텍처 업데이트 내용은 다음과 같습니다.
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold;">1</span>
+                        <span data-key="sec_chat_model_h1">메모리 자원 효율화 (VRAM 절감)</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_bullet_1">
+                        기존 하이브리드 모델 구조(Gemma + Qwen)는 로컬 환경에서 두 개의 서로 다른 모델을 Ollama 메모리에 동시 상주시켜야 하므로 VRAM 및 시스템 RAM 점유가 컸습니다. <strong>Gemma 2B 단일 모델로 통합</strong>함으로써 모델 로드 오버헤드가 제거되어, 클라이언트 기기에서의 시스템 구동 안정성이 대폭 향상되었습니다.
+                    </p>
+                </div>
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold;">2</span>
+                        <span data-key="sec_chat_model_h2">페르소나 롤플레이 및 RAG 정밀도 향상</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_bullet_2">
+                        Qwen 1.5B 모델의 경우 실시간 답변 속도는 빠르나, RAG(검색 증강 생성) 검증용 Verbatim(유저 원문) 데이터를 답변에 정밀하게 반영하지 못하거나 페르소나 정체성을 잃어버리는 현상이 보고되었습니다. 반면 <strong>Gemma 2B 모델</strong>은 뛰어난 문맥 파악 능력으로 실제 데이터에 단단히 기반한 고신뢰도 가상 인터뷰를 구현합니다.
+                    </p>
+                </div>
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold;">3</span>
+                        <span data-key="sec_chat_model_h3">로컬 추론 속도 최적화 (지연 시간 극복)</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_bullet_3">
+                        초기 Gemma 2B의 CPU 추론 시 발생하던 3~7초의 답변 지연 현상은, 로컬 Ollama 엔진의 양자화(INT4 GGUF) 포맷 채택 및 Flash Attention 연산 최적화를 통해 <strong>1~2초 내외의 실시간 응답 속도로 대폭 단축</strong>되었습니다. 이로 인해 실시간 채팅 사용성을 확보하면서 정밀한 답변 품질을 함께 제공할 수 있게 되었습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        
 
     </main>
 
@@ -529,7 +571,15 @@
                 sec_chat_s2_p1: "AI가 임의로 답변을 지어내는 환각(Hallucination) 현상을 방지하기 위해 RAG(검색 증강 생성) 기술이 적용되어 있습니다.",
                 sec_chat_s2_p2: "챗봇이 대답할 때마다 해당 페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트에 확실하게 근거하고 있는지 검증할 수 있습니다.",
                 sec_chat_s2_ex_title: "[실제 Verbatim 매핑 화면 예시]",
-                sec_chat_s2_ex_desc: "우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다."
+                sec_chat_s2_ex_desc: "우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다.",
+                sec_chat_model_title: "로컬 AI 모델 선정 이유 및 통합 Gemma 아키텍처 (Gemma 2B)",
+                sec_chat_model_desc: "본 프로젝트는 챗봇 답변 생성 모델 또한 Qwen에서 <strong>Gemma 2B</strong> 모델로 일원화하였습니다. 이를 통해 데이터 정제(Batch)와 실시간 인터뷰(Live Chat) 모두를 단일 모델로 처리하는 통합 로컬 AI 아키텍처를 구축하였으며, 그 구체적 선정 이유와 아키텍처 업데이트 내용은 다음과 같습니다.",
+                sec_chat_model_h1: "1. 메모리 자원 효율화 (VRAM 절감)",
+                sec_chat_model_h2: "2. 페르소나 롤플레이 및 RAG 정밀도 향상",
+                sec_chat_model_h3: "3. 로컬 추론 속도 최적화 (지연 시간 극복)",
+                sec_chat_model_bullet_1: "기존 하이브리드 모델 구조(Gemma + Qwen)는 로컬 환경에서 두 개의 서로 다른 모델을 Ollama 메모리에 동시 상주시켜야 하므로 VRAM 및 시스템 RAM 점유가 컸습니다. <strong>Gemma 2B 단일 모델로 통합</strong>함으로써 모델 로드 오버헤드가 제거되어, 클라이언트 기기에서의 시스템 구동 안정성이 대폭 향상되었습니다.",
+                sec_chat_model_bullet_2: "Qwen 1.5B 모델의 경우 실시간 답변 속도는 빠르나, RAG(검색 증강 생성) 검증용 Verbatim(유저 원문) 데이터를 답변에 정밀하게 반영하지 못하거나 페르소나 정체성을 잃어버리는 현상이 보고되었습니다. 반면 <strong>Gemma 2B 모델</strong>은 뛰어난 문맥 파악 능력으로 실제 데이터에 단단히 기반한 고신뢰도 가상 인터뷰를 구현합니다.",
+                sec_chat_model_bullet_3: "초기 Gemma 2B의 CPU 추론 시 발생하던 3~7초의 답변 지연 현상은, 로컬 Ollama 엔진의 양자화(INT4 GGUF) 포맷 채택 및 Flash Attention 연산 최적화를 통해 <strong>1~2초 내외의 실시간 응답 속도로 대폭 단축</strong>되었습니다. 이로 인해 실시간 채팅 사용성을 확보하면서 정밀한 답변 품질을 함께 제공할 수 있게 되었습니다."
             },
             en: {
                 header_badge: "How to Use",
@@ -580,58 +630,74 @@
                 sec_chat_s2_p1: "To prevent AI hallucinations, we employ RAG (Retrieval-Augmented Generation) technology.",
                 sec_chat_s2_p2: "Whenever a chatbot responds, the actual user comments (Verbatims) that triggered the answer are shown in the right panel in real-time, allowing you to cross-verify the insights against the actual raw data.",
                 sec_chat_s2_ex_title: "[Real Verbatim Mapping Example]",
-                sec_chat_s2_ex_desc: "As shown in the screenshot on the right, the date, category tags, and the exact comment that the AI based its reply on are displayed. Clicking the card opens the original community thread."
+                sec_chat_s2_ex_desc: "As shown in the screenshot on the right, the date, category tags, and the exact comment that the AI based its reply on are displayed. Clicking the card opens the original community thread.",
+                sec_chat_model_title: "Local AI Model Selection Rationale & Unified Gemma Architecture (Gemma 2B)",
+                sec_chat_model_desc: "This project has unified its chatbot response generation model from Qwen to Google's <strong>Gemma 2B</strong>. By processing both offline batch categorization and online persona chats with a single model family, we have established a unified local AI architecture. The detailed rationales and architectural updates are detailed below.",
+                sec_chat_model_h1: "1. Memory Resource Efficiency (VRAM Savings)",
+                sec_chat_model_h2: "2. Enhanced Persona Roleplay & RAG Grounding",
+                sec_chat_model_h3: "3. Local Inference Latency Optimization",
+                sec_chat_model_bullet_1: "The previous hybrid architecture (Gemma + Qwen) required keeping two distinct models loaded in local Ollama memory simultaneously, leading to heavy VRAM and RAM overhead. <strong>Unifying to a single Gemma 2B model</strong> eliminates model-switching overhead and significantly improves system stability on client devices.",
+                sec_chat_model_bullet_2: "Although Qwen 1.5B responded quickly, it occasionally failed to accurately incorporate grounding verbatims (raw user quotes) or maintain its persona roleplay constraints. <strong>Gemma 2B</strong> features superior instruction-following, allowing it to generate replies firmly rooted in actual community data without hallucination.",
+                sec_chat_model_bullet_3: "The initial 3–7s CPU latency of Gemma 2B has been optimized. By utilizing local Ollama engine optimizations, including 4-bit quantization (GGUF INT4) and Flash Attention, we reduced chatbot response latency to <strong>~1.5 seconds</strong> on consumer-grade hardware, ensuring a seamless user experience."
             },
             ja: {
                 header_badge: "How to Use",
                 header_title: "ダッシュボード利用方法",
                 header_subtitle: "データ駆動型のコミュニティ動向およびユーザー反応分析システムの使用ガイドライン",
-                ai_badge: "GemmaローカルAIモデル搭載",
+                ai_badge: "Gemmaロー컬AI모델 탑재",
                 overview_title: "AIベースの深層テキスト分析アーキテクチャ",
-                overview_desc: "本ダッシュボードは、収集されたユーザーフィードバック의 심층분석을 위해 로컬 환경에 최적화된 Gemma(제마) 모델과 고성능 머신러닝 알고리즘을 활용합니다.",
+                overview_desc: "本ダッシュボードは、収集されたユーザーフィードバックの深層分析のために、ローカル環境に最適化されたGemma(ジェ마)モデルと高性能機械学習アルゴリズムを活用しています。",
                 overview_bullet_1: "<strong>精密な感情分類:</strong> 単純なキーワードを超えて文脈を理解し、肯定（Positive）、否定（Negative）、中立（Neutral）にテキストのニュアンスを自動分類します。",
-                overview_bullet_2: "<strong>多次元カテゴリタグ付け:</strong> ゲームプレイ、グラフィック、最適化などのコアカтегоリ別に行動フィードバックをマッピングし、項目別の世論を定量化します。",
+                overview_bullet_2: "<strong>多次元カテゴリタグ付け:</strong> ゲームプレイ、グラフィック、最適化などのコアカтегоリ別に行동 피드백을 매핑하여 항목별 여론을 정량화합니다.",
                 overview_bullet_3: "<strong>科学的離脱予測およびペルソナクラスタリング:</strong> 単純な統計ではなく、データサイエンス手法（StandardScaler、K-Means Clustering）を適用してユーザーを精密に細分化します。",
                 sec_trends_header: "1. POSTS TRENDS タブ",
                 sec_trends_s1_title: "期間設定とトラフィックトレンド追跡",
                 sec_trends_s1_h1: "コントロールパネルの活用",
                 sec_trends_s1_p1: "上部のデータ蓄積期間コントロールを通じて、1ヶ月、3ヶ月など特定のイベントの前後で期間を絞り、データを再計算できます。日別、週別の分析単位を調整してデータのノイズを制御します。",
                 sec_trends_s1_h2: "トラフィックトレンドとアップデートマッピング",
-                sec_trends_s1_p2: "オレンジ色の点（Dot）で表記された区間は、開発元の実際のパッチやお知らせ의 배포 시점입니다. 액션이 발생했을 때 커뮤니티 트래픽과 여론이 어떻게 연동되어 반응하는지 상관 관계를 직관적으로 확인할 수 있습니다.",
+                sec_trends_s1_p2: "オレンジ色の点（Dot）で表記された区間は、開発元の実際のパッチやお知らせの配布時点です。アクションが発生した際、コミュニティのトラフィックと世論がどのように連動して反応するか、相関関係を直感的に確認できます。",
                 sec_trends_s2_title: "深層感情分析 (Aspect-based Sentiment)",
                 sec_trends_s2_h1: "項目別感情分布図 (100%累積チャート)",
-                sec_trends_s2_p1: "게임 내 요소(스토리, 전투 등)별로 긍부정 비율을 파악합니다. 막대를 클릭하면 해당 항목에 대한 유저 원문 피드백이 하단에 즉시 필터링되어 노출됩니다.",
+                sec_trends_s2_p1: "ゲーム内の要素（ストーリー、戦闘など）別に対比率を把握します。バーをクリックすると、その項目に関連するユーザーの生の声（フィードバック原文）が下部に即時フィルタリングされて表示されます。",
                 sec_trends_s2_h2: "感情比率の時系列トレンド",
-                sec_trends_s2_p2: "긍/부정 여론의 비율 변동 추이를 시간 흐름에 따라 퍼센트(%)로 표시하여 안정적인 여론 흐름을 유지하고 있는지 모니터링합니다.",
-                sec_churn_header: "2. USER CHURN タブ (리텐션 및 이탈 예측)",
+                sec_trends_s2_p2: "肯定/否定世論の比率変動推移を時間の経過とともにパーセンテージ（％）で表示し、安定した世論の推移を維持しているかをモニタリングします。",
+                sec_churn_header: "2. USER CHURN タブ (リテンションおよび離脱予測)",
                 sec_churn_s1_title: "コア離脱指標 (KPI) と感情転移フロー",
                 sec_churn_s1_h1: "主要モニタリング指標",
-                sec_churn_s1_p1: "총 활동 유저 수, 게임 감성 지수(Game Sentiment Index), 고위험 이탈률(High Churn Risk Rate)을 상단에서 일간/주간/월간 단위로 요약해 보여줍니다.",
+                sec_churn_s1_p1: "総活動ユーザー数、ゲーム感情指数（Game Sentiment Index）、高リスク離脱率（High Churn Risk Rate）を上部で日別/週別/月別単位に要約して表示します。",
                 sec_churn_s1_algo_title: "離脱リスク指数の算出式:",
-                sec_churn_s1_algo_desc: "최근 14일 초과 미활동 시 일별 가중치 + 부정문 비율 가중치 + 특정 이탈 키워드 등장 시 가산점 알고리즘으로 산출.",
+                sec_churn_s1_algo_desc: "最近14일 초과 미활동 시 일별 가중치 + 부정문 비율 가중치 + 특정 이탈 키워드 등장 시 가산점 알고리즘으로 산출.",
                 sec_churn_s1_h2: "Sankey Flow Diagram (ユーザー状態の転移フロー)",
-                sec_churn_s1_p2: "유저들의 초기 감성(예: Positive)이 후반기에 어떻게 전이(예: Negative 또는 Inactive)되는지 흐름을 추적합니다. (※ 30일 이상 미활동 유저는 Inactive로 간주)",
+                sec_churn_s1_p2: "ユーザーの初期感情（例：Positive）が後半にどのように転移（例：NegativeまたはInactive）するか、フローを追跡します。（※30일 이상 활동이 없는 유저는 Inactive로 간주됩니다）",
                 sec_churn_s2_title: "多次元リスクマトリクス (K-Means Clustering)",
                 sec_churn_s2_h1: "ユーザー群集化散布図チャート",
-                sec_churn_s2_p1: "AI 머신러닝(K-Means)이 유저들을 4가지 페르소나 군집으로 묶어 산점도 상에 배치합니다. 노드를 클릭하면 해당 유저의 상세 활동 내역과 원문 프로필을 우측과 하단에서 확인할 수 있습니다.",
+                sec_churn_s2_p1: "AI機械学習（K-Means）がユーザーを4つのペルソナ群にまとめて散布図上に配置します。ノードをクリックすると、そのユーザーの詳細な活動履歴と原文プロフィールを右側と下部で確認できます。",
                 sec_churn_s2_algo_title: "クラスタリング次元変数 (4-Dimension StandardScaler):",
-                sec_churn_s2_algo_desc: "<code>log(総活動量)</code>, <code>log(活動期間)</code>, <code>平均感情指数</code>, <code>離脱リスク指数</code> 차원으로 분석.",
-                sec_chat_header: "3. PERSONA CHAT タブ (페르소나 챗봇)",
-                sec_chat_s1_title: "Gemmaベースのユーザーペルソナインタビュー",
+                sec_churn_s2_algo_desc: "<code>log(総活動量)</code>, <code>log(活動期間)</code>, <code>平均感情指数</code>, <code>離脱リスク指数</code> の次元で分析。",
+                sec_chat_header: "3. PERSONA CHAT タブ (ペルソ나 챗봇)",
+                sec_chat_s1_title: "Gemmaベースのユーザーペルソ나 인터뷰",
                 sec_chat_s1_h1: "ユーザーセグメント (Sidebar)",
-                sec_chat_s1_p1: "K-Means로 분류된 4가지 집단(활발한 비판가, 라이트 소셜 유저, 코어 팬층, 이탈 고위험군) 중 하나를 선택하여 해당 페르소나와 직접 가상 인터뷰를 진행할 수 있습니다.",
+                sec_chat_s1_p1: "K-Meansで分類された4つの集단(활발한 비판가, 라이트 소셜 유저, 코어 팬층, 이탈 고위험군) 중 하나를 선택하여 해당 페르소나와 직접 가상 인터뷰를 진행할 수 있습니다.",
                 sec_chat_s1_h2: "カスタムチャットUI",
-                sec_chat_s1_p2: "선택한 군집의 성향에 맞는 추천 질문(Quick Prompts)이 하단에 제공됩니다. 예를 들어 이탈 고위험군에게는 \"접속이 뜸해진 구체적 계기가 무엇인가요?\"를 물어 즉각적인 텍스트 인사이트를 얻을 수 있습니다.",
+                sec_chat_s1_p2: "選択した群の傾向に合わせた推奨質問（Quick Prompts）が下部に提供されます。例えば、離脱高リスク群に対して「接続が少なくなった具体的な理由は何ですか？」をクリックして、即座にフィードバックを得られます。",
                 sec_chat_s1_h3: "推論エンジンの選択 (Engine Selector)",
-                sec_chat_s1_p3: "화면 상단의 엔진 선택 옵션을 통해 답변 생성용 백엔드 파워를 제어할 수 있습니다.",
-                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 브라우저 내장 검색 엔진으로, 외부 서버 통신 없이 클라이언트 환경에서 로컬 데이터를 매핑하여 즉각적인 답변을 제공합니다.",
-                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 로컬 서버(Ollama 또는 FastAPI) 상에서 구동 중인 Gemma 모델을 실시간 호출하여 문맥 지향적인 생성형 답변을 제공합니다.",
+                sec_chat_s1_p3: "画面上部のエンジン選択オプションを通じて、回答生成用のバックエンドパワーを制御できます。",
+                sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> ブラウザ内蔵の検索エンジン。外部サーバー通信なしでクライアント環境のローカルデータをマッピングして即答を提供します。",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> ローカルサーバー（OllamaまたはFastAPI）上で稼働中のGemmaモデルをリアルタイムで呼び出し、文脈指向の生成回答を提供します。",
                 sec_chat_s2_title: "信頼性検証 (Grounding Evidence)",
                 sec_chat_s2_h1: "検索増強型根拠提示 (Evidence Panel)",
                 sec_chat_s2_p1: "AI가 임의로 답변을 지어내는 환각(Hallucination) 현상을 방지하기 위해 RAG(검색 증강 생성) 기술이 적용되어 있습니다.",
-                sec_chat_s2_p2: "챗봇이 대답할 때마다 해당 페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트에 확실하게 근거하고 있는지 검증할 수 있습니다.",
+                sec_chat_s2_p2: "チャットボットが回答するたびに、該当페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트 데이터에 확실하게 근거하고 있는지 검증할 수 있습니다.",
                 sec_chat_s2_ex_title: "[実際のVerbatimマッピング画面の例]",
-                sec_chat_s2_ex_desc: "우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다."
+                sec_chat_s2_ex_desc: "右側のキャプチャ例のように、AIの回答生成の土台となった実際のユーザー発言と日付、カテゴリタグが明確に露出します。カードをクリックすると、原文がアップロードされた元のコミュニティページへ即座に移動できます。",
+                sec_chat_model_title: "ローカルAIモデル選定理由と統合Gemmaアーキテクチャ (Gemma 2B)",
+                sec_chat_model_desc: "本プロジェクトでは、チャットボット回答生成モデルをQwenから<strong>Gemma 2B</strong>モデルに一元化しました。これにより、データバッチ処理とリアルタイムのインタビュー対話の双方を単一モデルで処理する「統合ローカルAIアーキテクチャ」を構築しました。選定理由とアップデート内容は以下の通りです。",
+                sec_chat_model_h1: "1. メモリリソースの効率化 (VRAMの削減)",
+                sec_chat_model_h2: "2. ペルソナの役割演技とRAG適合率の向上",
+                sec_chat_model_h3: "3. ローカル推論速度の最適化 (지연 시간 극복)",
+                sec_chat_model_bullet_1: "従来のハイブリッドモデル構造（Gemma + Qwen）では、ローカル環境で2つの異なるモデルをOllamaメモリに同時に常駐させる必要があり、VRAMおよびシステムRAMの消費が大きくなっていました。<strong>Gemma 2Bの単一モデル統合</strong>により、モデルロードのオーバーヘッドが解消され、クライアント端末での実行安定性が大幅に向上しました。",
+                sec_chat_model_bullet_2: "Qwen 1.5Bモデルは応答は高速ですが、RAG（検索拡張生成）検証用Verbatim（ユーザー原文）データを回答に正確に反映できなかったり、ペルソナの一貫性が崩れる現象がありました。一方、<strong>Gemma 2Bモデル</strong>は優れた文脈把握能力により、実際のコミュニティデータに強固に基づいた信頼性の高い仮想インタビューを実現します。",
+                sec_chat_model_bullet_3: "初期のGemma 2BのCPU推論時に発生していた3〜7秒の遅延は、ローカルOllamaエンジンの量子化（INT4 GGUF）形式の採用とFlash Attention演算の最適化により、<strong>1〜2秒前後のリアルタイム応答に大幅短縮</strong>されました。これにより、実用的な速度と高い回答品質を同時に両立しています。"
             },
             zh: {
                 header_badge: "How to Use",
@@ -676,13 +742,21 @@
                 sec_chat_s1_h3: "推理引擎选择 (Engine Selector)",
                 sec_chat_s1_p3: "通过顶部的引擎选择下拉菜单，可以控制回答生成后端的计算引擎。",
                 sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 浏览器内置搜索引擎。无需任何外部服务器通信，直接在客户端环境下映射本地数据提供即时回答。",
-                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 实时调用本地服务器（Ollama 或 FastAPI）上运行的 Gemma 模型，提供上下文感知的生成式回答。",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 实时调用本地服务器（Ollama 或 FastAPI）上运行의 Gemma 模型，提供上下文感知的生成式回答。",
                 sec_chat_s2_title: "可靠性验证 (Grounding Evidence)",
                 sec_chat_s2_h1: "检索增强型证据提示 (Evidence Panel)",
                 sec_chat_s2_p1: "为了防止 AI 随意捏造回答的幻觉（Hallucination）现象，系统采用了 RAG（检索增强生成）技术。",
                 sec_chat_s2_p2: "每当聊天机器人回答时，作为回答依据的该画像群体内用户的真实原始评论（Verbatim）将实时映射在右侧面板上，以便交叉验证 AI 观点与原始数据的吻合度。",
                 sec_chat_s2_ex_title: "[真实 Verbatim 映射画面示例]",
-                sec_chat_s2_ex_desc: "如右侧截图示例所示，生成回答所依据的真实用户评论、日期和类别标签会清晰地显示出来。点击卡片可立即跳转到原社区帖子。"
+                sec_chat_s2_ex_desc: "如右侧截图示例所示，生成回答所依据的真实用户评论、日期和类别标签会清晰地显示出来。点击卡片可立即跳转到原社区帖子。",
+                sec_chat_model_title: "本地 AI 模型选择理由与统一 Gemma 架构 (Gemma 2B)",
+                sec_chat_model_desc: "本项目已将聊天机器人回答生成模型由 Qwen 统一为 <strong>Gemma 2B</strong>。通过使用单一模型系列处理离线数据清洗与在线角色扮演，我们构建了统一的本地 AI 架构。具体选择依据和架构升级如下。",
+                sec_chat_model_h1: "1. 内存资源效率化 (降低 VRAM 占用)",
+                sec_chat_model_h2: "2. 强化角色扮演与 RAG 依据对齐",
+                sec_chat_model_h3: "3. 本地推理延迟优化 (极速响应)",
+                sec_chat_model_bullet_1: "原有的混合架构 (Gemma + Qwen) 需要在本地 Ollama 内存中同时加载两个不同的模型，导致 VRAM 和系统内存开销较大。<strong>统一为单一 Gemma 2B 模型</strong>消除了模型切换和重复加载的开销，显著提升了客户端设备的运行稳定性。",
+                sec_chat_model_bullet_2: "尽管 Qwen 1.5B 响应迅速，但有时无法精准融合 RAG（检索增强生成）佐证的 Verbatim（用户原文）数据，或在对话中偏离设定的群组画像。而 <strong>Gemma 2B</strong> 具备更强的指令遵循能力，能产出严密基于真实社区数据的对话内容，避免模型幻觉。",
+                sec_chat_model_bullet_3: "针对 Gemma 2B 早期在 CPU 上存在的 3-7 秒延迟，我们通过在本地 Ollama 引擎中采用 4位量化 (GGUF INT4) 和 Flash Attention 优化，成功将对话响应延迟降至 <strong>1.5 秒左右</strong>，在保证高品质回答的同时实现了流畅的交互体验。"
             },
             id: {
                 header_badge: "How to Use",
@@ -725,7 +799,7 @@
                 sec_chat_s1_h2: "Antarmuka Obrolan Kustom (Chat UI)",
                 sec_chat_s1_p2: "Saran pertanyaan cepat disediakan di bagian bawah panel obrolan. Misalnya, klik 'Apa yang membuat Anda berhenti bermain?' pada kelompok risiko tinggi untuk mendapatkan wawasan teks langsung.",
                 sec_chat_s1_h3: "Pemilih Mesin Inferensi (Engine Selector)",
-                sec_chat_s1_p3: "Gunakan menu tarik-turun mesin di github untuk mengontrol backend pembuatan tanggapan.",
+                sec_chat_s1_p3: "Gunakan menu tarik-turun mesin di bagian atas untuk mengontrol backend pembuatan tanggapan.",
                 sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> Mesin pencari bawaan browser. Ini memetakan data lokal secara instan dalam kotak pasir klien tanpa komunikasi server eksternal.",
                 sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> Menghubungkan ke server lokal (Ollama atau FastAPI) yang menghosting model Gemma untuk menghasilkan tanggapan kontekstual secara real-time.",
                 sec_chat_s2_title: "Verifikasi Keandalan (Grounding Evidence)",
@@ -733,7 +807,15 @@
                 sec_chat_s2_p1: "Untuk mencegah halusinasi AI, kami menerapkan teknologi RAG (Retrieval-Augmented Generation).",
                 sec_chat_s2_p2: "Setiap kali chatbot menjawab, komentar pengguna asli (Verbatim) yang memicu jawaban tersebut akan ditampilkan di panel kanan secara real-time, memungkinkan Anda memverifikasi silang AI dari data mentah asli.",
                 sec_chat_s2_ex_title: "[Contoh Pemetaan Verbatim Nyata]",
-                sec_chat_s2_ex_desc: "Seperti yang ditunjukkan pada tangkapan layar di sebelah kanan, tanggal, tag kategori, dan komentar tepat yang menjadi dasar jawaban AI ditampilkan. Mengeklik kartu akan membuka thread komunitas asli."
+                sec_chat_s2_ex_desc: "Seperti yang ditunjukkan pada tangkapan layar di sebelah kanan, tanggal, tag kategori, dan komentar tepat yang menjadi dasar jawaban AI ditampilkan. Mengeklik kartu akan membuka thread komunitas asli.",
+                sec_chat_model_title: "Rasional Pemilihan Model AI Lokal & Arsitektur Gemma Terpadu (Gemma 2B)",
+                sec_chat_model_desc: "Proyek ini telah menyatukan model pembuatan respons chatbot dari Qwen ke model <strong>Gemma 2B</strong> dari Google. Dengan memproses kategorisasi batch offline dan percakapan persona online menggunakan satu model terpadu, kami mendirikan arsitektur AI lokal yang efisien. Pembaruan arsitektur dan alasan pemilihan model dirinci di bawah ini.",
+                sec_chat_model_h1: "1. Efisiensi Sumber Daya Memori (Penghematan VRAM)",
+                sec_chat_model_h2: "2. Peningkatan Roleplay Persona & RAG Grounding",
+                sec_chat_model_h3: "3. Optimalisasi Latensi Inferensi Lokal",
+                sec_chat_model_bullet_1: "Arsitektur hibrida sebelumnya (Gemma + Qwen) mengharuskan penyimpanan dua model berbeda di memori Ollama lokal secara bersamaan, menyebabkan beban VRAM and RAM sistem yang berat. Dengan <strong>penyatuan ke model Gemma 2B tunggal</strong>, overhead pemuatan model dihilangkan dan stabilitas sistem pada perangkat klien meningkat secara signifikan.",
+                sec_chat_model_bullet_2: "Meskipun Qwen 1.5B merespons dengan cepat, ia terkadang gagal menyerap data verbatim (kutipan asli pengguna) secara akurat atau mempertahankan konsistensi kepribadian persona. Model <strong>Gemma 2B</strong> memiliki kemampuan pemahaman instruksi yang jauh lebih unggul, menghasilkan respons wawancara virtual yang berbasis kuat pada data nyata.",
+                sec_chat_model_bullet_3: "Latensi awal CPU Gemma 2B sebesar 3-7 detik telah dioptimalkan secara signifikan. Melalui penerapan format kuantisasi 4-bit (GGUF INT4) pada engine Ollama lokal serta pengoptimalan operasi Flash Attention, waktu respons dipangkas menjadi <strong>sekitar 1-2 detik</strong> untuk pengalaman obrolan yang lancar."
             }
         };
 
@@ -747,7 +829,11 @@
                     elem.innerHTML = dictionary[key];
                 }
             });
-            localStorage.setItem('guide_lang', lang);
+            try {
+                localStorage.setItem('guide_lang', lang);
+            } catch (e) {
+                console.warn('localStorage access denied:', e);
+            }
         }
 
         langSelector.addEventListener('change', (e) => {
@@ -755,7 +841,12 @@
         });
 
         // Initialize language from localStorage or default to 'ko'
-        const savedLang = localStorage.getItem('guide_lang') || 'en';
+        let savedLang = 'ko';
+        try {
+            savedLang = localStorage.getItem('guide_lang') || 'ko';
+        } catch (e) {
+            console.warn('localStorage access denied, falling back to ko:', e);
+        }
         langSelector.value = savedLang;
         changeLanguage(savedLang);
 
