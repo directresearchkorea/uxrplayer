@@ -2990,6 +2990,32 @@ const DASHBOARD_DATA = {
     "pos_count": 0,
     "neg_count": 1,
     "neu_count": 8
+  },
+  {
+    "date": "2026-08-05",
+    "total_posts": 12,
+    "total_views": 2986,
+    "total_recommends": 1,
+    "info_count": 0,
+    "qna_count": 3,
+    "tip_count": 1,
+    "chat_count": 8,
+    "pos_count": 2,
+    "neg_count": 3,
+    "neu_count": 7
+  },
+  {
+    "date": "2026-08-06",
+    "total_posts": 5,
+    "total_views": 1489,
+    "total_recommends": 0,
+    "info_count": 0,
+    "qna_count": 1,
+    "tip_count": 0,
+    "chat_count": 4,
+    "pos_count": 1,
+    "neg_count": 0,
+    "neu_count": 4
   }
 ],
     daily_keywords: {
@@ -3183,10 +3209,6 @@ const DASHBOARD_DATA = {
       "count": 2
     },
     {
-      "word": "펄업",
-      "count": 2
-    },
-    {
       "word": "장수",
       "count": 1
     },
@@ -3236,6 +3258,10 @@ const DASHBOARD_DATA = {
     },
     {
       "word": "최고",
+      "count": 1
+    },
+    {
+      "word": "교체",
       "count": 1
     }
   ],
@@ -3603,6 +3629,10 @@ const DASHBOARD_DATA = {
       "count": 3
     },
     {
+      "word": "빛의",
+      "count": 2
+    },
+    {
       "word": "세계",
       "count": 2
     },
@@ -3738,10 +3768,6 @@ const DASHBOARD_DATA = {
     },
     {
       "word": "어비스",
-      "count": 1
-    },
-    {
-      "word": "펄업",
       "count": 1
     },
     {
@@ -4865,6 +4891,10 @@ const DASHBOARD_DATA = {
     {
       "word": "순환",
       "count": 6
+    },
+    {
+      "word": "운반",
+      "count": 2
     },
     {
       "word": "면역",
@@ -13017,6 +13047,10 @@ const DASHBOARD_DATA = {
       "count": 4
     },
     {
+      "word": "전격",
+      "count": 4
+    },
+    {
       "word": "어비스",
       "count": 4
     },
@@ -13062,10 +13096,6 @@ const DASHBOARD_DATA = {
     },
     {
       "word": "전력",
-      "count": 3
-    },
-    {
-      "word": "열차",
       "count": 3
     }
   ],
@@ -17332,6 +17362,170 @@ const DASHBOARD_DATA = {
       "word": "왠만",
       "count": 1
     }
+  ],
+  "2026-08-05": [
+    {
+      "word": "업데이트",
+      "count": 6
+    },
+    {
+      "word": "여러분",
+      "count": 4
+    },
+    {
+      "word": "공격",
+      "count": 4
+    },
+    {
+      "word": "범죄자",
+      "count": 4
+    },
+    {
+      "word": "회색",
+      "count": 3
+    },
+    {
+      "word": "복원",
+      "count": 3
+    },
+    {
+      "word": "모자",
+      "count": 2
+    },
+    {
+      "word": "세계",
+      "count": 2
+    },
+    {
+      "word": "플랫폼",
+      "count": 2
+    },
+    {
+      "word": "PC",
+      "count": 2
+    },
+    {
+      "word": "완료",
+      "count": 2
+    },
+    {
+      "word": "위치",
+      "count": 2
+    },
+    {
+      "word": "3개",
+      "count": 2
+    },
+    {
+      "word": "증상",
+      "count": 2
+    },
+    {
+      "word": "속도",
+      "count": 2
+    },
+    {
+      "word": "이동",
+      "count": 2
+    },
+    {
+      "word": "4k",
+      "count": 2
+    },
+    {
+      "word": "프레임",
+      "count": 2
+    },
+    {
+      "word": "클리프",
+      "count": 2
+    },
+    {
+      "word": "전투",
+      "count": 2
+    }
+  ],
+  "2026-08-06": [
+    {
+      "word": "보물상자",
+      "count": 6
+    },
+    {
+      "word": "스토리",
+      "count": 5
+    },
+    {
+      "word": "미니맵",
+      "count": 4
+    },
+    {
+      "word": "표시",
+      "count": 4
+    },
+    {
+      "word": "사슴왕",
+      "count": 3
+    },
+    {
+      "word": "뉴겜",
+      "count": 3
+    },
+    {
+      "word": "장소",
+      "count": 2
+    },
+    {
+      "word": "안보",
+      "count": 2
+    },
+    {
+      "word": "전격",
+      "count": 2
+    },
+    {
+      "word": "기계",
+      "count": 2
+    },
+    {
+      "word": "양손검",
+      "count": 2
+    },
+    {
+      "word": "화염",
+      "count": 2
+    },
+    {
+      "word": "빌드",
+      "count": 2
+    },
+    {
+      "word": "모루",
+      "count": 1
+    },
+    {
+      "word": "요새",
+      "count": 1
+    },
+    {
+      "word": "전에",
+      "count": 1
+    },
+    {
+      "word": "아무것도",
+      "count": 1
+    },
+    {
+      "word": "담금질",
+      "count": 1
+    },
+    {
+      "word": "이렇게",
+      "count": 1
+    },
+    {
+      "word": "해도",
+      "count": 1
+    }
   ]
 },
     global_keywords: [
@@ -17373,15 +17567,15 @@ const DASHBOARD_DATA = {
   },
   {
     "word": "클리프",
-    "count": 571
+    "count": 573
+  },
+  {
+    "word": "위치",
+    "count": 484
   },
   {
     "word": "계속",
     "count": 483
-  },
-  {
-    "word": "위치",
-    "count": 482
   },
   {
     "word": "모드",
@@ -17389,11 +17583,11 @@ const DASHBOARD_DATA = {
   },
   {
     "word": "해도",
-    "count": 438
+    "count": 439
   },
   {
     "word": "스토리",
-    "count": 409
+    "count": 414
   },
   {
     "word": "플스",
@@ -17405,7 +17599,7 @@ const DASHBOARD_DATA = {
   },
   {
     "word": "공격",
-    "count": 317
+    "count": 321
   },
   {
     "word": "웅카",
@@ -17428,12 +17622,12 @@ const DASHBOARD_DATA = {
     "count": 247
   },
   {
-    "word": "되고",
-    "count": 232
+    "word": "업데이트",
+    "count": 234
   },
   {
-    "word": "업데이트",
-    "count": 228
+    "word": "되고",
+    "count": 232
   },
   {
     "word": "마녀",
@@ -17445,7 +17639,7 @@ const DASHBOARD_DATA = {
   },
   {
     "word": "전투",
-    "count": 199
+    "count": 201
   },
   {
     "word": "현상",
@@ -17469,11 +17663,11 @@ const DASHBOARD_DATA = {
   },
   {
     "word": "완료",
-    "count": 168
+    "count": 170
   },
   {
     "word": "프레임",
-    "count": 166
+    "count": 168
   },
   {
     "word": "조작",
@@ -17481,7 +17675,7 @@ const DASHBOARD_DATA = {
   },
   {
     "word": "이동",
-    "count": 145
+    "count": 147
   },
   {
     "word": "가면",
@@ -17516,12 +17710,16 @@ const DASHBOARD_DATA = {
     "count": 120
   },
   {
+    "word": "표시",
+    "count": 107
+  },
+  {
     "word": "지식",
     "count": 105
   },
   {
-    "word": "표시",
-    "count": 103
+    "word": "회색",
+    "count": 104
   },
   {
     "word": "전설",
@@ -17530,13 +17728,113 @@ const DASHBOARD_DATA = {
   {
     "word": "금괴",
     "count": 102
-  },
-  {
-    "word": "회색",
-    "count": 101
   }
 ],
     daily_popular_posts: {
+  "2026-08-06": [
+    {
+      "title": "[잡담] 스토리 패치때까지 기다리는게 나을까요 ? [3]",
+      "views": 503,
+      "recommends": 0,
+      "view_share": 33.8,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15795",
+      "rank_type": "views"
+    },
+    {
+      "title": "[잡담] 스토리 패치때까지 기다리는게 나을까요 ? [3]",
+      "views": 503,
+      "recommends": 0,
+      "view_share": 33.8,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15795",
+      "rank_type": "recommends"
+    },
+    {
+      "title": "[잡담] 여기 보물상자 어떻게 먹나요? [2]",
+      "views": 348,
+      "recommends": 0,
+      "view_share": 23.4,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15797",
+      "rank_type": "views"
+    },
+    {
+      "title": "[잡담] 여기 보물상자 어떻게 먹나요? [2]",
+      "views": 348,
+      "recommends": 0,
+      "view_share": 23.4,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15797",
+      "rank_type": "recommends"
+    },
+    {
+      "title": "[질문] 전격기계양손검, 창으로 화염빌드 타도 될까요? [4]",
+      "views": 236,
+      "recommends": 0,
+      "view_share": 15.8,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15799",
+      "rank_type": "views"
+    }
+  ],
+  "2026-08-05": [
+    {
+      "title": "[잡담] 저 붉은사막 요즘은 할만한가요? [2]",
+      "views": 520,
+      "recommends": 0,
+      "view_share": 17.4,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15790",
+      "rank_type": "views"
+    },
+    {
+      "title": "[질문] 클리프의 공격력과 무기의 공격력은 다른건가요? [4]",
+      "views": 480,
+      "recommends": 0,
+      "view_share": 16.1,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15791",
+      "rank_type": "views"
+    },
+    {
+      "title": "[잡담] 붉은사막 범죄자 잡기 시스템 정말 아쉽다 [3]",
+      "views": 410,
+      "recommends": 0,
+      "view_share": 13.7,
+      "recommend_rate": 0.0,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15788",
+      "rank_type": "views"
+    },
+    {
+      "title": "[공략/팁] 빠른이동 복원하기 (모르는 분들을 위해)",
+      "views": 268,
+      "recommends": 1,
+      "view_share": 9.0,
+      "recommend_rate": 0.4,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15793",
+      "rank_type": "views"
+    },
+    {
+      "title": "[공략/팁] 빠른이동 복원하기 (모르는 분들을 위해)",
+      "views": 268,
+      "recommends": 1,
+      "view_share": 9.0,
+      "recommend_rate": 0.4,
+      "source": "ruliweb",
+      "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15793",
+      "rank_type": "recommends"
+    }
+  ],
   "2026-08-04": [
     {
       "title": "[질문] 마녀들 퀘스트 안하면 손해가 클까요? [7]",
