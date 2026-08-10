@@ -284,6 +284,7 @@
                     <a href="index.html" class="nav-link">📊 POSTS TRENDS</a>
                     <a href="crimsondesert_churn.html" class="nav-link active">👥 USER CHURN</a>
                     <a href="crimsondesert_chat.html" class="nav-link">💬 PERSONA CHAT</a>
+                    <a href="dashboard_chat_profile.html" class="nav-link">🧪 PROFILE TEST</a>
                 </div>
             </div>
             <div class="controls" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
@@ -554,6 +555,30 @@
         }
     </script>
     <script>
+        function maskNickname(name) {
+            if (!name) return '';
+            const len = name.length;
+            if (len <= 1) return '*';
+            if (len === 2) return name[0] + '*';
+            if (len === 3) return name[0] + '*' + name[2];
+            const start = Math.floor(len / 4) || 1;
+            const end = len - start;
+            let masked = name.substring(0, start);
+            for (let i = start; i < end; i++) {
+                masked += '*';
+            }
+            masked += name.substring(end);
+            return masked;
+        }
+
+        function formatSource(src) {
+            if (!src) return '';
+            const s = src.toLowerCase();
+            if (s.includes('inven')) return 'Source A';
+            if (s.includes('ruliweb')) return 'Source B';
+            return src;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Update header title based on game name
             const headerTitle = document.getElementById('header-game-title');
@@ -812,8 +837,8 @@
                     highRiskUsers.slice(0, 150).forEach(u => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td style="font-weight: bold; color: var(--text-primary);">${u.author}</td>
-                            <td style="color: var(--text-secondary);">${u.source}</td>
+                            <td style="font-weight: bold; color: var(--text-primary);">${maskNickname(u.author)}</td>
+                            <td style="color: var(--text-secondary);">${formatSource(u.source)}</td>
                             <td style="text-align: right; color: var(--text-secondary);">${u.posts_count !== undefined ? u.posts_count : 0} (${u.comments_count !== undefined ? u.comments_count : 0})</td>
                             <td style="text-align: right; color: ${u.sentiment_index < 0 ? '#dc3545' : '#28a745'};">${u.sentiment_index}</td>
                             <td style="text-align: right; font-weight: bold; color: #ffc107;">${u.churn_index}</td>
@@ -868,8 +893,8 @@
                     matchingUsers.slice(0, 300).forEach(u => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td style="font-weight: bold; color: var(--text-primary);">${u.author}</td>
-                            <td style="color: var(--text-secondary);">${u.source}</td>
+                            <td style="font-weight: bold; color: var(--text-primary);">${maskNickname(u.author)}</td>
+                            <td style="color: var(--text-secondary);">${formatSource(u.source)}</td>
                             <td style="text-align: right; color: var(--text-secondary);">${u.posts_count !== undefined ? u.posts_count : 0} (${u.comments_count !== undefined ? u.comments_count : 0})</td>
                             <td style="text-align: right; color: ${u.sentiment_index < 0 ? '#dc3545' : '#28a745'};">${u.sentiment_index}</td>
                             <td style="text-align: right; font-weight: bold; color: var(--text-primary);">${u.churn_index}</td>
@@ -915,7 +940,7 @@
                         card.className = 'recovery-card';
                         card.innerHTML = `
                             <div class="recovery-header">
-                                <span style="font-weight: bold; color: var(--text-primary);">👤 ${r.author} (${r.source})</span>
+                                <span style="font-weight: bold; color: var(--text-primary);">👤 ${maskNickname(r.author)} (${formatSource(r.source)})</span>
                                 <span style="color: #28a745; font-weight: bold;">Sentiment Recovered 💡</span>
                             </div>
                             <div class="recovery-flow-grid">
@@ -1120,13 +1145,13 @@
                 // Highlight profile in risk table
                 const riskRows = document.getElementById('at-risk-tbody').rows;
                 for (let i = 0; i < riskRows.length; i++) {
-                    if (riskRows[i].cells[0] && riskRows[i].cells[0].textContent === author) {
+                    if (riskRows[i].cells[0] && riskRows[i].cells[0].textContent === maskNickname(author)) {
                         riskRows[i].classList.add('selected');
                     }
                 }
                 
-                detailTitle.textContent = `USER PROFILE: ${author}`;
-                detailSubtitle.textContent = `PLATFORM: ${source.toUpperCase()} // ACTIVE STATE`;
+                detailTitle.textContent = `USER PROFILE: ${maskNickname(author)}`;
+                detailSubtitle.textContent = `PLATFORM: ${formatSource(source).toUpperCase()} // ACTIVE STATE`;
                 
                 // Find all aspects belonging to this user
                 let verbatimHTML = '';
@@ -1183,7 +1208,7 @@
                 const sideDetailContent = document.getElementById('side-detail-content');
                 const sideDetailSubtitle = document.getElementById('side-detail-subtitle');
                 if (sideDetailSubtitle) {
-                    sideDetailSubtitle.textContent = `USER PROFILE: ${author} (${source.toUpperCase()})`;
+                    sideDetailSubtitle.textContent = `USER PROFILE: ${maskNickname(author)} (${formatSource(source).toUpperCase()})`;
                 }
                 if (sideDetailContent) {
                     sideDetailContent.innerHTML = `
@@ -1355,7 +1380,7 @@
                                 callbacks: {
                                     title: function(tooltipItems) {
                                         const p = tooltipItems[0].raw;
-                                        return `👤 ${p.author} (${p.source})`;
+                                        return `👤 ${maskNickname(p.author)} (${formatSource(p.source)})`;
                                     },
                                     label: function(tooltipItem) {
                                         const p = tooltipItem.raw;

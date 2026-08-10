@@ -525,6 +525,7 @@
                     <a href="index.html" class="nav-link">📊 POSTS TRENDS</a>
                     <a href="crimsondesert_churn.html" class="nav-link">👥 USER CHURN</a>
                     <a href="crimsondesert_chat.html" class="nav-link active">💬 PERSONA CHAT</a>
+                    <a href="dashboard_chat_profile.html" class="nav-link">🧪 PROFILE TEST</a>
                 </div>
             </div>
             <div class="controls" style="display: flex; gap: 20px; align-items: center;">
@@ -605,7 +606,7 @@
     <footer class="app-footer">
         <div class="footer-container">
             <span>GTPLAYER RETENTION ENGINE // PERSONA AGENT v1.0</span>
-            <span>DATA SOURCE: INVEN & RULIWEB VERBATIMS</span>
+            <span>DATA SOURCE: ACTUAL COMMUNITY VERBATIMS</span>
         </div>
     </footer>
 
@@ -912,7 +913,7 @@
             function clearEvidence() {
                 evidenceContainer.innerHTML = `
                     <div class="no-evidence" id="evidence-placeholder">
-                        대화창에서 질문을 전송하시면,<br>해당 페르소나 집단 내에서 참고한<br>실제 인벤/루리웹 유저의 원문(Verbatim)<br>구절이 여기에 매핑됩니다.
+                        대화창에서 질문을 전송하시면,<br>해당 페르소나 집단 내에서 참고한<br>실제 커뮤니티 유저의 원문(Verbatim)<br>구절이 여기에 매핑됩니다.
                     </div>
                 `;
             }
@@ -976,7 +977,7 @@
                         }
                     } 
                     else if (activeClusterId === 1) { // Casual Socializers
-                        synthesizedAnswer = `아, 질문하신 주제와 관련해서 저희 같은 라이트 유저들이 나눈 이야기가 있어요! 인벤에 보니까 <strong>"${mainEvidence.text}"</strong> 같은 후기 글이 많이 공감받았거든요.`;
+                        synthesizedAnswer = `아, 질문하신 주제와 관련해서 저희 같은 라이트 유저들이 나눈 이야기가 있어요! 실제 커뮤니티를 보니까 <strong>"${mainEvidence.text}"</strong> 같은 후기 글이 많이 공감받았거든요.`;
                         if (secondEvidence) {
                             synthesizedAnswer += ` 게다가 <strong>"${secondEvidence}"</strong> 같은 질문도 단골로 올라와요. 패치노트를 좀 더 라이트 유저 입장에서 쉽게 써주면 좋겠어요.`;
                         } else {

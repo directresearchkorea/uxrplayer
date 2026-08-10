@@ -2363,13 +2363,13 @@ const COMMENT_DASHBOARD_DATA = {
   },
   {
     "date": "2026-08-10",
-    "total_posts_with_comments": 1,
-    "total_comments": 1,
-    "total_replies": 0,
+    "total_posts_with_comments": 8,
+    "total_comments": 17,
+    "total_replies": 6,
     "rejection_count": 0,
     "defense_count": 0,
     "agreement_count": 0,
-    "neutral_count": 1
+    "neutral_count": 8
   }
 ],
     top_controversial_posts: [
@@ -2540,6 +2540,22 @@ const COMMENT_DASHBOARD_DATA = {
     "url": "https://www.inven.co.kr/board/crimson/6246/6719",
     "date": "2026-07-07",
     "views": 99,
+    "recommends": 0,
+    "total_comments": 6,
+    "reply_count": 3,
+    "post_sentiment": 0,
+    "comment_sentiment": 0.0,
+    "discrepancy_label": "중립 (Neutral)",
+    "discrepancy_score": 0.0,
+    "controversy_score": 60
+  },
+  {
+    "post_id": "15811",
+    "title": "[질문] 컴 업글할려고 하는데요 [6]",
+    "source": "ruliweb",
+    "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15811",
+    "date": "2026-08-10",
+    "views": 363,
     "recommends": 0,
     "total_comments": 6,
     "reply_count": 3,
@@ -2835,22 +2851,6 @@ const COMMENT_DASHBOARD_DATA = {
     "comment_sentiment": 0.0,
     "discrepancy_label": "중립 (Neutral)",
     "discrepancy_score": 0.0,
-    "controversy_score": 35
-  },
-  {
-    "post_id": "15382",
-    "title": "[잡담] 쿠쿠새 방어구에 들어가는 갑옷재료는 다시는 구매못하네요 [3]",
-    "source": "ruliweb",
-    "url": "https://bbs.ruliweb.com/family/5614/board/185595/read/15382",
-    "date": "2026-06-18",
-    "views": 1326,
-    "recommends": 1,
-    "total_comments": 3,
-    "reply_count": 2,
-    "post_sentiment": 0,
-    "comment_sentiment": -0.67,
-    "discrepancy_label": "중립 (Neutral)",
-    "discrepancy_score": 0.67,
     "controversy_score": 35
   }
 ],
@@ -3338,6 +3338,20 @@ const COMMENT_DASHBOARD_DATA = {
 ],
     top_best_comments: [
   {
+    "comment_id": "69341",
+    "author": "Jenu",
+    "created_at": "2026-08-10 10:58:00",
+    "content": "작성자님이 기반지식이 너무 없어서 그냥 간략하게만 던지자면 RTX 5060 에 램이랑 SSD 쏘쏘한거 들어간 약 150만원대 수준 견적의 PC 를 장만하시고 27인치 IPS패널 FHD 120~165hz 사이쯤의 10~15만원 정도의 모니터를 사신 다음에 설치해서 즐겜하시면 되겠습니다.",
+    "recommends": 6,
+    "dislikes": 0,
+    "is_reply": "0",
+    "parent_comment_id": "",
+    "sentiment": 0,
+    "post_id": "15811",
+    "source": "ruliweb",
+    "post_title": "[질문] 컴 업글할려고 하는데요 [6]"
+  },
+  {
     "comment_id": "68925",
     "author": "Kyungminzi",
     "created_at": "2026-07-21 09:24:00",
@@ -3734,20 +3748,6 @@ const COMMENT_DASHBOARD_DATA = {
     "author": "오렉게",
     "created_at": "2026-06-17 21:09:00",
     "content": "아마존에서 손가락 부목 사서 끼고 주무세요 ㅠ",
-    "recommends": 1,
-    "dislikes": 0,
-    "is_reply": "0",
-    "parent_comment_id": "",
-    "sentiment": 0,
-    "post_id": "15364",
-    "source": "ruliweb",
-    "post_title": "[잡담] 으앙 강제 은퇴네요 [5]"
-  },
-  {
-    "comment_id": "67893",
-    "author": "젠장또당신입니까",
-    "created_at": "2026-06-18 17:10:00",
-    "content": "전 그래서 비싸긴 하지만 듀센엣지를 쓴답니다.... 백버튼으로 대신하니 훨씬 편안",
     "recommends": 1,
     "dislikes": 0,
     "is_reply": "0",
