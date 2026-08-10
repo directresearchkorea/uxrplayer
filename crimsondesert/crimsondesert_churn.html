@@ -487,11 +487,28 @@
             }
         };
 
+        const GAME_FILE_MAP = {
+            '붉은사막': 'crimsondesert',
+            '솔 인챈트': 'solenchant',
+            '솔인챈트': 'solenchant',
+            'AION2': 'aion2',
+            'LoL': 'lol',
+            'Overwatch2': 'overwatch2',
+            '메이플스토리': 'maplestory',
+            '발로란트': 'valorant',
+            '배틀그라운드': 'pubg',
+            'FCOnline': 'fconline'
+        };
+
+        function getSafeGameFilename(game) {
+            return GAME_FILE_MAP[game] || game;
+        }
+
         // Preload the script immediately to speed up download!
         (function() {
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${selectedGame}.js`;
+            script.src = `data_${getSafeGameFilename(selectedGame)}.js`;
             document.head.appendChild(script);
         })();
 
@@ -499,7 +516,7 @@
             let script = document.getElementById('dynamic-data-script');
             
             // If the game has changed, we need to load a new script
-            if (script && !script.src.includes(`data_${game}.js`)) {
+            if (script && !script.src.includes(`data_${getSafeGameFilename(game)}.js`)) {
                 script.remove();
                 script = null;
             }
@@ -507,7 +524,7 @@
             if (!script) {
                 script = document.createElement('script');
                 script.id = 'dynamic-data-script';
-                script.src = `data_${game}.js`;
+                script.src = `data_${getSafeGameFilename(game)}.js`;
                 document.head.appendChild(script);
             }
 
@@ -521,7 +538,7 @@
 
             script.onerror = () => {
                 console.error(`Failed to load data for game: ${game}`);
-                alert(`게임 데이터를 불러올 수 없습니다: data_${game}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
+                alert(`게임 데이터를 불러올 수 없습니다: data_${getSafeGameFilename(game)}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
                 if (game !== '붉은사막') {
                     localStorage.setItem('selectedGame', '붉은사막');
                     window.location.search = `?game=붉은사막`;

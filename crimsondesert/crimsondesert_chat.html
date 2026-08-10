@@ -464,6 +464,39 @@
             background-color: rgba(33, 150, 243, 0.1);
             color: #2196F3;
         }
+
+        /* Period filter selector CSS */
+        .period-toggle-row {
+            display: flex;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 20px;
+            gap: 10px;
+            align-items: center;
+        }
+        .period-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .period-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .period-btn.active {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-color: #2196F3;
+            color: #2196F3;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -535,6 +568,8 @@
                 </div>
             </div>
 
+
+
             <!-- Chat messages box -->
             <div class="chat-messages" id="chat-messages-container">
                 <!-- Dynamically populated bubble rows -->
@@ -588,6 +623,23 @@
             { id: 'FCOnline', name: 'FC Online' }
         ];
 
+        const GAME_FILE_MAP = {
+            '붉은사막': 'crimsondesert',
+            '솔 인챈트': 'solenchant',
+            '솔인챈트': 'solenchant',
+            'AION2': 'aion2',
+            'LoL': 'lol',
+            'Overwatch2': 'overwatch2',
+            '메이플스토리': 'maplestory',
+            '발로란트': 'valorant',
+            '배틀그라운드': 'pubg',
+            'FCOnline': 'fconline'
+        };
+
+        function getSafeGameFilename(game) {
+            return GAME_FILE_MAP[game] || game;
+        }
+
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
         if (selectedGame === '붉은사막_Qwen') {
             selectedGame = '붉은사막';
@@ -602,7 +654,7 @@
             script.id = 'dynamic-data-script';
             const isLocal = window.location.protocol === 'file:';
             const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
-            script.src = `data_${game}.js${buster}`;
+            script.src = `data_${getSafeGameFilename(game)}.js${buster}`;
             script.onload = () => {
                 if (typeof DASHBOARD_DATA !== 'undefined') {
                     callback(DASHBOARD_DATA);
@@ -612,7 +664,7 @@
             };
             script.onerror = () => {
                 console.error(`Failed to load data for game: ${game}`);
-                alert(`게임 데이터를 불러올 수 없습니다: data_${game}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
+                alert(`게임 데이터를 불러올 수 없습니다: data_${getSafeGameFilename(game)}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
                 if (game !== '붉은사막') {
                     localStorage.setItem('selectedGame', '붉은사막');
                     window.location.search = `?game=붉은사막`;
@@ -699,7 +751,7 @@
                 return 'casual';
             }
 
-            // Quick prompts tailored per persona type
+            // Quick prompts tailored per persona type (post-release feedback only)
             const personaPrompts = {
                 'critics': [
                     "최근 패치 이후에 조작감이나 최적화 렉에 대해서 유저들이 주로 어떤 불만을 제기하고 있어?",
@@ -713,8 +765,8 @@
                 ],
                 'core': [
                     "데미안 보스전 난이도나 어비스 던전 파밍에 대한 숙련 유저들의 평가는 어때?",
-                    "게임 이름을 붉은악마로 바꾸자는 유저 글이나, 판매 목표량에 대한 의견은 어때?",
-                    "어비스 기어 합성이나 무기 공격력 밸런스에 관한 공략 글은 주로 어떻게 올라와?"
+                    "어비스 기어 합성이나 무기 공격력 밸런스에 관한 공략 글은 주로 어떻게 올라와?",
+                    "공동 목표 달성을 위한 용병단 모집이나 협력 플레이 관련 코어 팬들의 분위기는 어때?"
                 ],
                 'churn': [
                     "서브 퀘스트를 진행하다가 버그로 막히거나 시스템이 불편해서 중도 포기하겠다는 유저들의 반응은 어때?",
@@ -827,7 +879,7 @@
                         <div class="message-bubble">
                             <div>${msg.text}</div>
                             <div class="message-meta">
-                                <span>${msg.sender === 'user' ? 'PM' : (msg.engine === 'ollama_backend' ? 'Ollama (Qwen)' : (msg.engine === 'gemini_backend' ? 'Gemini API' : (msg.engine === 'local_rag' ? 'Client-side RAG' : 'User Persona')))}</span>
+                                <span>${msg.sender === 'user' ? 'PM' : (msg.engine === 'ollama_backend' ? `Ollama (${msg.model || 'Gemma'})` : (msg.engine === 'gemini_backend' ? `Gemini (${msg.model || '2.5 Flash'})` : (msg.engine === 'local_rag' ? 'Client-side RAG' : 'User Persona')))}</span>
                                 <span>${msg.time}</span>
                             </div>
                         </div>
@@ -877,13 +929,18 @@
                     };
                 }
 
+                // Filter verbatims strictly to post-release feedback (on or after 2026-03-20)
+                const filteredVerbatims = c.verbatims.filter(v => {
+                    return v.date >= '2026-03-20';
+                });
+
                 // Simplified tokenizer
                 const keywords = userInput.toLowerCase()
                     .replace(/[?.,!#\/$%^&*@;:{}=\-_`~()]/g, "")
                     .split(/\s+/).filter(word => word.length > 1);
 
                 // Score verbatims based on keyword overlap
-                let scoredVerbatims = c.verbatims.map(v => {
+                let scoredVerbatims = filteredVerbatims.map(v => {
                     let score = 0;
                     keywords.forEach(kw => {
                         if (v.text.toLowerCase().includes(kw)) {
@@ -944,7 +1001,7 @@
                     }
                 } else {
                     // No keywords matching, retrieve representative sample or default answer
-                    const sampleVerbatims = c.verbatims.slice(0, 5);
+                    const sampleVerbatims = filteredVerbatims.slice(0, 5);
                     const sampleText1 = sampleVerbatims[0] ? sampleVerbatims[0].text : "";
                     
                     if (activeClusterId === 0) {
@@ -952,7 +1009,7 @@
                     } else if (activeClusterId === 1) {
                         synthesizedAnswer = `질문이 조금 어렵네요! 라이트 유저 커뮤니티에서는 보통 큰 생각 없이 플레이 관련 소통을 해요. 평소 이야기하는 내용 중에는 "${sampleText1}" 같은 소소한 대화가 주를 이룬답니다.`;
                     } else if (activeClusterId === 2) {
-                        synthesizedAnswer = `원하시는 정밀한 키워드 논의는 찾기 어렵지만, 파워 유저들의 지지는 지속적입니다. 전체적인 만족도는 매우 높으며, 유저 분위기는 "${sampleText1}" 같이 희망적인 기대감이 주를 이룹니다.`;
+                        synthesizedAnswer = `원하시는 정밀한 키워드 논의는 찾기 어렵지만, 파워 유저들의 지지는 지속적입니다. 전체적인 만족도는 매우 높으며, 유저 분위기는 "${sampleText1}" 같이 희망적인 기대감이 주를 이릅니다.`;
                     } else {
                         synthesizedAnswer = `그 문제에 대해서는 개별적으로 다뤄진 적이 적지만, 이탈 위험 유저들의 심각성은 전체 피드백에서 여실히 드러납니다. 주된 원인은 편의성과 불안정성이며, 유저들은 "${sampleText1}" 같은 불편들로 지친 상황입니다.`;
                     }
@@ -999,6 +1056,7 @@
                 const selectedEngine = engineSelector.value;
                 let personaMsgText = "";
                 let evidenceList = [];
+                let actualModel = "";
 
                 if (selectedEngine === 'local_rag') {
                     // Wait a moment to simulate real chatbot response time
@@ -1007,6 +1065,7 @@
                     const response = generateMockResponse(text);
                     personaMsgText = response.text;
                     evidenceList = response.evidence;
+                    actualModel = "Client Mock";
                 } else {
                     // API Backend Mode: HTTP Request to localhost server
                     try {
@@ -1025,10 +1084,12 @@
                         const data = await res.json();
                         personaMsgText = data.text;
                         evidenceList = data.evidence || [];
+                        actualModel = data.model || "Ollama";
                     } catch (err) {
                         console.error('Error fetching backend API:', err);
                         personaMsgText = `❌ <strong>로컬 API 연동 실패:</strong> <code>execution/persona_chat_server.py</code> 백엔드 서버가 실행 중이지 않거나, 설정하신 AI 엔진이 정상적으로 켜져 있지 않습니다.<br><br>서버 구동을 확인하시거나 Direct Client-RAG (Browser-side Engine) 모드로 설정을 다시 변경해 주세요.`;
                         evidenceList = [];
+                        actualModel = "Error";
                     }
                 }
 
@@ -1041,6 +1102,7 @@
                     sender: 'persona',
                     text: personaMsgText,
                     engine: selectedEngine,
+                    model: actualModel,
                     time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
                 };
                 chatHistories[activeClusterId].push(responseMsg);
