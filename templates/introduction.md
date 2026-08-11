@@ -114,5 +114,3 @@ Applying advanced UXR methodologies to highly anticipated titles.
 # **Ready to level up your player experience?**
 
 Visit us at **[uxrplayer.com](https://www.uxrplayer.com/)**
-
-Contact: [hello@uxrplayer.com](mailto:hello@uxrplayer.com)
