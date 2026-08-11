@@ -2370,6 +2370,26 @@ const COMMENT_DASHBOARD_DATA = {
     "defense_count": 0,
     "agreement_count": 0,
     "neutral_count": 8
+  },
+  {
+    "date": "2026-08-11",
+    "total_posts_with_comments": 5,
+    "total_comments": 12,
+    "total_replies": 5,
+    "rejection_count": 0,
+    "defense_count": 0,
+    "agreement_count": 0,
+    "neutral_count": 5
+  },
+  {
+    "date": "2026-08-12",
+    "total_posts_with_comments": 0,
+    "total_comments": 0,
+    "total_replies": 0,
+    "rejection_count": 0,
+    "defense_count": 0,
+    "agreement_count": 0,
+    "neutral_count": 0
   }
 ],
     top_controversial_posts: [
