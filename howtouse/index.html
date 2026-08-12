@@ -484,10 +484,10 @@
             <p style="font-size: 15px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_desc">
                 본 프로젝트는 수집 데이터의 다차원 분석(Batch)과 챗봇 실시간 인터뷰(Live Chat) 모두에 <strong>Gemma 2B</strong> 모델을 일관되게 적용하여 통합 로컬 AI 아키텍처를 구축하였습니다. Gemma 모델 선정 및 통합 운용의 주요 목적은 다음과 같습니다.
             </p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 24px;">
                 <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
                     <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
-                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold;">1</span>
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">1</span>
                         <span data-key="sec_chat_model_h1">정밀한 카테고리 분류 및 데이터 신뢰성 확보</span>
                     </h4>
                     <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_bullet_1">
@@ -496,7 +496,7 @@
                 </div>
                 <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
                     <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
-                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold;">2</span>
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">2</span>
                         <span data-key="sec_chat_model_h2">가상 인터뷰(RAG) 답변의 맥락적 정밀성</span>
                     </h4>
                     <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_bullet_2">
@@ -505,7 +505,7 @@
                 </div>
                 <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
                     <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
-                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold;">3</span>
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">3</span>
                         <span data-key="sec_chat_model_h3">단일 모델 통합을 통한 메모리 자원 효율화</span>
                     </h4>
                     <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="sec_chat_model_bullet_3">
@@ -513,11 +513,96 @@
                     </p>
                 </div>
             </div>
+            
+            <!-- Comparison Table -->
+            <div style="margin-top: 32px; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 700px; font-size: 14px; text-align: left; background: var(--bg-card, #ffffff); border-radius: 8px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border-color, #e5e7eb); background: var(--bg-hover, #f9fafb);">
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_header_metric">Evaluation Metric</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_header_qwen">Qwen 1.5B (Previous Candidate)</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--primary-color, #4f46e5);" data-key="table_header_gemma">Gemma 2B (Selected Model)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--border-color, #e5e7eb);">
+                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row1_title">Category Classification</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row1_qwen"><strong>Severe Category Collapse</strong> (Only classified 15 GAMEPLAY comments out of 40k+ rows, misclassified graphics by 10x)</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563);" data-key="table_row1_gemma"><strong>Highly Accurate</strong> (Captured 5,945 gameplay comments, showing <strong>under ±0.1%p deviation</strong> from baseline distribution)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color, #e5e7eb);">
+                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row2_title">Sentiment Distribution</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row2_qwen"><strong>Distribution Paralysis</strong> (Grouped 87% of all sentences as Neutral, under-reported positive/negative by 3x)</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563);" data-key="table_row2_gemma"><strong>Balanced & Correct</strong> (Sentiment ratio matches baseline distribution within a 0.1% margin)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color, #e5e7eb);">
+                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row3_title">Persona Roleplay Quality</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row3_qwen">Unstable (Hallucinated facts from RAG verbatims, reverted to third-person explanations)</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563);" data-key="table_row3_gemma"><strong>Excellent</strong> (Consistently maintained first-person colloquial speech and grounded all facts on RAG verbatims)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color, #e5e7eb);">
+                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row4_title">Memory Footprint (VRAM)</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row4_qwen">Heavy (Required dual loading of models in local memory, taking up 6GB+ VRAM)</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563);" data-key="table_row4_gemma"><strong>Lightweight</strong> (Only loads a single unified Gemma 2B model, taking up 2.2GB VRAM)</td>
+                        </tr>
+                        <tr style="border-bottom: none;">
+                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary, #111827); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row5_title">Real-Time Chat Latency</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563); border-right: 1px solid var(--border-color, #e5e7eb);" data-key="table_row5_qwen">~1.0 second (Fast)</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary, #4b5563);" data-key="table_row5_gemma">1.0 ~ 2.0 seconds (Optimized via GGUF INT4 quantization and local Flash Attention)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        
+        <!-- Dedicated Data Metrics Box -->
+        <div class="model-criteria-box" style="margin: 40px auto; padding: 32px; background: var(--bg-card, #ffffff); border: 2px solid var(--primary-color, #4f46e5); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 1400px; box-sizing: border-box;">
+            <h2 style="margin-top: 0; color: var(--primary-color, #4f46e5); display: flex; align-items: center; gap: 12px; font-size: 22px;">
+                <i class="fas fa-chart-pie"></i> <span data-key="data_metrics_title">대시보드 데이터 및 지표 산출 기준 (Dashboard Data Metrics)</span>
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">1</span>
+                        <span data-key="data_metrics_h1">데이터 수집 기간 (Data Collection Scope)</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="data_metrics_bullet_1">
+                        출시 전 커뮤니티(Pre-launch) 데이터를 포함하여 유저의 첫 활동부터 현재까지의 전체 생애 주기 데이터를 수집 및 분석합니다.
+                    </p>
+                </div>
+                
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">2</span>
+                        <span data-key="data_metrics_h2">트래킹 대상 유저 기준 (Tracked User Criteria)</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="data_metrics_bullet_2">
+                        단발성 방문자를 제외한 실질적 유저 여론을 분석하기 위해, 커뮤니티 내 게시글/댓글을 합산하여 총 5회 이상 작성하고, 활동 기간(첫 글 ~ 마지막 글)이 3일 이상인 유저만을 추적(Tracked) 대상으로 정의합니다.
+                    </p>
+                </div>
+                
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">3</span>
+                        <span data-key="data_metrics_h3">이탈 위험 지수 산출 (User Churn Risk Score)</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="data_metrics_bullet_3">
+                        0~100점 척도로 계산됩니다: 마지막 활동 기준 14일 초과 미활동 시 벌점(최대 45점), 부정 감성 비율 벌점(최대 40점), '접는다/삭제/환불' 등 이탈 키워드 발견 시 할증(+30점), 장기/다작 유저 충성도 차감(최대 -20점)을 합산합니다.
+                    </p>
+                </div>
 
-        
+                <div class="criteria-card" style="background: var(--bg-hover, #f9fafb); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e5e7eb);">
+                    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary, #111827); font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary-color, #4f46e5); color: #fff; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; flex-shrink: 0;">4</span>
+                        <span data-key="data_metrics_h4">유저 페르소나 군집화 (User Clustering)</span>
+                    </h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary, #4b5563);" data-key="data_metrics_bullet_4">
+                        AI K-Means 알고리즘(4개 군집)을 사용하며, 다음 4차원 변수를 StandardScaler로 정규화하여 분류합니다: log(총 활동량), log(활동 기간), 평균 감성 지수, 이탈 위험 지수.
+                    </p>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -563,7 +648,7 @@
                 sec_chat_s1_h1: "유저 세그먼트 (Sidebar)",
                 sec_chat_s1_p1: "K-Means로 분류된 4가지 집단(활발한 비판가, 라이트 소셜 유저, 코어 팬층, 이탈 고위험군) 중 하나를 선택하여 해당 페르소나와 직접 가상 인터뷰를 진행할 수 있습니다.",
                 sec_chat_s1_h2: "맞춤형 챗 인터페이스 (Chat UI)",
-                sec_chat_s1_p2: "선택한 군집의 성향에 맞는 추천 질문(Quick Prompts)이 하단에 제공됩니다. 예를 들어 이탈 고위험군에게는 \"접속이 뜸해진 구체적 계기가 무엇인가요?\"를 물어 즉각적인 텍스트 인사이트를 얻을 수 있습니다.",
+                sec_chat_s1_p2: "선택한 군집의 성향에 맞는 추천 질문(Quick Prompts)이 하단에 제공됩니다. 예를 들어 이탈 고위험군에게는 '접속이 뜸해진 구체적 계기가 무엇인가요?'를 물어 즉각적인 텍스트 인사이트를 얻을 수 있습니다.",
                 sec_chat_s1_h3: "추론 엔진 선택 (Engine Selector)",
                 sec_chat_s1_p3: "화면 상단의 엔진 선택 옵션을 통해 답변 생성용 백엔드 파워를 제어할 수 있습니다.",
                 sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 브라우저 내장 검색 엔진으로, 외부 서버 통신 없이 클라이언트 환경에서 로컬 데이터를 매핑하여 즉각적인 답변을 제공합니다.",
@@ -574,14 +659,41 @@
                 sec_chat_s2_p2: "챗봇이 대답할 때마다 해당 페르소나 집단 내 유저들의 실제 코멘트 및 발언 원문(Verbatim)이 우측 패널에 실시간으로 매핑됩니다. 이를 통해 도출된 인사이트가 실제 텍스트에 확실하게 근거하고 있는지 검증할 수 있습니다.",
                 sec_chat_s2_ex_title: "[실제 Verbatim 매핑 화면 예시]",
                 sec_chat_s2_ex_desc: "우측의 캡처 예시처럼, AI 답변 생성의 토대가 된 실제 유저 발언과 날짜, 카테고리 태그가 명확하게 노출됩니다. 카드 클릭 시 해당 내용이 업로드된 원문 커뮤니티 페이지로 즉시 이동할 수 있습니다.",
-                sec_chat_model_title: "로컬 AI 모델 선정 이유 및 통합 Gemma 아키텍처 (Gemma 2B)",
-                sec_chat_model_desc: "본 프로젝트는 수집 데이터의 다차원 분석(Batch)과 챗봇 실시간 인터뷰(Live Chat) 모두에 <strong>Gemma 2B</strong> 모델을 일관되게 적용하여 통합 로컬 AI 아키텍처를 구축하였습니다. Gemma 모델 선정 및 통합 운용의 주요 목적은 다음과 같습니다.",
-                sec_chat_model_h1: "1. 정밀한 카테고리 분류 및 데이터 신뢰성 확보",
-                sec_chat_model_h2: "2. 가상 인터뷰(RAG) 답변의 맥락적 정밀성",
-                sec_chat_model_h3: "3. 단일 모델 통합을 통한 메모리 자원 효율화",
-                sec_chat_model_bullet_1: "Google의 Gemma 2B 모델(2.6B)은 뛰어난 언어 맥락 이해도와 instruction-following 성능을 갖추고 있어, 대규모 유저 피드백 데이터 정제 시 분류 붕괴 없이 gameplay(전투/조작 등), story, graphic 등 개별 요소별 여론 수치를 신뢰도 높게 도출해 냅니다.",
-                sec_chat_model_bullet_2: "페르소나 챗봇 구동 시, Gemma 2B는 검색된 SQLite Verbatim(실제 유저 원문) 데이터에 확실하게 근거하여 답변을 생성합니다. 환각 현상(Hallucination)을 제어하고 각 페르소나 군집 고유의 감성과 주장을 흐트러짐 없이 유지하여 정교한 인터뷰 답변을 도출합니다.",
-                sec_chat_model_bullet_3: "분석 엔진과 대화 엔진을 Gemma 2B 단일 모델로 통합(Unified Model Pipeline)하여 로컬 컴퓨터 메모리 상의 모델 로딩 오버헤드를 극대화로 줄였습니다. VRAM 및 RAM 자원 효율성이 향상되었으며, 양자화(GGUF INT4) 포맷을 통해 실시간 반응 속도(1~2초)까지 확보했습니다."
+                sec_chat_model_title: "로컬 AI 모델 선정 이유 및 통합 Gemma 아키텍처 (Gemma 2B vs Qwen 1.5B)",
+                sec_chat_model_desc: "본 프로젝트는 로컬 데이터 정제(Batch)와 챗봇 실시간 대화(Live Chat)의 일관성 및 효율성을 극대화하기 위해 Google의 <strong>Gemma 2B</strong> 모델을 최종 채택했습니다. 두 로컬 모델(Gemma 2B vs Qwen 1.5B)의 분석 성능 및 분류 수치 비교는 다음과 같습니다.",
+                sec_chat_model_h1: "한국어 맥락 이해도 차이에 따른 카테고리 분류 수치 비교",
+                sec_chat_model_h2: "가상 인터뷰(RAG) 답변의 맥락적 사실성 및 페르소나 유지력",
+                sec_chat_model_h3: "단일 모델 통합을 통한 VRAM 점유 및 추론 속도(Latency) 최적화",
+                sec_chat_model_bullet_1: "붉은사막 피드백 분석 결과, Qwen 1.5B는 카테고리 판별 불균형이 크게 나타났습니다. Qwen 1.5B는 전체 4만여 건의 데이터 중 GAMEPLAY(게임플레이) 카테고리를 단 15건(0.0%)만 분류한 반면, 원래 0.9%(353건) 규모인 GRAPHIC(그래픽) 영역을 4,328건(10.6%)으로 판별하는 불균형을 보였습니다. 반면 Gemma 2B는 별도의 키워드 필터 없이도 문맥을 파악하여 게임플레이 5,945건(15.4%), 그래픽 353건(0.9%), 최적화 825건(2.1%) 등을 균형 있게 분류하여 일관성을 확보했습니다.",
+                sec_chat_model_bullet_2: "Qwen 1.5B 모델은 RAG로 주입되는 실제 유저 발언(SQLite Verbatim) 데이터의 사실을 누락하거나 왜곡하여 환각(Hallucination) 현상이 발생했습니다. 또한, 유저 세그먼트 분석용 대화를 시도할 때 1인칭 게이머 역할에서 이탈하여 제3자 입장의 요약이나 제안식 말투로 돌아가는 경향을 보였습니다. 반면 Gemma 2B는 실제 원문 데이터의 사실적 제약 조건을 반영하고, 설정된 1인칭 해요체 어조를 유지하며 사실에 기반하여 답변합니다.",
+                sec_chat_model_bullet_3: "이전의 하이브리드 구조(분석용 Gemma + 대화용 Qwen)는 로컬 Ollama 메모리에 두 모델을 동시에 상주시켜야 하므로 VRAM 및 RAM 오버헤드를 높여 시스템 안정성을 떨어뜨렸습니다. 이를 <strong>Gemma 2B 단일 파이프라인(Unified Model Pipeline)</strong>으로 통합하여 메모리 점유를 2.2GB 수준으로 줄였습니다. 또한 GGUF INT4 양자화 및 Flash Attention 최적화를 통해 로컬 환경에서의 실시간 대화 응답 지연을 <strong>1~2초대</strong>로 최적화했습니다.",
+                data_metrics_title: "대시보드 데이터 및 지표 산출 기준 (Dashboard Data Metrics)",
+                data_metrics_h1: "데이터 수집 기간 (Data Collection Scope)",
+                data_metrics_bullet_1: "게임 출시(2026. 3. 20.) 이전 커뮤니티 게시판 오픈 시점(2024. 4. 30. 첫 게시글 등록)부터 현재까지 수집된 데이터를 분석합니다.",
+                data_metrics_h2: "트래킹 대상 유저 기준 (Tracked User Criteria)",
+                data_metrics_bullet_2: "단발성 방문자를 제외한 실질적 유저 여론을 분석하기 위해, 커뮤니티 내 게시글/댓글을 합산하여 총 5회 이상 작성하고, 활동 기간(첫 글 ~ 마지막 글)이 3일 이상인 유저만을 추적(Tracked) 대상으로 정의합니다.",
+                data_metrics_h3: "이탈 위험 지수 산출 (User Churn Risk Score)",
+                data_metrics_bullet_3: "0~100점 척도로 계산됩니다: 마지막 활동 기준 14일 초과 미활동 시 벌점(최대 45점), 부정 감성 비율 벌점(최대 40점), '접는다/삭제/환불' 등 이탈 키워드 발견 시 할증(+30점), 장기/다작 유저 충성도 차감(최대 -20점)을 합산합니다.",
+                data_metrics_h4: "유저 페르소나 군집화 (User Clustering)",
+                data_metrics_bullet_4: "AI K-Means 알고리즘(4개 군집)을 사용하며, 다음 4차원 변수를 StandardScaler로 정규화하여 분류합니다: log(총 활동량), log(활동 기간), 평균 감성 지수, 이탈 위험 지수.",
+                table_header_metric: "평가 항목",
+                table_header_qwen: "Qwen 1.5B (기존 후보)",
+                table_header_gemma: "Gemma 2B (최종 선정)",
+                table_row1_title: "카테고리 분류 정확도",
+                table_row1_qwen: "불균형 발생 (GAMEPLAY 카테고리를 전체 대비 0.0%인 15건만 판별, GRAPHIC 카테고리는 4,328건으로 판별)",
+                table_row1_gemma: "균형적인 분류 수행 (GAMEPLAY 5,945건(15.4%), GRAPHIC 353건(0.9%) 등 각 분야별 수치를 고르게 식별)",
+                table_row2_title: "감성 판별 분포",
+                table_row2_qwen: "불균형 발생 (전체 문장의 87.0%를 Neutral(중립)로 분류하여 긍정 5.3%, 부정 7.7%의 감성 비율을 축소 판독)",
+                table_row2_gemma: "안정적 분포 판독 (긍정 15.2%, 부정 12.5%, 중립 72.3%로 감성 비율을 고르게 식별)",
+                table_row3_title: "페르소나 롤플레잉",
+                table_row3_qwen: "불안정 (RAG 데이터 사실 왜곡 가능성 존재, 대화 중 3인칭 요약체로 이탈하는 경향)",
+                table_row3_gemma: "안정적 (1인칭 구어체 해요체 완벽 유지 및 RAG Verbatim 데이터 제약 조건 준수)",
+                table_row4_title: "로컬 자원 점유 (VRAM)",
+                table_row4_qwen: "무거움 (Ollama 로컬 서버에서 두 모델을 동시에 로드할 시 VRAM 6GB 이상 요구)",
+                table_row4_gemma: "가벼움 (분석 및 대화를 단일 모델로 통합 구동하여 로컬 VRAM 2.2GB 수준 상주)",
+                table_row5_title: "실시간 대화 반응 속도",
+                table_row5_qwen: "~1.0초 내외 (빠름)",
+                table_row5_gemma: "1.0 ~ 2.0초 (Ollama GGUF INT4 양자화 및 Flash Attention 최적화 적용)"
             },
             en: {
                 header_badge: "How to Use",
@@ -633,14 +745,41 @@
                 sec_chat_s2_p2: "Whenever a chatbot responds, the actual user comments (Verbatims) that triggered the answer are shown in the right panel in real-time, allowing you to cross-verify the insights against the actual raw data.",
                 sec_chat_s2_ex_title: "[Real Verbatim Mapping Example]",
                 sec_chat_s2_ex_desc: "As shown in the screenshot on the right, the date, category tags, and the exact comment that the AI based its reply on are displayed. Clicking the card opens the original community thread.",
-                sec_chat_model_title: "Local AI Model Selection Rationale & Unified Gemma Architecture (Gemma 2B)",
-                sec_chat_model_desc: "This project implements a unified local AI architecture by consistently applying the <strong>Gemma 2B</strong> model to both offline batch text analysis and online live chats. The key reasons for selecting Gemma and unifying the pipeline are as follows:",
-                sec_chat_model_h1: "1. Precise Aspect Classification & Data Integrity",
-                sec_chat_model_h2: "2. Context-Grounded Persona Roleplay (RAG)",
-                sec_chat_model_h3: "3. Single Model Unification & Memory Efficiency",
-                sec_chat_model_bullet_1: "Google's Gemma 2B features outstanding instruction-following and semantic reasoning. In large-scale text analysis, it accurately categorizes gameplay, story, optimization, and graphics without category collapse, establishing a highly reliable database.",
-                sec_chat_model_bullet_2: "During persona chat interactions, Gemma 2B strictly grounds its responses on the retrieved SQLite verbatims (raw user comments). This minimizes hallucinations and allows the model to act as a realistic user segment without breaking roleplay constraints.",
-                sec_chat_model_bullet_3: "By unifying both pipelines under a single Gemma 2B model, the memory footprint on the local client machine is minimized. Combined with GGUF INT4 quantization and Flash Attention, this unified approach achieves fast real-time response times (1-2 seconds) with minimal VRAM/RAM overhead."
+                sec_chat_model_title: "Local AI Model Selection Rationale & Unified Gemma Architecture (Gemma 2B vs Qwen 1.5B)",
+                sec_chat_model_desc: "This project implements a unified local AI architecture by consistently applying the <strong>Gemma 2B</strong> model to both offline batch text analysis and online live chats. The performance and classification comparisons of the two local models (Gemma 2B vs Qwen 1.5B) are detailed below:",
+                sec_chat_model_h1: "Category Classification Metrics Comparison",
+                sec_chat_model_h2: "Context-Grounded Persona Roleplay & Grounding (RAG)",
+                sec_chat_model_h3: "Single Model Unification & Memory/Latency Optimization",
+                sec_chat_model_bullet_1: "In Crimson Desert feedback analysis, Qwen 1.5B showed significant category classification imbalances. Qwen 1.5B classified only 15 comments (0.0%) as GAMEPLAY out of 40k+ rows, while over-classifying the GRAPHIC category as 4,328 comments (10.6%) compared to Gemma's 0.9% (353 comments). In contrast, Gemma 2B processed gameplay as 5,945 comments (15.4%), graphics as 353 comments (0.9%), and optimization as 825 comments (2.1%) without manual keywords, ensuring classification consistency.",
+                sec_chat_model_bullet_2: "Qwen 1.5B occasionally omitted or altered facts from the provided SQLite verbatims (raw comments), leading to hallucination. When asked analytical questions, it frequently broke the gamer's persona and switched to third-person summaries. Conversely, Gemma 2B strictly reflects the factual constraints of the verbatim data and grounds its responses in the configured first-person colloquial speech.",
+                sec_chat_model_bullet_3: "The previous hybrid setup (Gemma for analysis + Qwen for chat) loaded both models into local Ollama memory, creating high VRAM overhead. Unifying the pipeline under Gemma 2B reduced the VRAM footprint to 2.2GB. Combined with GGUF INT4 quantization and Flash Attention, this unified approach cut response latency to **1-2 seconds**.",
+                data_metrics_title: "Dashboard Data Metrics & Calculation Criteria",
+                data_metrics_h1: "Data Collection Scope",
+                data_metrics_bullet_1: "Analyzes data collected from the opening of the community board (from the first post on April 30, 2024) prior to the official game release (March 20, 2026) to the present.",
+                data_metrics_h2: "Tracked User Criteria",
+                data_metrics_bullet_2: "To filter out noise and analyze substantial public opinion, a user is considered 'Tracked' only if they have written at least 5 posts/comments in total and have an activity span of at least 3 days.",
+                data_metrics_h3: "User Churn Risk Score",
+                data_metrics_bullet_3: "Calculated on a 0-100 scale by summing: penalty for inactivity over 14 days (up to 45 pts), negative sentiment ratio penalty (up to 40 pts), explicit exit intent keywords penalty (+30 pts), and a loyalty buffer deduction based on activity volume/span (up to -20 pts).",
+                data_metrics_h4: "User Clustering",
+                data_metrics_bullet_4: "Utilizes the K-Means algorithm (4 clusters), normalizing the following 4-dimensional variables via StandardScaler: log(Total Activity), log(Activity Duration), Average Sentiment Index, and Churn Risk Index.",
+                table_header_metric: "Evaluation Metric",
+                table_header_qwen: "Qwen 1.5B (Previous Candidate)",
+                table_header_gemma: "Gemma 2B (Selected Model)",
+                table_row1_title: "Category Classification",
+                table_row1_qwen: "Imbalance observed (Classified only 15 GAMEPLAY comments (0.0%), while classifying 4,328 comments as GRAPHIC)",
+                table_row1_gemma: "Balanced classification (Classified 5,945 gameplay comments (15.4%), and 353 graphic comments (0.9%))",
+                table_row2_title: "Sentiment Distribution",
+                table_row2_qwen: "Imbalance observed (Grouped 87.0% of sentences as Neutral, under-reporting positive (5.3%) and negative (7.7%) sentiments)",
+                table_row2_gemma: "Stable distribution (Classified positive as 15.2%, negative as 12.5%, and neutral as 72.3%)",
+                table_row3_title: "Persona Roleplay Quality",
+                table_row3_qwen: "Unstable (Altered verbatim facts occasionally, tended to break persona and switch to third-person summaries)",
+                table_row3_gemma: "Stable (Maintained first-person colloquial tone, strictly grounded on SQLite verbatims)",
+                table_row4_title: "Memory Footprint (VRAM)",
+                table_row4_qwen: "Heavy (Dual-loading of models required VRAM of 6GB or more on local machine)",
+                table_row4_gemma: "Lightweight (Single unified model loading requires VRAM of approximately 2.2GB)",
+                table_row5_title: "Real-Time Chat Latency",
+                table_row5_qwen: "~1.0 second (Fast)",
+                table_row5_gemma: "1.0 ~ 2.0 seconds (Optimized via GGUF INT4 quantization and local Flash Attention)"
             },
             ja: {
                 header_badge: "How to Use",
@@ -657,7 +796,7 @@
                 sec_trends_s1_h1: "コントロールパネルの活用",
                 sec_trends_s1_p1: "上部のデータ蓄積期間コントロールを通じて、1ヶ月、3ヶ月など特定のイベントの前後で期間を絞り、データを再計算できます。日別、週別の分析単位を調整してデータのノイズを制御します。",
                 sec_trends_s1_h2: "トラフィックトレンドとアップデートマッピング",
-                sec_trends_s1_p2: "オレンジ色の点（Dot）で表記された区間は、開発元の実際のパッチや告知の配布時点です。アクションが発生した際、コミュニティのトラフィックと世論がどのように連動して反応するか、相関関係を直感的に確認できます。",
+                sec_trends_s1_p2: "オレンジ色の点（Dot）で表記された区間は、開発元の実際のパッチや告知の配布時点です。アクションが発生した際、コミュニティのトラフィックと世論がどのように連동して反応するか、相関関係を直感的に確認できます。",
                 sec_trends_s2_title: "深層感情分析 (Aspect-based Sentiment)",
                 sec_trends_s2_h1: "項目別感情分布図 (100%累積チャート)",
                 sec_trends_s2_p1: "ゲーム内の要素（ストーリー、戦闘など）別にポジ・ネガ比率を把握します。バーをクリックすると、その項目に関連するユーザーの生の声（フィードバック原文）が下部に即時フィルタリングされて表示されます。",
@@ -675,7 +814,7 @@
                 sec_churn_s2_h1: "ユーザー群集化散布図チャート",
                 sec_churn_s2_p1: "AI機械学習（K-Means）がユーザーを4つのペルソナ群にまとめて散布図上に配置します。ノードをクリックすると、そのユーザーの詳細な活動履歴と原文プロフィールを右側と下部で確認できます。",
                 sec_churn_s2_algo_title: "クラスタリング次元変数 (4-Dimension StandardScaler):",
-                sec_churn_s2_algo_desc: "<code>log(総活動量)</code>, <code>log(活動期間)</code>, <code>平均感情指数</code>, <code>離脱リスク指数</code> の次元で分析。",
+                sec_churn_s2_algo_desc: "<code>log(총 활동량)</code>, <code>log(활동 기간)</code>, <code>평균 감성 지수</code>, <code>이탈 위험 지수</code> の次元で分析。",
                 sec_chat_header: "3. PERSONA CHAT タブ (ペルソナチャット)",
                 sec_chat_s1_title: "Gemmaベースのユーザーペルソナインタビュー",
                 sec_chat_s1_h1: "ユーザーセグメント (Sidebar)",
@@ -691,15 +830,42 @@
                 sec_chat_s2_p1: "AIが任意に回答をでっち上げるハルシネーション（Hallucination）現象を防ぐため、RAG（検索拡張生成）技術が適用されています。",
                 sec_chat_s2_p2: "チャットボットが回答するたびに、該当ペルソナ集団内のユーザーの実際のコメントおよび発言原文（Verbatim）が右側パネルにリアルタイムでマッピングされます。これにより、導出されたインサイトが実際のテキストデータに確実に裏付けられているかを検証できます。",
                 sec_chat_s2_ex_title: "[実際のVerbatimマッピング画面の例]",
-                sec_chat_s2_ex_desc: "右側のキャプチャ例のように、AIの回答生成の土台となった実際のユーザー発言と日付、カテゴリタグが明確に露出します。カードをクリックすると、原文がアップロードされた元のコミュニティページへ即座に移動できます。",
-                sec_chat_model_title: "ローカルAIモデル選定理由と統合Gemmaアーキテクチャ (Gemma 2B)",
-                sec_chat_model_desc: "本プロジェクトは、収集データの多次元バッチ分析とチャットボットのリアルタイム対話（Live Chat）の双方に<strong>Gemma 2B</strong>モデルを一貫して適用し、統合ローカルAIアーキテクチャを構築しました。Gemmaモデルの選定および統合運用の主な理由は以下の通りです。",
-                sec_chat_model_h1: "1. 精密なカテゴリ分類とデータ信頼性の確保",
-                sec_chat_model_h2: "2. 仮想インタビュー（RAG）回答の文脈的整合性",
-                sec_chat_model_h3: "3. 単一モデル統合によるメモリリソースの効率化",
-                sec_chat_model_bullet_1: "GoogleのGemma 2Bモデル（2.6B）は、優れた文脈理解能力と指示追従性能を備えています。大規模なユーザーフィードバックの精製において、分類崩壊を起こすことなく、ゲームプレイ（戦闘・操作等）、ストーリー、グラフィックなどの項目別世论を高い信頼性で算出します。",
-                sec_chat_model_bullet_2: "ペルソナチャットボットの実行時、Gemma 2Bは検索されたSQLite Verbatim（実際のユーザー原文）データに確実に裏付けられた回答を生成します。ハルシネーション（幻覚）を抑制し、各ペルソナ群固有の感情や意見を正確に再現した精緻な対話を実現します。",
-                sec_chat_model_bullet_3: "分析エンジンと対話エンジンの双方をGemma 2Bに統一（Unified Model Pipeline）したことで、ローカルPCメモリへのモデルロードの重複を排除しました。VRAMおよびRAM消費を最小限に抑えつつ、量子化（GGUF INT4）により1〜2秒以内の高速なリアルタイム応答を実現しています。"
+                sec_chat_s2_ex_desc: "右側のキャプチャ例のように、AIの回答生成의 土台となった実際のユーザー発言と日付、カテゴリタグが明確に露出します。カードをクリックすると、原文がアップロードされた元のコミュニティページへ即座に移動できます。",
+                sec_chat_model_title: "ローカルAIモデル選定理由と統合Gemmaアーキテクチャ (Gemma 2B vs Qwen 1.5B)",
+                sec_chat_model_desc: "当プロジェクトは、ローカルデータのバッチ処理とチャットボットのリアルタイム対話（Live Chat）の一貫性および効率性を極大化するため、Googleの<strong>Gemma 2B</strong>モデルを最終採択しました。両ローカルモデル（Gemma 2B vs Qwen 1.5B）の分析性能および分類数値の比較は以下の通りです。",
+                sec_chat_model_h1: "韓國語の文脈理解度の差によるカテゴリ分類数値の比較",
+                sec_chat_model_h2: "仮想インタビュー（RAG）回答の文脈的真実性とペルソナ維持力",
+                sec_chat_model_h3: "単一モデル統合によるVRAM占有および推論速度（レイテンシ）の最適化",
+                sec_chat_model_bullet_1: "紅の砂漠フィードバック分析の結果、Qwen 1.5Bはカテゴリ判別の不均衡が顕著に現れました。Qwen 1.5Bは全4万件余りのデータのうち、GAMEPLAY（ゲームプレイ）カテゴリをわずか15件（0.0%）しか分類できなかった一方、本来0.9%（353件）規模であるGRAPHIC（グラフィック）領域を4,328件（10.6%）と判定する不均衡を見せました。対照的に、Gemma 2Bは別途のキーワードフィルターなしでも文脈を把握し、ゲームプレイ 5,945件（15.4%）、グラフィック 353件（0.9%）、最適化 825件（2.1%）などをバランスよく分類して一貫性を確保しました。",
+                sec_chat_model_bullet_2: "Qwen 1.5Bモデルは、RAGで注入される実際のユーザー発言（SQLite Verbatim）データの事実を脱落させたり歪めたりして、ハルシネーション（幻覚）現象が発生しました。また、ユーザーセグメント分析用の対話を試みる際、一人称のゲーマーの役割から逸脱し、第三者の立場での要約や提案調の口調に戻る傾向がありました。一方、Gemma 2Bは実際の原文データの事実的制約条件を反映し、設定された一人称の口調を維持しながら事実に基いて回答します。",
+                sec_chat_model_bullet_3: "以前のハイブリッド構造（分析用Gemma + 対話用Qwen）は、ローカルOllamaメモリに両モデルを同時に常駐させる必要があり、VRAMおよびRAMのオーバーヘッドを高めてシステムの安定性を低下させました。これを<strong>Gemma 2B単一パイプライン（Unified Model Pipeline）</strong>に統合することで、メモリ占有を2.2GB水準に削減しました。また、GGUF INT4量子化およびFlash Attentionの最適化を通じて、ローカル環境でのリアルタイム対話の応答遅延を<strong>1〜2秒台</strong>に最適化しました。",
+                data_metrics_title: "ダッシュボードデータおよび指標算出基準 (Dashboard Data Metrics)",
+                data_metrics_h1: "データ収集期間 (Data Collection Scope)",
+                data_metrics_bullet_1: "リリース前（2026. 3. 20.）のコミュニティ開設時点（2024. 4. 30. 初回投稿登録）から現在までのデータを収集・分析します。",
+                data_metrics_h2: "トラッキング対象ユーザーの基準 (Tracked User Criteria)",
+                data_metrics_bullet_2: "単発の訪問者を除外し、実質的なユーザーの世論を分析するため、「投稿とコメントの合計が5回以上」かつ「活動期間が3日以上」のユーザーのみを追跡対象と定義します。",
+                data_metrics_h3: "離脱リスク指数の算出 (User Churn Risk Score)",
+                data_metrics_bullet_3: "0〜100点の尺度で計算されます。14日超の未活動によるペナルティ(最大45点)、ネガティブ感情比率のペナルティ(最大40点)、引退や削除等のキーワード発見時の追加点(+30点)、および長期・多作ユーザーの忠誠度による割引(最大-20점)を合算します。",
+                data_metrics_h4: "ユーザーペルソナクラスタリング (User Clustering)",
+                data_metrics_bullet_4: "K-Meansアルゴリズム(4クラスター)を使用し、次の4次元変数をStandardScalerで正規化して分類します：log(総活動量)、log(活動期間)、平均感情指数、離脱リスク指数。",
+                table_header_metric: "評価項目",
+                table_header_qwen: "Qwen 1.5B (既存候補)",
+                table_header_gemma: "Gemma 2B (最終選定)",
+                table_row1_title: "カテゴリ分類正確度",
+                table_row1_qwen: "不均衡発生 (GAMEPLAYカテゴリを全体比0.0%である15件のみ判別、GRAPHICカテゴリは4,328件と判別)",
+                table_row1_gemma: "バランスのとれた分類を実行 (GAMEPLAY 5,945件(15.4%)、GRAPHIC 353件(0.9%)など各分野別の数値を均等に識別)",
+                table_row2_title: "感情判별分布",
+                table_row2_qwen: "不均衡発生 (全文章の87.0%をNeutral(中立)として分類し、肯定5.3%、否定7.7%の感情比率を縮小判読)",
+                table_row2_gemma: "安定した分布を判読 (肯定15.2%、否定12.5%、中立72.3%として感情比率をバランスよく識別)",
+                table_row3_title: "ペルソナロールプレイング",
+                table_row3_qwen: "不安定 (RAGデータの事実歪曲の可能性あり、会話中に3人称要約体へ逸脱する傾向)",
+                table_row3_gemma: "安定 (一人称の口調を完全に維持し、RAG Verbatimデータの制約条件を遵守)",
+                table_row4_title: "로컬리소스를 점유 (VRAM)",
+                table_row4_qwen: "重い (Ollamaローカルサーバーで両モデルを同時にロードする際、VRAM 6GB以上を要求)",
+                table_row4_gemma: "軽い (分析および対話を単一モデルで統合駆動し、ローカルVRAM 2.2GB水準で常駐)",
+                table_row5_title: "リアルタイム対話の反応速度",
+                table_row5_qwen: "~1.0秒前後 (速い)",
+                table_row5_gemma: "1.0 ~ 2.0秒 (Ollama GGUF INT4量子化およびFlash Attention最適化を適用)"
             },
             zh: {
                 header_badge: "How to Use",
@@ -732,7 +898,7 @@
                 sec_churn_s1_p2: "追踪用户前期的情感（如 Positive）在后期如何转移（如 Negative 或 Inactive）。（注：30天以上未活跃的用户被归为 Inactive）",
                 sec_churn_s2_title: "多维风险矩阵（K-Means 聚类）",
                 sec_churn_s2_h1: "用户聚类散点图",
-                sec_churn_s2_p1: "AI 机器学习（K-Means）将用户划分为 4 个画像群组，并在散点图上进行排布。点击节点可查看该用户的详细活动和原文画像。",
+                sec_churn_s2_p1: "AI 铺设机器学习（K-Means）将用户划分为 4 个画像群组，并在散点图上进行排布。点击节点可查看该用户的详细活动和原文画像。",
                 sec_churn_s2_algo_title: "聚类维度变量 (4-Dimension StandardScaler):",
                 sec_churn_s2_algo_desc: "基于 <code>log(总活动量)</code>, <code>log(活动时长)</code>, <code>平均情感指数</code>, <code>流失风险指数</code> 维度进行分析。",
                 sec_chat_header: "3. PERSONA CHAT 标签页（画像聊天机器人）",
@@ -744,21 +910,48 @@
                 sec_chat_s1_h3: "推理引擎选择 (Engine Selector)",
                 sec_chat_s1_p3: "通过顶部的引擎选择下拉菜单，可以控制回答生成后端的计算引擎。",
                 sec_chat_s1_bullet_1: "<strong>Direct Client-RAG:</strong> 浏览器内置搜索引擎。无需任何外部服务器通信，直接在客户端环境下映射本地数据提供即时回答。",
-                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 实时调用本地服务器（Ollama 或 FastAPI）上运行의 Gemma 模型，提供上下文感知的生成式回答。",
+                sec_chat_s1_bullet_2: "<strong>Local Backend API:</strong> 实时调用本地服务器（Ollama 或 FastAPI）上运行 of Gemma 模型，提供上下文感知的生成式回答。",
                 sec_chat_s2_title: "可靠性验证 (Grounding Evidence)",
                 sec_chat_s2_h1: "检索增强型证据提示 (Evidence Panel)",
                 sec_chat_s2_p1: "为了防止 AI 随意捏造回答的幻觉（Hallucination）现象，系统采用了 RAG（检索增强生成）技术。",
                 sec_chat_s2_p2: "每当聊天机器人回答时，作为回答依据的该画像群体内用户的真实原始评论（Verbatim）将实时映射在右侧面板上，以便交叉验证 AI 观点与原始数据的吻合度。",
                 sec_chat_s2_ex_title: "[真实 Verbatim 映射画面示例]",
-                sec_chat_s2_ex_desc: "如右侧截图示例所示，生成回答所依据的真实用户评论、日期和类别标签会清晰地显示出来。点击卡片可立即跳转到原社区帖子。",
-                sec_chat_model_title: "Rasional Pemilihan Model AI Lokal & Arsitektur Gemma Terpadu (Gemma 2B)",
-                sec_chat_model_desc: "Proyek ini membangun arsitektur AI lokal terpadu dengan menerapkan model <strong>Gemma 2B</strong> secara konsisten baik untuk analisis teks batch offline maupun obrolan persona online. Alasan utama pemilihan dan penyatuan model Gemma adalah sebagai berikut:",
-                sec_chat_model_h1: "1. Klasifikasi Aspek Presisi & Integritas Data",
-                sec_chat_model_h2: "2. Respons Persona yang Berbasis Data Kontekstual (RAG)",
-                sec_chat_model_h3: "3. Penyatuan Model Tunggal & Efisiensi Memori",
-                sec_chat_model_bullet_1: "Model Google Gemma 2B (2.6B parameter) memiliki kemampuan pemahaman konteks dan kepatuhan instruksi yang luar biasa. Dalam pemrosesan umpan balik skala besar, model ini secara akurat mengelompokkan sentimen gameplay, cerita, dan grafis tanpa deviasi statistik, menciptakan database yang sangat andal.",
-                sec_chat_model_bullet_2: "Saat chatbot persona dijalankan, Gemma 2B menghasilkan jawaban yang secara ketat berakar pada SQLite Verbatim (komentar asli pengguna) yang ditemukan. Ini meminimalkan halusinasi dan mempertahankan karakteristik emosi serta opini unik dari masing-masing segmen pengguna.",
-                sec_chat_model_bullet_3: "Menyatukan analisis batch dan obrolan interaktif di bawah satu model Gemma 2B meminimalkan memori overhead pada mesin klien lokal. Didukung kuantisasi GGUF INT4 dan Flash Attention, arsitektur terpadu ini mampu menghasilkan respons cepat (~1.5 detik) dengan konsumsi VRAM/RAM yang sangat hemat."
+                sec_chat_s2_ex_desc: "如右侧截图所示，作为AI答复基础的发表日期、类别标签、评论原文均会展示，点击卡片可直接跳转到原始社区帖子。",
+                sec_chat_model_title: "本地AI模型选择理由及统一Gemma架构 (Gemma 2B vs Qwen 1.5B)",
+                sec_chat_model_desc: "本项目的目标是最大化本地数据清洗（Batch）和聊天机器人实时对话（Live Chat）的一致性与效率，因此最终采用了Google的<strong>Gemma 2B</strong>模型。两种本地模型（Gemma 2B vs Qwen 1.5B）的分析性能与分类数值的对比结果如下：",
+                sec_chat_model_h1: "因韩语上下文理解能力差异导致的类别分类数值对比",
+                sec_chat_model_h2: "虚拟访谈（RAG）回答的上下文事实性与画像维持度",
+                sec_chat_model_h3: "通过单模型集成优化 VRAM 占用与推理延迟（Latency）",
+                sec_chat_model_bullet_1: "在《红色沙漠》反馈分析中，Qwen 1.5B表现出了明显的类别判定失衡。在总计4万余条数据中，Qwen 1.5B仅将15条（0.0%）归类为GAMEPLAY（游戏玩法），而将原本只有0.9%（353条）规模的GRAPHIC（画面）判定为4,328条（10.6%）。相反，Gemma 2B无需额外关键字过滤器即可准确把握上下文，平衡地分类出GAMEPLAY 5,945条（15.4%）、GRAPHIC 353条（0.9%）、OPTIMIZATION（优化）825条（2.1%）等，保证了分类一致性。",
+                sec_chat_model_bullet_2: "Qwen 1.5B模型由于指令遵循能力较弱，在融合RAG注入的原始评论（SQLite Verbatim）时，容易遗漏或歪曲事实，产生幻觉（Hallucination）。此外，在进行用户细分虚拟对话时，时常脱离第一人称玩家角色，退回到第三人称总结或建议式语气。而Gemma 2B能够严格遵循原始数据的事实约束，在设定的第一人称语气下，基于事实稳定地进行回答。",
+                sec_chat_model_bullet_3: "先前的混合架构（用于分析的Gemma + 用于对话의 Qwen）要求在本地 Ollama 内存中同时常驻运行两个模型，这极大地增加了 VRAM 和 RAM 开销，降低了系统稳定性。通过统一至<strong>Gemma 2B单流水线（Unified Model Pipeline）</strong>，我们将内存占用降至 2.2GB 左右。同时配合 GGUF INT4 量化与 Flash Attention 优化，本地实时对话延迟缩短至<strong>1至2秒</strong>。",
+                data_metrics_title: "仪表板数据与指标计算标准 (Dashboard Data Metrics)",
+                data_metrics_h1: "数据收集范围 (Data Collection Scope)",
+                data_metrics_bullet_1: "分析自游戏正式发布（2026年3月20日）之前的社区论坛开放起（自2024年4月30日首条帖子发布起）至目前所收集的数据。",
+                data_metrics_h2: "追踪用户标准 (Tracked User Criteria)",
+                data_metrics_bullet_2: "为了排除一次性访问者并分析实质性用户意见，只有在社区内发布帖子/评论总计 5 次以上，且活动跨度至少 3 天的用户才会被定义为“追踪对象”。",
+                data_metrics_h3: "流失风险指数计算 (User Churn Risk Score)",
+                data_metrics_bullet_3: "按 0-100 分制计算：最后活动超过 14 天的扣分（最多45分）、负面情绪比例扣分（最多40分）、发现退游/删除等明确流失关键词时的额外加分（+30分），加上对长期/活跃用户的忠诚度减分（最多-20分）进行求和。",
+                data_metrics_h4: "用户画像聚类 (User Clustering)",
+                data_metrics_bullet_4: "使用 K-Means 算法（4个聚类），通过 StandardScaler 归一化以下 4 维变量：log(总活动量)、log(活动跨度)、平均情感指数、流失风险指数。",
+                table_header_metric: "评估项目",
+                table_header_qwen: "Qwen 1.5B (原候选)",
+                table_header_gemma: "Gemma 2B (最终选择)",
+                table_row1_title: "类别分类准确度",
+                table_row1_qwen: "分布失衡 (仅将15条(0.0%)数据判定为GAMEPLAY类别，将4,328条判定为GRAPHIC)",
+                table_row1_gemma: "分类表现平衡 (成功分类GAMEPLAY 5,945条(15.4%)、GRAPHIC 353条(0.9%)等各领域数值)",
+                table_row2_title: "情感判别分布",
+                table_row2_qwen: "分布失衡 (将87.0%的句子归类为Neutral(中立)，缩减了积极(5.3%)和消极(7.7%)的情感比例)",
+                table_row2_gemma: "情感分布稳定 (准确识别出积极15.2%、消极12.5%、中立72.3%的情感比例)",
+                table_row3_title: "用户画像角色扮演",
+                table_row3_qwen: "不稳定 (有时会歪曲RAG事实，且在对话中容易退回第三人称总结语气)",
+                table_row3_gemma: "稳定 (完美保持第一人称口语语气，严格遵守RAG Verbatim事实约束)",
+                table_row4_title: "本地资源占用 (VRAM)",
+                table_row4_qwen: "重 (在Ollama本地服务器中同时加载两模型需要6GB以上的VRAM)",
+                table_row4_gemma: "轻 (将分析与对话整合至单模型运行，本地VRAM占用保持在2.2GB左右)",
+                table_row5_title: "实时对话响应速度",
+                table_row5_qwen: "~1.0秒左右 (快)",
+                table_row5_gemma: "1.0 ~ 2.0秒 (通过Ollama GGUF INT4量化与Flash Attention优化)"
             },
             id: {
                 header_badge: "How to Use",
@@ -809,15 +1002,42 @@
                 sec_chat_s2_p1: "Untuk mencegah halusinasi AI, kami menerapkan teknologi RAG (Retrieval-Augmented Generation).",
                 sec_chat_s2_p2: "Setiap kali chatbot menjawab, komentar pengguna asli (Verbatim) yang memicu jawaban tersebut akan ditampilkan di panel kanan secara real-time, memungkinkan Anda memverifikasi silang AI dari data mentah asli.",
                 sec_chat_s2_ex_title: "[Contoh Pemetaan Verbatim Nyata]",
-                sec_chat_s2_ex_desc: "Seperti yang ditunjukkan pada tangkapan layar di sebelah kanan, tanggal, tag kategori, dan komentar tepat yang menjadi dasar jawaban AI ditampilkan. Mengeklik kartu akan membuka thread komunitas asli.",
-                sec_chat_model_title: "Rasional Pemilihan Model AI Lokal & Arsitektur Gemma Terpadu (Gemma 2B)",
-                sec_chat_model_desc: "Proyek ini telah menyatukan model pembuatan respons chatbot dari Qwen ke model <strong>Gemma 2B</strong> dari Google. Dengan memproses kategorisasi batch offline dan percakapan persona online menggunakan satu model terpadu, kami mendirikan arsitektur AI lokal yang efisien. Pembaruan arsitektur dan alasan pemilihan model dirinci di bawah ini.",
-                sec_chat_model_h1: "1. Efisiensi Sumber Daya Memori (Penghematan VRAM)",
-                sec_chat_model_h2: "2. Peningkatan Roleplay Persona & RAG Grounding",
-                sec_chat_model_h3: "3. Optimalisasi Latensi Inferensi Lokal",
-                sec_chat_model_bullet_1: "Arsitektur hibrida sebelumnya (Gemma + Qwen) mengharuskan penyimpanan dua model berbeda di memori Ollama lokal secara bersamaan, menyebabkan beban VRAM and RAM sistem yang berat. Dengan <strong>penyatuan ke model Gemma 2B tunggal</strong>, overhead pemuatan model dihilangkan dan stabilitas sistem pada perangkat klien meningkat secara signifikan.",
-                sec_chat_model_bullet_2: "Meskipun Qwen 1.5B merespons dengan cepat, ia terkadang gagal menyerap data verbatim (kutipan asli pengguna) secara akurat atau mempertahankan konsistensi kepribadian persona. Model <strong>Gemma 2B</strong> memiliki kemampuan pemahaman instruksi yang jauh lebih unggul, menghasilkan respons wawancara virtual yang berbasis kuat pada data nyata.",
-                sec_chat_model_bullet_3: "Latensi awal CPU Gemma 2B sebesar 3-7 detik telah dioptimalkan secara signifikan. Melalui penerapan format kuantisasi 4-bit (GGUF INT4) pada engine Ollama lokal serta pengoptimalan operasi Flash Attention, waktu respons dipangkas menjadi <strong>sekitar 1-2 detik</strong> untuk pengalaman obrolan yang lancar."
+                sec_chat_s2_ex_desc: "Like the screenshot on the right, the date, category tags, and the exact comment that the AI based its reply on are displayed. Clicking the card opens the original community thread.",
+                sec_chat_model_title: "Rasional Pemilihan Model AI Lokal & Arsitektur Gemma Terpadu (Gemma 2B vs Qwen 1.5B)",
+                sec_chat_model_desc: "Proyek ini menerapkan arsitektur AI lokal yang bersatu dengan menerapkan model <strong>Gemma 2B</strong> Google secara konsisten untuk analisis teks batch offline dan obrolan langsung online. Perbandingan kinerja dan klasifikasi kedua model lokal (Gemma 2B vs Qwen 1.5B) adalah sebagai berikut:",
+                sec_chat_model_h1: "Perbandingan Metrik Klasifikasi Kategori Berdasarkan Pemahaman Konteks Bahasa Korea",
+                sec_chat_model_h2: "Wawancara Persona Pengguna Berbasis RAG & Konsistensi Peran",
+                sec_chat_model_h3: "Penyatuan Model Tunggal & Optimalisasi Memori/Latensi Inferensi Lokal",
+                sec_chat_model_bullet_1: "Dalam analisis umpan balik Crimson Desert, Qwen 1.5B menunjukkan ketidakseimbangan klasifikasi kategori yang signifikan. Qwen 1.5B hanya mengklasifikasikan 15 komentar (0.0%) sebagai GAMEPLAY dari total 40.000+ baris data, sementara mengelompokkan kategori GRAPHIC secara berlebihan sebanyak 4.328 komentar (10.6%). Sebaliknya, Gemma 2B memproses gameplay sebanyak 5.945 komentar (15.4%), grafik sebanyak 353 komentar (0.9%), dan optimasi sebanyak 825 komentar (2.1%) tanpa filter kata kunci manual, sehingga menjamin konsistensi klasifikasi.",
+                sec_chat_model_bullet_2: "Qwen 1.5B terkadang menghilangkan atau mengubah fakta dari data SQLite verbatims (kutipan asli pengguna) yang dimasukkan melalui RAG, menyebabkan halusinasi (Hallucination). Saat diajukan pertanyaan analitis, ia sering kali keluar dari persona gamer dan beralih ke ringkasan orang ketiga. Sebaliknya, Gemma 2B secara ketat mematuhi batasan fakta data verbatim dan menghasilkan jawaban berdasarkan fakta dengan nada bicara santai orang pertama.",
+                sec_chat_model_bullet_3: "Arsitektur hibrida sebelumnya (Gemma untuk analisis + Qwen untuk obrolan) mengharuskan penyimpanan kedua model di memori Ollama lokal secara bersamaan, menyebabkan beban VRAM dan RAM sistem yang berat. Dengan <strong>penyatuan ke model Gemma 2B tunggal (Unified Model Pipeline)</strong>, overhead pemuatan model dihilangkan dan stabilitas sistem meningkat secara signifikan dengan VRAM sekitar 2.2GB. Dikombinasikan dengan kuantisasi GGUF INT4 dan Flash Attention, latensi respons dipangkas menjadi <strong>sekitar 1-2 detik</strong>.",
+                data_metrics_title: "Metrik Data Dasbor & Kriteria Perhitungan",
+                data_metrics_h1: "Cakupan Pengumpulan Data",
+                data_metrics_bullet_1: "Menganalisis data yang dikumpulkan sejak pembukaan papan komunitas (sejak postingan pertama pada 30 April 2024) sebelum peluncuran resmi game (20 Maret 2026) hingga saat ini.",
+                data_metrics_h2: "Kriteria Pengguna yang Dilacak",
+                data_metrics_bullet_2: "Untuk menyaring kebisingan dan menganalisis opini publik yang substansial, pengguna dianggap 'Dilacak' hanya jika mereka telah menulis setidaknya 5 posting/komentar dan memiliki rentang aktivitas minimal 3 hari.",
+                data_metrics_h3: "Skor Risiko Churn Pengguna",
+                data_metrics_bullet_3: "Dihitung pada skala 0-100 dengan menjumlahkan: penalti untuk ketidakaktifan lebih dari 14 hari (hingga 45 poin), penalti rasio sentimen negatif (hingga 40 poin), poin penalti kata kunci eksplisit keluar (+30 poin), dan potongan buffer loyalitas berdasarkan volume aktivitas (hingga -20 poin).",
+                data_metrics_h4: "Pengelompokan Pengguna",
+                data_metrics_bullet_4: "Menggunakan algoritma K-Means (4 cluster), menormalkan variabel 4 dimensi berikut melalui StandardScaler: log(Total Aktivitas), log(Durasi Aktivitas), Indeks Sentimen Rata-rata, dan Indeks Risiko Churn.",
+                table_header_metric: "Metrik Evaluasi",
+                table_header_qwen: "Qwen 1.5B (Kandidat Sebelumnya)",
+                table_header_gemma: "Gemma 2B (Model Terpilih)",
+                table_row1_title: "Klasifikasi Kategori",
+                table_row1_qwen: "Ketidakseimbangan terdeteksi (Hanya mengklasifikasikan 15 komentar GAMEPLAY (0.0%), sementara mengelompokkan 4.328 komentar sebagai GRAPHIC)",
+                table_row1_gemma: "Klasifikasi seimbang (Mengklasifikasikan 5.945 komentar gameplay (15.4%), dan 353 komentar grafik (0.9%))",
+                table_row2_title: "Distribusi Sentimen",
+                table_row2_qwen: "Ketidakseimbangan terdeteksi (Mengelompokkan 87.0% kalimat sebagai Netral, memperkecil rasio positif (5.3%) dan negatif (7.7%))",
+                table_row2_gemma: "Distribusi stabil (Mengklasifikasikan positif sebagai 15.2%, negatif sebagai 12.5%, dan netral sebagai 72.3%)",
+                table_row3_title: "Kualitas Roleplay Persona",
+                table_row3_qwen: "Tidak stabil (Terkadang mengubah fakta verbatim, cenderung keluar dari persona dan beralih ke ringkasan orang ketiga)",
+                table_row3_gemma: "Stabil (Mempertahankan nada bicara santai orang pertama, mematuhi batasan fakta RAG Verbatim)",
+                table_row4_title: "Jejak Memori (VRAM)",
+                table_row4_qwen: "Berat (Pemuatan kedua model secara bersamaan membutuhkan VRAM 6GB atau more)",
+                table_row4_gemma: "Ringan (Penyatuan ke model tunggal hanya membutuhkan VRAM sekitar 2.2GB)",
+                table_row5_title: "Latensi Obrolan Real-Time",
+                table_row5_qwen: "~1.0 detik (Cepat)",
+                table_row5_gemma: "1.0 ~ 2.0 detik (Dioptimalkan melalui kuantisasi GGUF INT4 dan Flash Attention)"
             }
         };
 
@@ -842,12 +1062,12 @@
             changeLanguage(e.target.value);
         });
 
-        // Initialize language from localStorage or default to 'ko'
-        let savedLang = 'ko';
+        // Initialize language from localStorage or default to 'en'
+        let savedLang = 'en';
         try {
-            savedLang = localStorage.getItem('guide_lang') || 'ko';
+            savedLang = localStorage.getItem('guide_lang') || 'en';
         } catch (e) {
-            console.warn('localStorage access denied, falling back to ko:', e);
+            console.warn('localStorage access denied, falling back to en:', e);
         }
         langSelector.value = savedLang;
         changeLanguage(savedLang);
