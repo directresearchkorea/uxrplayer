@@ -316,7 +316,7 @@
             '붉은사막': 'crimsondesert',
             '솔 인챈트': 'solenchant',
             '솔인챈트': 'solenchant',
-            'AION2': 'aion2',
+            'AION2': 'aion2_gemma',
             'LoL': 'lol',
             'Overwatch2': 'overwatch2',
             '메이플스토리': 'maplestory',
@@ -326,10 +326,16 @@
         };
 
         function getSafeGameFilename(game) {
-            return GAME_FILE_MAP[game] || game;
+            if (!game) return 'crimsondesert';
+            const g = String(game).trim().toLowerCase();
+            if (g.includes('aion') || g === 'aion2') return 'aion2_gemma';
+            if (g.includes('붉은') || g.includes('사막') || g.includes('crimson')) return 'crimsondesert';
+            if (g.includes('솔') || g.includes('인챈트') || g.includes('sol')) return 'solenchant';
+            return GAME_FILE_MAP[game] || GAME_FILE_MAP[g] || game;
         }
 
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        selectedGame = selectedGame.normalize('NFC');
         if (selectedGame === '붉은사막_Qwen') {
             selectedGame = '붉은사막';
         }
@@ -339,11 +345,14 @@
         (function() {
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${getSafeGameFilename(selectedGame)}.js`;
+            const isLocal = window.location.protocol === 'file:';
+            const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
+            script.src = `data_${getSafeGameFilename(selectedGame)}.js${buster}`;
             document.head.appendChild(script);
         })();
 
         function loadGameData(game, callback) {
+            game = game.normalize('NFC');
             let script = document.getElementById('dynamic-data-script');
             
             // If the game has changed, we need to load a new script
@@ -355,7 +364,9 @@
             if (!script) {
                 script = document.createElement('script');
                 script.id = 'dynamic-data-script';
-                script.src = `data_${getSafeGameFilename(game)}.js`;
+                const isLocal = window.location.protocol === 'file:';
+                const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
+                script.src = `data_${getSafeGameFilename(game)}.js${buster}`;
                 document.head.appendChild(script);
             }
 

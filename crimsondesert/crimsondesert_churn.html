@@ -464,6 +464,7 @@
         ];
 
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        selectedGame = selectedGame.normalize('NFC');
         if (selectedGame === '붉은사막_Qwen') {
             selectedGame = '붉은사막';
         }
@@ -492,7 +493,7 @@
             '붉은사막': 'crimsondesert',
             '솔 인챈트': 'solenchant',
             '솔인챈트': 'solenchant',
-            'AION2': 'aion2',
+            'AION2': 'aion2_gemma',
             'LoL': 'lol',
             'Overwatch2': 'overwatch2',
             '메이플스토리': 'maplestory',
@@ -502,18 +503,26 @@
         };
 
         function getSafeGameFilename(game) {
-            return GAME_FILE_MAP[game] || game;
+            if (!game) return 'crimsondesert';
+            const g = String(game).trim().toLowerCase();
+            if (g.includes('aion') || g === 'aion2') return 'aion2_gemma';
+            if (g.includes('붉은') || g.includes('사막') || g.includes('crimson')) return 'crimsondesert';
+            if (g.includes('솔') || g.includes('인챈트') || g.includes('sol')) return 'solenchant';
+            return GAME_FILE_MAP[game] || GAME_FILE_MAP[g] || game;
         }
 
         // Preload the script immediately to speed up download!
         (function() {
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
-            script.src = `data_${getSafeGameFilename(selectedGame)}.js`;
+            const isLocal = window.location.protocol === 'file:';
+            const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
+            script.src = `data_${getSafeGameFilename(selectedGame)}.js${buster}`;
             document.head.appendChild(script);
         })();
 
         function loadGameData(game, callback) {
+            game = game.normalize('NFC');
             let script = document.getElementById('dynamic-data-script');
             
             // If the game has changed, we need to load a new script
@@ -525,7 +534,9 @@
             if (!script) {
                 script = document.createElement('script');
                 script.id = 'dynamic-data-script';
-                script.src = `data_${getSafeGameFilename(game)}.js`;
+                const isLocal = window.location.protocol === 'file:';
+                const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
+                script.src = `data_${getSafeGameFilename(game)}.js${buster}`;
                 document.head.appendChild(script);
             }
 
@@ -661,6 +672,12 @@
                 active_users: profiles.length,
                 high_risk_rate: 0.0
             };
+            // Ensure active_users is always accurate even if game_metrics exists but lacks it
+            if (data.game_metrics && data.game_metrics.active_users) {
+                metrics.active_users = data.game_metrics.active_users;
+            } else if (!metrics.active_users) {
+                metrics.active_users = profiles.length;
+            }
             
             document.getElementById('kpi-users').textContent = metrics.active_users.toLocaleString();
             document.getElementById('kpi-risk-rate').textContent = metrics.high_risk_rate;
@@ -743,8 +760,9 @@
                 });
 
                 // Update KPIs
-                const activeUsersCount = filteredProfiles.length;
-                const highRiskCount = filteredProfiles.filter(p => p.churn_index >= 70).length;
+                const scalingFactor = profiles.length > 0 ? (metrics.active_users / profiles.length) : 1;
+                const activeUsersCount = Math.round(filteredProfiles.length * scalingFactor);
+                const highRiskCount = Math.round(filteredProfiles.filter(p => p.churn_index >= 70).length * scalingFactor);
                 const riskRate = activeUsersCount > 0 ? (highRiskCount / activeUsersCount * 100).toFixed(1) : '0.0';
 
                 document.getElementById('kpi-users').textContent = activeUsersCount.toLocaleString();
@@ -1255,15 +1273,9 @@
                 const ctx = document.getElementById('userScatterChart').getContext('2d');
                 
                 // Set color profiles based on persona types
-                const clusterMeta = USER_CLUSTERS_DATA.map(c => {
-                    let color = '#2196F3'; // Blue for Casual
-                    if (c.persona.includes('이탈')) {
-                        color = '#F44336'; // Red for Churn Risk
-                    } else if (c.persona.includes('충성')) {
-                        color = '#4CAF50'; // Green for Loyal Core
-                    } else if (c.persona.includes('비판')) {
-                        color = '#FF9800'; // Orange for Critics
-                    }
+                const clusterMeta = USER_CLUSTERS_DATA.map((c, index) => {
+                    const palette = ['#FF9800', '#2196F3', '#4CAF50', '#F44336', '#9C27B0'];
+                    const color = palette[c.id % palette.length];
                     return { 
                         id: c.id, 
                         label: c.persona.split(' (')[0], 
@@ -1274,7 +1286,7 @@
                 });
                 
                 // Group users into datasets corresponding to their K-Means cluster labels
-                const datasets = clusterMeta.map(cm => {
+                const datasets = clusterMeta.map((cm, idx) => {
                     const points = filteredProfiles.filter(p => {
                         const cid = typeof USER_CLUSTER_MAP !== 'undefined' ? USER_CLUSTER_MAP[p.author] : -1;
                         return cid === cm.id;
@@ -1290,8 +1302,11 @@
                         label: cm.label,
                         data: points,
                         backgroundColor: cm.color,
+                        pointBackgroundColor: cm.color,
                         borderColor: colors.isLight ? '#ffffff' : '#111111',
+                        pointBorderColor: colors.isLight ? '#ffffff' : '#111111',
                         borderWidth: 1,
+                        pointStyle: 'circle',
                         pointRadius: points.map(p => Math.min(12, 3.5 + p.total / 8)),
                         hoverRadius: 9
                     };
@@ -1497,13 +1512,18 @@
                 const totalFiltered = sizes.reduce((a, b) => a + b, 0);
                 const dataRatio = sizes.map(s => totalFiltered > 0 ? ((s / totalFiltered) * 100).toFixed(1) : 0);
                 
+                const sliceColors = USER_CLUSTERS_DATA.map((c, index) => {
+                    const palette = ['#FF9800', '#2196F3', '#4CAF50', '#F44336', '#9C27B0'];
+                    return palette[c.id % palette.length];
+                });
+                
                 clusteringChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
                             data: dataRatio,
-                            backgroundColor: ['#4CAF50', '#2196F3', '#FF9800', '#F44336'],
+                            backgroundColor: sliceColors,
                             borderWidth: 0
                         }]
                     },
@@ -1543,6 +1563,10 @@
                     card.className = 'persona-card';
                     card.setAttribute('data-id', c.id);
                     card.id = `persona-card-${c.id}`;
+                    
+                    const palette = ['#FF9800', '#2196F3', '#4CAF50', '#F44336', '#9C27B0'];
+                    const color = palette[c.id % palette.length];
+                    card.style.borderLeft = `4px solid ${color}`;
                     
                     card.innerHTML = `
                         <div>
@@ -1643,9 +1667,12 @@
                     sideVerbatimHTML = '<div class="no-data">No verbatim feedback found.</div>';
                 }
 
+                const palette = ['#FF9800', '#2196F3', '#4CAF50', '#F44336', '#9C27B0'];
+                const color = palette[c.id % palette.length];
+
                 const infoDiv = document.createElement('div');
                 infoDiv.innerHTML = `
-                    <div style="background-color: var(--verbatim-bg); padding: 12px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 12px;">
+                    <div style="background-color: var(--verbatim-bg); padding: 12px; border: 1px solid var(--border-color); border-left: 4px solid ${color}; border-radius: 4px; margin-bottom: 12px;">
                         <div style="font-size: 14px; font-weight: bold; color: var(--text-primary); margin-bottom: 6px;">${c.persona}</div>
                         <div style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">${c.desc}</div>
                         ${detailedText}
