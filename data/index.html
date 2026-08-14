@@ -667,19 +667,20 @@
                     </div>
 
                     <!-- Mode Distinctions -->
+                    <!-- Mode Distinctions -->
                     <div class="detail-section" style="margin-top: 12px;">
                         <div class="detail-section-title">1. 프롬프트 방식 vs RAG 방식 구분</div>
                         <div class="detail-grid">
                             <div class="detail-item">
                                 <span class="detail-label">프롬프트 방식 (Static Profile Mode)</span>
                                 <span class="detail-value">
-                                    해당 클러스터의 인구통계학적 요약 정보, 평균 지표(집단 비율, 평균 이탈 위험도 등), 그리고 대표적인 정적 유저 피드백 5건만을 System Prompt에 주입하여 역할극을 수행합니다. <strong>실시간 외부 원문 데이터 조회가 불가능한 독립 연기 모드</strong>입니다.
+                                    해당 클러스터의 인구통계학적 요약 정보와 가상의 성향 특징(예시문 포함)만을 System Prompt에 주입하여 역할극을 수행합니다. <strong>기획자의 개별 질문에 매칭되는 실제 수집한 게이머의 원어 피드백(Verbatim)은 프롬프트에 전혀 전달하지 않는 단순 독립 페르소나 연기 방식</strong>입니다.
                                 </span>
                               </div>
                               <div class="detail-item">
                                 <span class="detail-label">RAG 방식 (Dynamic Grounding Mode)</span>
                                 <span class="detail-value">
-                                    기획자가 채팅창에 입력한 질문과 실시간 의미 매칭을 수행하여, 커뮤니티에서 기 수집된 실제 유저들의 세부 발언들을 데이터베이스에서 검색해 와 프롬프트 Context로 동적으로 바인딩합니다. <strong>데이터 팩트에 기반한 초정밀 1인칭 대변 모드</strong>입니다.
+                                    기획자가 채팅창에 입력한 질문과 실시간 의미 매칭을 수행하여, DB에서 해당 질문과 가장 밀접하게 매칭되는 실제 유저의 원어 피드백(Verbatim)을 검색하여 프롬프트 Context(<code>[실제 유저 피드백 데이터]</code> 영역)에 동적으로 주입합니다. <strong>실시간 수집된 원문 팩트에 기반한 정밀 대변 방식</strong>입니다.
                                 </span>
                             </div>
                         </div>
@@ -709,10 +710,15 @@
                             </p>
                             <p>
                                 <ul>
-                                    <li><strong>1차 후보군 수집 (Top 300)</strong>: 기획자의 질문 텍스트를 임베딩 벡터로 실시간 계산한 뒤, 전체 문장 벡터 행렬과 코사인 유사도(Cosine Similarity)를 연산하여 가장 높은 유사도를 가진 <strong>상위 300개의 후보 문장</strong>을 1차로 로드합니다.</li>
-                                    <li><strong>2차 필터 및 가중치 계산 (Top 15)</strong>: 1차 수집된 300개 중, <u>대화 중인 페르소나 클러스터 ID와 일치하는 저자가 쓴 문장인지 검증</u>하고 스팸/자음 반복 제거를 거쳐 카테고리 매칭 보너스 및 시간 최신성 가중치를 계산해 최우수 <strong>15개의 문장</strong>으로 후보군을 압축합니다.</li>
-                                    <li><strong>최종 Reranking (최종 4개)</strong>: 15개의 2차 후보 문장을 로컬 PyTorch 기반 교차 인코더(<code>bongsoo/klue-cross-encoder-v1</code>) 모델에 질문과 함께 통과시켜 문맥적 흐름을 재연산하고, 최종적으로 가장 정합성이 높은 <strong>상위 4개의 Verbatim</strong>(로컬 Ollama 구동 시 3개)을 엄선하여 Prompt Context로 사용합니다.</li>
-                                    <li><strong>1인칭 구어체 대변</strong>: 이렇게 선정된 근거 피드백을 기반으로 <code>Gemini 2.5 Flash</code>(또는 로컬 <code>gemma2:2b</code>) 모델을 활용하여 1인칭 게이머 말투(해요체, 주로 '~요', '~네요'로 끝나는 말투)로 짧고 명확하게 소감을 답변합니다.</li>
+                                    <li><strong>1차 후보군 수집 (검색 경로별 상이)</strong>: 
+                                        <ul>
+                                            <li><strong>SQLite DB RAG (메인)</strong>: 기획자 질문을 임베딩 벡터로 실시간 계산한 뒤, 전체 문장 벡터 행렬과 Cosine Similarity를 연산하여 유사도가 높은 <strong>상위 300개의 후보 aspect 문장 ID</strong>를 데이터베이스에서 1차 로드합니다.</li>
+                                            <li><strong>정적 JS RAG (폴백)</strong>: 이미 특정 클러스터별로 사전 아카이빙된 파일 데이터셋(~150~250개) 전체를 대상으로 실시간 유사도 연산을 실행합니다.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>2차 필터 및 가중치 계산 (Top 15)</strong>: 1차 수집된 후보군 중, <u>대화 중인 페르소나 클러스터 ID와 일치하는 저자가 작성한 글인지 검증</u>하고 노이즈/중복을 필터링한 뒤, 질문과의 카테고리(Aspect) 일치 보너스 및 시간 최신성 가중치를 부여하여 최우수 <strong>15개의 후보 문장</strong>으로 정렬 압축합니다.</li>
+                                    <li><strong>최종 Reranking (최종 4개)</strong>: 이 15개의 2차 후보 문장을 로컬 PyTorch 기반 교차 인코더(<code>bongsoo/klue-cross-encoder-v1</code>) 모델에 기획자의 질문과 함께 통과시켜 문맥 정합성을 최종 2차 평가하며, 의미상 가장 밀접한 <strong>상위 4개의 Verbatim</strong>(로컬 Ollama 구동 시 3개)을 엄선하여 Prompt Context로 사용합니다.</li>
+                                    <li><strong>1인칭 구어체 대변</strong>: 최종 선정된 Verbatim들을 프롬프트의 <code>[실제 유저 피드백 데이터]</code> 영역에 주입하여 1인칭 게이머 말투(해요체, 주로 '~요', '~네요'로 끝나는 말투)로 짧고 명확하게 소감을 답변합니다.</li>
                                 </ul>
                             </p>
                         </div>
