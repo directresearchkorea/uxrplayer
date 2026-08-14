@@ -535,28 +535,141 @@
             <div class="timeline-entry">
                 <div class="entry-date">
                     <div class="date-year-month">2026.08</div>
-                    <div class="date-label">Model Comparison</div>
+                    <div class="date-label">RAG & Model Comparison</div>
                 </div>
                 <div class="entry-content">
-                    <div class="entry-title">Qwen · Gemma 로컬 LLM 비교 분석 도입</div>
+                    <div class="entry-title">Qwen · Gemma 분석 및 챗봇 RAG/Verbatim 프로세스 고도화</div>
                     <div class="entry-tags">
                         <span class="tag tag-llm">LLM</span>
                         <span class="tag tag-compare">COMPARE</span>
                         <span class="tag tag-sentiment">SENTIMENT</span>
-                        <span class="tag tag-model">CATEGORY</span>
-                    </div>
-                    <div class="entry-body">
-                        <p>
-                            기존 형태소 분석(키워드 매칭 + KoELECTRA) 방식의 한계를 보완하기 위해, 로컬 Ollama 기반의 <strong>Gemma 2 2B</strong>(<code>gemma2:2b</code>)와 <strong>Qwen</strong> 모델을 활용한 LLM 기반 분류 파이프라인을 구축하고 비교 분석을 수행하였습니다.
-                        </p>
-                        <p>
-                            두 모델 모두 <code>http://localhost:11434/api/generate</code> (Ollama API)를 통해 호출되며, 문장 단위로 구조화된 JSON 프롬프트(<code>{"category": "...", "sentiment": "..."}</code>)를 전송하여 카테고리와 감정을 동시에 반환받는 구조입니다.
-                        </p>
+                        <span class="tag tag-model">RAG</span>
                     </div>
 
-                    <!-- Model Comparison Table -->
-                    <div class="detail-section">
-                        <div class="detail-section-title">MODEL COMPARISON MATRIX</div>
+                    <!-- 1. Persona Chatbot Answering Process -->
+                    <div class="detail-section" style="margin-top: 12px;">
+                        <div class="detail-section-title">1. 페르소나 챗봇 답변 프로세스 (Persona Chatbot Answering Process)</div>
+                        <div class="entry-body" style="margin-top: 0; margin-bottom: 16px;">
+                            <p>
+                                유저 클러스터링 기반 페르소나 프로필과 원문 피드백 데이터를 활용하여, 기획자(PM)의 질문에 실제 해당 성향의 유저인 것처럼 1인칭 시점(구어체 존댓말)으로 답변하는 RAG(Retrieval-Augmented Generation) 시스템을 가동합니다.
+                            </p>
+                            <p>
+                                <ul>
+                                    <li><strong>SQLite 기반 실시간 RAG</strong>: 기획자가 입력한 질문에서 형태소 및 불용어를 정제한 뒤, 해당 유저 클러스터(페르소나)의 원문 피드백 데이터베이스(<code>analyzed_aspects</code>)에서 키워드 및 의미적 연관성이 높은 구절들을 실시간으로 로드합니다. (로컬 임베딩 모델 <code>snunlp/KR-SBERT-V4</code> cosine similarity 매칭 작동)</li>
+                                    <li><strong>2단계 교차 인코더 재정렬 (Cross-Encoder Reranking)</strong>: 1차로 필터링된 후보 유저 피드백들을 정밀 문맥 인식 모델인 교차 인코더(<code>bongsoo/klue-cross-encoder-v1</code>)로 재평정하여, 연관도 점수가 가장 높은 상위 4개(로컬 Ollama 구동 시 하드웨어 부하 조절을 위해 3개)의 Verbatim을 최종 답변 생성의 Context(근거 자료)로 확정합니다.</li>
+                                    <li><strong>페르소나 역할극 합성 (Prompt Synthesis)</strong>: 최종 선정된 Verbatim들과 함께 해당 페르소나의 인구통계학적 특성/핵심 불만사항, 그리고 엄격한 구어체 1인칭 답변 지침(해요체 존댓말 사용, 제3자 시점 요약 금지, 볼드체/마크다운 기호 사용 배제)을 결합하여 컨텍스트 프롬프트를 빌드합니다.</li>
+                                    <li><strong>LLM 추론 및 폴백 (Generation & Fallback)</strong>: 온라인 환경에서는 <code>Gemini 2.5 Flash</code> API를 활용해 고품질 답변을 도출하며, 오프라인 환경이나 API 한계 시 로컬 Ollama API의 <code>gemma2:2b</code> 또는 <code>qwen</code> 엔진으로 전환합니다. 양쪽 모두 호출 불가능할 경우, 클러스터 성향에 맞춰 사전 정의된 규칙 기반 Mock 응답으로 매끄럽게 폴백됩니다.</li>
+                                </ul>
+                            </p>
+                        </div>
+                        
+                        <!-- SVG Flowchart -->
+                        <div style="background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 4px; padding: 14px; margin-top: 10px;">
+                            <svg viewBox="0 0 800 135" width="100%" height="100%" style="background-color: transparent; display: block;">
+                              <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                  <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="var(--text-muted)" />
+                                </marker>
+                                <marker id="arrow-active" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                  <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="#4CAF50" />
+                                </marker>
+                              </defs>
+
+                              <!-- 1. Query Input -->
+                              <g transform="translate(10, 15)">
+                                <rect x="0" y="0" width="125" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
+                                <text x="62.5" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">1. Query Input</text>
+                                <text x="62.5" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">질문 및 페르소나 지정</text>
+                                <text x="62.5" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">e.g. "최적화 문제 있어?"</text>
+                              </g>
+
+                              <!-- Connector 1 -> 2 -->
+                              <path d="M 135 52.5 L 165 52.5" stroke="var(--text-muted)" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+                              <!-- 2. RAG Retrieval -->
+                              <g transform="translate(175, 15)">
+                                <rect x="0" y="0" width="130" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
+                                <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">2. RAG Retrieval</text>
+                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">SQLite 실시간 검색</text>
+                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">SBERT 임베딩 매칭</text>
+                              </g>
+
+                              <!-- Connector 2 -> 3 -->
+                              <path d="M 305 52.5 L 335 52.5" stroke="var(--text-muted)" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+                              <!-- 3. Reranking -->
+                              <g transform="translate(345, 15)">
+                                <rect x="0" y="0" width="130" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
+                                <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">3. Reranking</text>
+                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">교차 인코더 정렬</text>
+                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">KLUE Cross-Encoder</text>
+                              </g>
+
+                              <!-- Connector 3 -> 4 -->
+                              <path d="M 475 52.5 L 505 52.5" stroke="var(--text-muted)" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+                              <!-- 4. Prompt Synthesis -->
+                              <g transform="translate(515, 15)">
+                                <rect x="0" y="0" width="130" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
+                                <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">4. Prompt Synthesis</text>
+                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">시스템 프롬프트 조립</text>
+                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">페르소나 규정 + Top 4 근거</text>
+                              </g>
+
+                              <!-- Connector 4 -> 5 -->
+                              <path d="M 645 52.5 L 665 52.5" stroke="var(--text-muted)" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+
+                              <!-- 5. Inference & Response -->
+                              <g transform="translate(675, 15)">
+                                <rect x="0" y="0" width="115" height="75" rx="4" fill="rgba(76, 175, 80, 0.05)" stroke="#4CAF50" stroke-width="1.5"/>
+                                <text x="57.5" y="25" text-anchor="middle" fill="#4CAF50" font-family="var(--font-sans)" font-size="11" font-weight="900">5. User Response</text>
+                                <text x="57.5" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">Gemini/Ollama 구동</text>
+                                <text x="57.5" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">"솔직히 최적화는..."</text>
+                              </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 2. Representative Verbatim Selection Process -->
+                    <div class="detail-section" style="margin-top: 16px;">
+                        <div class="detail-section-title">2. 대표 Verbatim 선정 프로세스 (Representative Verbatim Selection Process)</div>
+                        <div class="entry-body" style="margin-top: 0;">
+                            <p>
+                                대시보드 및 페르소나 분석에 활용되는 실제 유저 원어 반응(Verbatim) 데이터를 객관적이고 신뢰도 높은 순서로 선별하여 가독성과 품질을 향상하기 위한 자동 필터링 파이프라인입니다.
+                            </p>
+                            <p>
+                                <ul>
+                                    <li><strong>데이터베이스 레벨 1차 필터링</strong>: 
+                                        감성 분석 결과가 명확한 문장(<code>POSITIVE</code> 또는 <code>NEGATIVE</code>)만 대상으로 삼으며, 잡담성 중립 글(<code>NEUTRAL</code>)은 수집하지 않습니다.
+                                        또한, 충분한 정보와 묘사를 담고 있도록 글자 수 40자 이상(<code>LENGTH(matched_text) >= 40</code>) 및 모델 판별 신뢰도 75% 이상(<code>confidence_score >= 0.75</code>)의 구절만 DB 상에서 필터링합니다.
+                                    </li>
+                                    <li><strong>신뢰도 및 품질 정렬</strong>: 
+                                        추출 대상 문장들을 <code>ORDER BY confidence_score DESC, LENGTH(matched_text) DESC</code> 기준으로 정렬합니다. 
+                                        이를 통해 AI 모델이 가장 높은 신뢰도를 주었으면서 풍부한 구체적 설명을 곁들인 유저의 피드백이 항상 최상단에 대표적으로 노출되도록 보장합니다.
+                                    </li>
+                                    <li><strong>노이즈 및 스팸 정규식 클리닝</strong>: 
+                                        정렬 후 루프 분석 단계에서, 특정 한글 초성/모음이 5회 이상 연속으로 나열되어 글의 가치를 저해하는 노이즈 텍스트(예: <code>ㅋㅋㅋㅋㅋ</code>, <code>ㅎㅎㅎㅎㅎ</code>, <code>ㅠㅠㅠㅠㅠ</code> 등)가 감지될 경우 수집 필터에서 자동으로 제외(bypass)합니다.
+                                    </li>
+                                    <li><strong>중복 배제 및 용량 최적화</strong>: 
+                                        날짜, 카테고리, 감성 축별로 동일 문장의 중복 적재를 막는 중복성 검사(deduplication)를 적용하며, 최종 데이터 파일 크기를 경량화하여 프론트엔드 렌더링 성능을 지키기 위해 **날짜-카테고리-감성별 최대 3개**의 고유 Verbatim만 정제하여 최종 아카이빙합니다.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Model Comparison (Existing) -->
+                    <div class="detail-section" style="margin-top: 16px;">
+                        <div class="detail-section-title">3. Qwen · Gemma 로컬 LLM 비교 분석 도입</div>
+                        <div class="entry-body" style="margin-top: 0; margin-bottom: 16px;">
+                            <p>
+                                기존 형태소 분석(키워드 매칭 + KoELECTRA) 방식의 한계를 보완하기 위해, 로컬 Ollama 기반의 <strong>Gemma 2 2B</strong>(<code>gemma2:2b</code>)와 <strong>Qwen</strong> 모델을 활용한 LLM 기반 분류 파이프라인을 구축하고 비교 분석을 수행하였습니다.
+                            </p>
+                            <p>
+                                두 모델 모두 <code>http://localhost:11434/api/generate</code> (Ollama API)를 통해 호출되며, 문장 단위로 구조화된 JSON 프롬프트(<code>{"category": "...", "sentiment": "..."}</code>)를 전송하여 카테고리와 감정을 동시에 반환받는 구조입니다.
+                            </p>
+                        </div>
+
                         <table class="compare-table">
                             <thead>
                                 <tr>
@@ -835,7 +948,7 @@
                                     <span class="sample-category cat-gameplay">GAMEPLAY</span>
                                     <span class="sample-sentiment sent-neg">● NEGATIVE</span>
                                 </div>
-                                <div class="sample-text">150시간 가까이 했는데 최근 패치 이후로, 퀘스트 아이템을 찾아야하는 몇몇 퀘스트들이 퀘스트 아이템이 생성되지 않는 버그가 생겨서 진행불가 상태가 됨... 전투는 하면 할수록 점점 재미를 못느기게 되어서 어떤 강적을 만나도 요리 빨며 무지성 맞딜난타로 넘겨버린지 오래.</div>
+                                <div class="sample-text">150시간 가까이 했는데 최근 패치 이후로, 퀘스트 아이템을 찾아야하는 몇몇 퀘스트들이 퀘스트 아이템이 생성되지 않는 버그가 생겨서 진행불가 상태가 됨... 전투는 하면 할수록 점점 재미를 못느끼게 되어서 어떤 강적을 만나도 요리 빨며 무지성 맞딜난타로 넘겨버린지 오래.</div>
                             </div>
                             <div class="sample-card">
                                 <div class="sample-meta">
