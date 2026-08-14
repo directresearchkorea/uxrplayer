@@ -1,26 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <script>
         window.onerror = function(message, source, lineno, colno, error) {
-            const errDiv = document.createElement('div');
-            errDiv.style.position = 'fixed';
-            errDiv.style.top = '0';
-            errDiv.style.left = '0';
-            errDiv.style.width = '100%';
-            errDiv.style.backgroundColor = '#f44336';
-            errDiv.style.color = 'white';
-            errDiv.style.padding = '15px';
-            errDiv.style.zIndex = '9999';
-            errDiv.style.fontSize = '14px';
-            errDiv.style.fontFamily = 'monospace';
-            errDiv.innerHTML = '<strong>[JS ERROR]</strong> ' + message + ' (Line: ' + lineno + ')';
-            document.body.appendChild(errDiv);
-            alert("JS Error: " + message + " (Line: " + lineno + ")");
+            console.error('[JS ERROR]', message, 'at line:', lineno, error);
             return false;
         };
     </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GTPLAYER // Persona Chat (Prompt)</title>
@@ -33,23 +19,20 @@
         let BACKEND_API_URL = (function() {
             const customUrl = localStorage.getItem('custom_backend_url');
             if (customUrl) return customUrl.trim();
-            
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 return 'http://localhost:5000';
             }
             return 'https://dashboard.uxrplayer.com';
         })();
-        // Immediate Theme Initialization to prevent flashing
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();
     </script>
     <style>
-        /* Specific Styles for Persona Chat Interface */
         .chat-dashboard-grid {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 320px 1fr 340px;
             gap: 24px;
             height: calc(100vh - 180px);
             min-height: 550px;
@@ -59,13 +42,12 @@
             box-sizing: border-box;
         }
 
-        .evidence-panel {
-            display: none !important; /* Hide evidence panel for pure profile test */
-        }
-
         @media(max-width: 1200px) {
             .chat-dashboard-grid {
                 grid-template-columns: 280px 1fr;
+            }
+            .evidence-panel {
+                display: none;
             }
         }
 
@@ -79,7 +61,6 @@
             }
         }
 
-        /* Panels Shared styling */
         .panel {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -110,7 +91,6 @@
             margin-top: 2px;
         }
 
-        /* Sidebar - Persona Cards List */
         .sidebar-scroll {
             flex-grow: 1;
             overflow-y: auto;
@@ -177,7 +157,6 @@
             align-items: center;
         }
 
-        /* Chat Panel (Center) */
         .chat-panel {
             flex-grow: 1;
         }
@@ -248,7 +227,6 @@
             100% { transform: scale(0.9); opacity: 0.6; }
         }
 
-        /* Engine Toggle Controls */
         .engine-controls {
             display: flex;
             align-items: center;
@@ -256,22 +234,21 @@
         }
 
         .engine-select {
-            font-family: var(--font-mono);
-            font-size: 10px;
             background-color: var(--bg-color);
-            color: var(--text-primary);
             border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 11px;
             padding: 4px 8px;
+            border-radius: 4px;
             outline: none;
             cursor: pointer;
-            transition: border-color 0.2s;
         }
 
         .engine-select:focus {
-            border-color: var(--text-secondary);
+            border-color: var(--accent-color);
         }
 
-        /* Message Log Area */
         .chat-messages {
             flex-grow: 1;
             overflow-y: auto;
@@ -279,140 +256,127 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            background-color: var(--verbatim-bg);
+            background-color: rgba(0, 0, 0, 0.02);
         }
 
-        .message-row {
+        .msg-row {
             display: flex;
-            width: 100%;
+            gap: 12px;
+            max-width: 85%;
         }
 
-        .message-row.user {
-            justify-content: flex-end;
+        .msg-row.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
         }
 
-        .message-bubble {
-            max-width: 80%;
-            padding: 12px 16px;
-            font-size: 12px;
-            line-height: 1.5;
+        .msg-row.persona {
+            align-self: flex-start;
+        }
+
+        .msg-bubble {
+            background-color: var(--bg-color);
             border: 1px solid var(--border-color);
-        }
-
-        .message-row.persona .message-bubble {
-            background-color: var(--card-bg);
-            border-left-width: 3px;
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.5;
             color: var(--text-primary);
+            border-radius: 2px;
+            position: relative;
         }
 
-        .message-row.persona.cluster-0 .message-bubble { border-left-color: #FF9800; }
-        .message-row.persona.cluster-1 .message-bubble { border-left-color: #2196F3; }
-        .message-row.persona.cluster-2 .message-bubble { border-left-color: #4CAF50; }
-        .message-row.persona.cluster-3 .message-bubble { border-left-color: #F44336; }
-
-        .message-row.user .message-bubble {
-            background-color: var(--text-primary);
-            color: var(--bg-color);
-            border-color: var(--text-primary);
-            border-radius: 4px;
+        .msg-row.user .msg-bubble {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
         }
 
-        .message-meta {
+        .msg-meta {
             font-family: var(--font-mono);
             font-size: 9px;
             color: var(--text-muted);
             margin-top: 4px;
             display: flex;
-            gap: 8px;
-        }
-
-        .message-row.user .message-meta {
             justify-content: flex-end;
-            color: rgba(255, 255, 255, 0.4);
+            gap: 6px;
         }
 
-        /* Suggestions chips */
+        .msg-row.persona .msg-meta {
+            justify-content: flex-start;
+        }
+
         .prompt-suggestions {
             padding: 10px 20px;
             border-top: 1px solid var(--border-color);
-            background-color: var(--card-bg);
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .prompt-suggestions::-webkit-scrollbar {
-            height: 3px;
-        }
-
-        .prompt-suggestions::-webkit-scrollbar-thumb {
-            background-color: var(--border-hover);
-        }
-
-        .suggestion-chip {
-            font-family: var(--font-sans);
-            font-size: 10.5px;
-            padding: 6px 12px;
+            overflow-x: auto;
             background-color: var(--bg-color);
+        }
+
+        .prompt-chip {
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .suggestion-chip:hover {
-            border-color: var(--text-primary);
-            color: var(--text-primary);
-        }
-
-        /* Chat Input area */
-        .chat-input-container {
-            padding: 16px 20px;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--card-bg);
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .chat-textarea {
-            flex-grow: 1;
-            font-family: var(--font-sans);
-            font-size: 12px;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            padding: 10px 14px;
-            resize: none;
-            height: 38px;
-            outline: none;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-
-        .chat-textarea:focus {
-            border-color: var(--text-secondary);
-        }
-
-        .send-btn {
-            font-family: var(--font-mono);
             font-size: 11px;
-            font-weight: 700;
-            background-color: var(--text-primary);
-            color: var(--bg-color);
-            border: 1px solid var(--text-primary);
-            height: 38px;
-            padding: 0 18px;
+            padding: 6px 12px;
+            border-radius: 14px;
+            white-space: nowrap;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .send-btn:hover {
-            background-color: transparent;
+        .prompt-chip:hover {
+            border-color: var(--text-primary);
             color: var(--text-primary);
         }
 
-        /* Evidence Panel (Right) */
+        .chat-input-container {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            background-color: var(--card-bg);
+        }
+
+        .chat-textarea {
+            flex-grow: 1;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            padding: 10px 14px;
+            resize: none;
+            outline: none;
+            height: 20px;
+            max-height: 100px;
+        }
+
+        .chat-textarea:focus {
+            border-color: var(--text-primary);
+        }
+
+        .send-btn {
+            background-color: var(--text-primary);
+            color: var(--bg-color);
+            border: none;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 12px;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .send-btn:hover {
+            opacity: 0.9;
+        }
+
+        .evidence-panel {
+            flex-grow: 1;
+        }
+
         .evidence-scroll {
             flex-grow: 1;
             overflow-y: auto;
@@ -420,83 +384,36 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background-color: var(--verbatim-bg);
         }
 
         .evidence-card {
-            background-color: var(--card-bg);
+            background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             padding: 12px;
-            font-size: 11px;
-            line-height: 1.45;
-            transition: border-color 0.2s;
-            cursor: pointer;
+            font-size: 11.5px;
+            line-height: 1.4;
         }
 
-        .evidence-card:hover {
-            border-color: var(--border-hover);
+        .evidence-text {
+            color: var(--text-primary);
+            font-style: italic;
         }
 
         .evidence-meta {
+            font-family: var(--font-mono);
+            font-size: 9.5px;
+            color: var(--text-muted);
+            margin-top: 8px;
             display: flex;
             justify-content: space-between;
-            font-family: var(--font-mono);
-            font-size: 8.5px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 4px;
         }
 
         .no-evidence {
-            font-family: var(--font-sans);
-            font-size: 11px;
             color: var(--text-muted);
+            font-size: 11px;
             text-align: center;
             margin-top: 40px;
             line-height: 1.6;
-        }
-
-        .evidence-highlight-tag {
-            font-family: var(--font-mono);
-            font-size: 8px;
-            font-weight: bold;
-            padding: 1px 4px;
-            background-color: rgba(33, 150, 243, 0.1);
-            color: #2196F3;
-        }
-
-        /* Period filter selector CSS */
-        .period-toggle-row {
-            display: flex;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 10px 20px;
-            gap: 10px;
-            align-items: center;
-        }
-        .period-btn {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 500;
-            font-family: var(--font-sans);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .period-btn:hover {
-            color: var(--text-primary);
-            border-color: var(--text-muted);
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-        .period-btn.active {
-            background-color: rgba(33, 150, 243, 0.1);
-            border-color: #2196F3;
-            color: #2196F3;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -510,16 +427,6 @@
                         <span class="theme-icon">☀</span>
                         <span class="theme-label">LIGHT</span>
                     </button>
-                    <script>
-                        (function() {
-                            const initTheme = localStorage.getItem('theme') || 'dark';
-                            const btn = document.getElementById('theme-toggle');
-                            if (initTheme === 'light') {
-                                btn.querySelector('.theme-icon').textContent = '☾';
-                                btn.querySelector('.theme-label').textContent = 'DARK';
-                            }
-                        })();
-                    </script>
                 </div>
                 <span id="header-game-title" style="font-family: var(--font-sans); font-weight: 900; font-size: 24px; letter-spacing: -0.5px; color: var(--text-primary); line-height: 1.1; margin-top: 1px;">/ LOADING...</span>
                 <div class="dashboard-nav">
@@ -536,18 +443,15 @@
     </header>
 
     <main class="chat-dashboard-grid">
-        <!-- Sidebar Panel: List of User Cluster Personas -->
         <section class="panel sidebar-panel">
             <div class="panel-header">
                 <h2 class="panel-title">USER PERSONA SEGMENTS</h2>
                 <p class="panel-subtitle">Select a user segment to chat with</p>
             </div>
             <div class="sidebar-scroll" id="personas-list-container">
-                <!-- Populated Dynamically -->
             </div>
         </section>
 
-        <!-- Main Chat Panel -->
         <section class="panel chat-panel">
             <div class="chat-header">
                 <div class="chat-header-user">
@@ -563,40 +467,30 @@
                 <div class="engine-controls">
                     <span style="font-family: var(--font-mono); font-size: 9px; color: var(--text-muted);">ENGINE:</span>
                     <select class="engine-select" id="engine-selector">
-                        <option value="local_rag" selected>Direct Client-RAG (브라우저 자체 매칭 RAG)</option>
+                        <option value="gemini_backend" selected>클라우드 AI (Gemini API 연동)</option>
                         <option value="ollama_backend">로컬 오프라인 AI (Ollama 연동)</option>
-                        <option value="gemini_backend">클라우드 AI (Gemini API 연동)</option>
                     </select>
                 </div>
             </div>
 
-
-
-            <!-- Chat messages box -->
             <div class="chat-messages" id="chat-messages-container">
-                <!-- Dynamically populated bubble rows -->
             </div>
 
-            <!-- Quick Questions suggestions -->
             <div class="prompt-suggestions" id="prompt-suggestions-container">
-                <!-- Dynamically populated chip elements -->
             </div>
 
-            <!-- Message Input Area -->
             <div class="chat-input-container">
                 <textarea class="chat-textarea" id="chat-input" placeholder="Ask a question to the user persona segment..." rows="1"></textarea>
                 <button class="send-btn" id="send-btn">SEND</button>
             </div>
         </section>
 
-        <!-- Grounding Evidence Panel -->
         <section class="panel evidence-panel">
             <div class="panel-header">
-                <h2 class="panel-title">Hybrid Grounding Evidence</h2>
-                <p class="panel-subtitle">Real-time verbatims combined with the persona profile</p>
+                <h2 class="panel-title">Grounding Verbatim Evidence</h2>
+                <p class="panel-subtitle">Source feedback used as grounding for responses</p>
             </div>
             <div class="evidence-scroll" id="evidence-container">
-                <!-- Populated Dynamically with quotes matching response -->
                 <div class="no-evidence" id="evidence-placeholder">
                     Once you send a message,<br>the actual user comments (verbatims)<br>referenced from community posts<br>will be displayed here as grounding evidence.
                 </div>
@@ -611,7 +505,6 @@
         </div>
     </footer>
 
-    <!-- Load data dynamically -->
     <script>
         const GAMES_LIST = [
             { id: '붉은사막', name: '붉은사막 (Crimson Desert)' },
@@ -629,7 +522,7 @@
             '붉은사막': 'crimsondesert',
             '솔 인챈트': 'solenchant',
             '솔인챈트': 'solenchant',
-            'AION2': 'aion2',
+            'AION2': 'aion2_gemma',
             'LoL': 'lol',
             'Overwatch2': 'overwatch2',
             '메이플스토리': 'maplestory',
@@ -643,41 +536,40 @@
         }
 
         let selectedGame = new URLSearchParams(window.location.search).get('game') || localStorage.getItem('selectedGame') || '붉은사막';
+        selectedGame = selectedGame.normalize('NFC');
         if (selectedGame === '붉은사막_Qwen') {
             selectedGame = '붉은사막';
         }
         localStorage.setItem('selectedGame', selectedGame);
 
         function loadGameData(game, callback) {
+            game = game.normalize('NFC');
             const oldScript = document.getElementById('dynamic-data-script');
             if (oldScript) oldScript.remove();
 
             const script = document.createElement('script');
             script.id = 'dynamic-data-script';
             const isLocal = window.location.protocol === 'file:';
-            const buster = isLocal ? '' : `?v=${new Date().getTime()}`;
-            script.src = `data_${getSafeGameFilename(game)}.js${buster}`;
-            script.onload = () => {
+            const buster = isLocal ? '' : '?v=' + new Date().getTime();
+            script.src = 'data_' + getSafeGameFilename(game) + '.js' + buster;
+            script.onload = function() {
                 if (typeof DASHBOARD_DATA !== 'undefined') {
                     callback(DASHBOARD_DATA);
+                } else if (typeof USER_CLUSTERS_DATA !== 'undefined') {
+                    callback(USER_CLUSTERS_DATA);
                 } else {
-                    console.error("DASHBOARD_DATA not defined in loaded script.");
+                    console.error('DASHBOARD_DATA or USER_CLUSTERS_DATA not defined.');
                 }
             };
-            script.onerror = () => {
-                console.error(`Failed to load data for game: ${game}`);
-                alert(`게임 데이터를 불러올 수 없습니다: data_${getSafeGameFilename(game)}.js\n해당 게임의 파이프라인(run_pipeline.py)을 실행해 주세요.`);
-                if (game !== '붉은사막') {
-                    localStorage.setItem('selectedGame', '붉은사막');
-                    window.location.search = `?game=붉은사막`;
-                }
+            script.onerror = function() {
+                console.error('Failed to load data for game: ' + game);
+                alert('게임 데이터를 불러올 수 없습니다: data_' + getSafeGameFilename(game) + '.js');
             };
             document.body.appendChild(script);
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Update header title based on game name
+        document.addEventListener('DOMContentLoaded', function() {
             const headerTitle = document.getElementById('header-game-title');
             if (headerTitle) {
                 const gameNames = {
@@ -691,399 +583,321 @@
                     '배틀그라운드': 'PUBG',
                     'FCOnline': 'FC ONLINE'
                 };
-                headerTitle.textContent = `/ ${gameNames[selectedGame] || selectedGame.toUpperCase()}`;
+                headerTitle.textContent = '/ ' + (gameNames[selectedGame] || selectedGame.toUpperCase());
             }
 
-            loadGameData(selectedGame, (data) => {
-            // Theme Toggle Logic
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            const themeIcon = themeToggleBtn.querySelector('.theme-icon');
-            const themeLabel = themeToggleBtn.querySelector('.theme-label');
+            loadGameData(selectedGame, function(data) {
+                const themeToggleBtn = document.getElementById('theme-toggle');
+                const themeIcon = themeToggleBtn.querySelector('.theme-icon');
+                const themeLabel = themeToggleBtn.querySelector('.theme-label');
 
-            function updateThemeUI(theme) {
-                if (theme === 'light') {
-                    themeIcon.textContent = '☾';
-                    themeLabel.textContent = 'DARK';
-                } else {
-                    themeIcon.textContent = '☀';
-                    themeLabel.textContent = 'LIGHT';
+                function updateThemeUI(theme) {
+                    if (theme === 'light') {
+                        themeIcon.textContent = '☾';
+                        themeLabel.textContent = 'DARK';
+                    } else {
+                        themeIcon.textContent = '☀';
+                        themeLabel.textContent = 'LIGHT';
+                    }
                 }
-            }
 
-            // Set initial button state
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            updateThemeUI(currentTheme);
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                updateThemeUI(currentTheme);
 
-            themeToggleBtn.addEventListener('click', () => {
-                const targetTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', targetTheme);
-                localStorage.setItem('theme', targetTheme);
-                updateThemeUI(targetTheme);
-                
-                // Fire a custom event to notify scripts (if any other charts exist)
-                window.dispatchEvent(new Event('themeChanged'));
-            });
-
-
-
-            // -------------------------------------------------------------
-            // PERSONA CHAT BUSINESS LOGIC
-            // -------------------------------------------------------------
-            const clusters = typeof USER_CLUSTERS_DATA !== 'undefined' ? USER_CLUSTERS_DATA : [];
-            let activeClusterId = 0;
-            let chatHistories = {}; // Map of clusterId -> array of messages [{sender: 'persona'|'user', text: '', time: ''}]
-
-            const personasListContainer = document.getElementById('personas-list-container');
-            const chatMessagesContainer = document.getElementById('chat-messages-container');
-            const promptSuggestionsContainer = document.getElementById('prompt-suggestions-container');
-            const chatInput = document.getElementById('chat-input');
-            const sendBtn = document.getElementById('send-btn');
-            const activeAvatar = document.getElementById('active-avatar');
-            const activePersonaName = document.getElementById('active-persona-name');
-            const evidenceContainer = document.getElementById('evidence-container');
-            const engineSelector = document.getElementById('engine-selector');
-
-            function getPersonaKey(personaName) {
-                if (!personaName) return 'casual';
-                const name = personaName.toLowerCase();
-                if (name.includes('비판') || name.includes('critic')) return 'critics';
-                if (name.includes('라이트') || name.includes('casual') || name.includes('소통')) return 'casual';
-                if (name.includes('코어') || name.includes('loyal') || name.includes('충성')) return 'core';
-                if (name.includes('이탈') || name.includes('churn') || name.includes('위험')) return 'churn';
-                return 'casual';
-            }
-
-            // Quick prompts tailored per persona type (post-release feedback only)
-            const personaPrompts = {
-                'critics': [
-                    "최근 패치 이후에 조작감이나 최적화 렉에 대해서 유저들이 주로 어떤 불만을 제기하고 있어?",
-                    "E버튼 줍기 활성화 지연이나 가로등 상호작용 관련 조작 버그가 많은 편이야?",
-                    "스펙과 조작감 문제 때문에 반품(환불)하겠다는 글들도 실제로 보여?"
-                ],
-                'casual': [
-                    "초보 유저들이 게시판에서 진행 방법이나 팁을 물어볼 때 주로 어떤 주제를 가장 많이 질문해?",
-                    "트위치 드롭스 보상 수령 방법이나 이벤트 일정에 대해서 다들 잘 알고 있어?",
-                    "라이트 유저들의 잡담 게시판에서 최근 패치 이후 렉 완화에 대해 긍정적인 반응이 있어?"
-                ],
-                'core': [
-                    "데미안 보스전 난이도나 어비스 던전 파밍에 대한 숙련 유저들의 평가는 어때?",
-                    "어비스 기어 합성이나 무기 공격력 밸런스에 관한 공략 글은 주로 어떻게 올라와?",
-                    "공동 목표 달성을 위한 용병단 모집이나 협력 플레이 관련 코어 팬들의 분위기는 어때?"
-                ],
-                'churn': [
-                    "서브 퀘스트를 진행하다가 버그로 막히거나 시스템이 불편해서 중도 포기하겠다는 유저들의 반응은 어때?",
-                    "가판대 과일 훔치기 등 특정 모션 중에 캐릭터 조작이 불가능한 현상이 자주 보고돼?",
-                    "일꾼 관리 조건이나 지역 점령 시 템 루팅이 이상해서 복귀를 꺼리는 유저들이 있어?"
-                ]
-            };
-
-            // Avatar symbols for each cluster type
-            const clusterAvatars = { 'critics': "🛠️", 'casual': "💬", 'core': "👑", 'churn': "⚠️" };
-
-            // Initialize chat histories and render persona list
-            function init() {
-                if (typeof USER_CLUSTERS_DATA === 'undefined') {
-                    alert("⚠️ 경고: USER_CLUSTERS_DATA가 로드되지 않았습니다! data_붉은사막.js 파일 경로를 확인해 주세요.");
-                } else if (!USER_CLUSTERS_DATA || USER_CLUSTERS_DATA.length === 0) {
-                    alert("⚠️ 경고: USER_CLUSTERS_DATA 배열이 비어 있습니다!");
-                }
-                clusters.forEach(c => {
-                    const welcomeMsgs = {
-                        'critics': "안녕하세요. 붉은사막을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성, 불합리한 전투 매커니즘 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
-                        'casual': "반가워요! 가볍게 메인 퀘스트 밀면서 맵 돌아다니는 라이트 유저예요. 가방 비우는 법이나 예구 쉴드 받는 법 같은 소소한 질문 글도 올리고 유저들이랑 잡담하는 걸 좋아해요.",
-                        'core': "반갑습니다! 파이웰 대륙의 광활한 비주얼과 압도적인 보스 레이드 전투에 매료되어 매일 즐겁게 플레이하는 코어 팬입니다. 이 게임의 훌륭한 시스템과 앞으로의 성장에 대해 기쁘게 대화 나누고 싶네요.",
-                        'churn': "솔직히 더 이상 게임에 접속하고 싶지 않네요. 지난번 가판대 근처 조작 불가 현상이나 끼임 버그로 캐릭터 사망했을 때 부활도 안 되던 경험을 겪고 나니 의욕 싹 사라졌습니다. 왜 이탈하게 되었는지 말씀드리죠."
-                    };
-                    
-                    const key = getPersonaKey(c.persona);
-                    chatHistories[c.id] = [
-                        { sender: 'persona', text: welcomeMsgs[key] || "안녕하세요.", time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) }
-                    ];
+                themeToggleBtn.addEventListener('click', function() {
+                    const targetTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', targetTheme);
+                    localStorage.setItem('theme', targetTheme);
+                    updateThemeUI(targetTheme);
+                    window.dispatchEvent(new Event('themeChanged'));
                 });
 
-                renderPersonaList();
-                selectPersona(0);
-            }
+                const clusters = typeof USER_CLUSTERS_DATA !== 'undefined' ? USER_CLUSTERS_DATA : [];
+                let activeClusterId = 0;
+                let chatHistories = {};
 
-            function renderPersonaList() {
-                personasListContainer.innerHTML = '';
-                clusters.forEach(c => {
-                    const item = document.createElement('div');
-                    item.className = `persona-item cluster-${c.id}`;
-                    if (c.id === activeClusterId) {
-                        item.classList.add('active');
+                const personasListContainer = document.getElementById('personas-list-container');
+                const chatMessagesContainer = document.getElementById('chat-messages-container');
+                const promptSuggestionsContainer = document.getElementById('prompt-suggestions-container');
+                const chatInput = document.getElementById('chat-input');
+                const sendBtn = document.getElementById('send-btn');
+                const activeAvatar = document.getElementById('active-avatar');
+                const activePersonaName = document.getElementById('active-persona-name');
+                const evidenceContainer = document.getElementById('evidence-container');
+                const engineSelector = document.getElementById('engine-selector');
+
+                function getPersonaKey(personaName) {
+                    if (!personaName) return 'casual';
+                    const name = personaName.toLowerCase();
+                    if (name.includes('비판') || name.includes('critic') || name.includes('회의') || name.includes('skeptic') || name.includes('비평') || name.includes('vocal')) return 'critics';
+                    if (name.includes('라이트') || name.includes('casual') || name.includes('소통') || name.includes('지지') || name.includes('supporter') || name.includes('fading')) return 'casual';
+                    if (name.includes('코어') || name.includes('loyal') || name.includes('충성') || name.includes('power')) return 'core';
+                    if (name.includes('이탈') || name.includes('churn') || name.includes('위험') || name.includes('번아웃') || name.includes('veteran')) return 'churn';
+                    return 'casual';
+                }
+
+                const gamePersonaPrompts = {
+                    '붉은사막': {
+                        'critics': [
+                            "최근 패치 이후에 조작감이나 최적화 렉에 대해서 유저들이 주로 어떤 불만을 제기하고 있어?",
+                            "E버튼 줍기 활성화 지연이나 가로등 상호작용 관련 조작 버그가 많은 편이야?",
+                            "스펙과 조작감 문제 때문에 반품(환불)하겠다는 글들도 실제로 보여?"
+                        ],
+                        'casual': [
+                            "초보 유저들이 게시판에서 진행 방법이나 팁을 물어볼 때 주로 어떤 주제를 가장 많이 질문해?",
+                            "트위치 드롭스 보상 수령 방법이나 이벤트 일정에 대해서 다들 잘 알고 있어?",
+                            "라이트 유저들의 잡담 게시판에서 최근 패치 이후 렉 완화에 대해 긍정적인 반응이 있어?"
+                        ],
+                        'core': [
+                            "데미안 보스전 난이도나 어비스 던전 파밍에 대한 숙련 유저들의 평가는 어때?",
+                            "어비스 기어 합성이나 무기 공격력 밸런스에 관한 공략 글은 주로 어떻게 올라와?",
+                            "공동 목표 달성을 위한 용병단 모집이나 협력 플레이 관련 코어 팬들의 분위기는 어때?"
+                        ],
+                        'churn': [
+                            "서브 퀘스트를 진행하다가 버그로 막히거나 시스템이 불편해서 중도 포기하겠다는 유저들의 반응은 어때?",
+                            "가판대 과일 훔치기 등 특정 모션 중에 캐릭터 조작이 불가능한 현상이 자주 보고돼?",
+                            "일꾼 관리 조건이나 지역 점령 시 템 루팅이 이상해서 복귀를 꺼리는 유저들이 있어?"
+                        ]
+                    },
+                    'AION2': {
+                        0: [
+                            "눈팅 유저들이 클래스 밸런스 패치에 대해서 최근 어떤 불만을 조용히 얘기해?",
+                            "라방 소통 방식에 왜 괘씸하다고 하거나 소통 부재라고 비판하는 여론이 많은 거야?",
+                            "스킬 밸런스 패치가 매번 극단적으로 패치되어 의욕을 잃는다는 의견이 있어?"
+                        ],
+                        1: [
+                            "오랫동안 열심히 하다가 최근 번아웃되어 복귀를 미루거나 떠나겠다는 유저들의 주된 이유가 뭐야?",
+                            "마우스 매크로(딱딱이)나 작업장 매크로 단속에 대해 왜 엔씨에 실망했다는 거야?",
+                            "직업 변경권이 출시되면 게임이 더 망할 거라고 걱정하는 코어 복귀 유저들이 왜 많은 거지?"
+                        ],
+                        2: [
+                            "최근 밸런스 패치(살성 너프, 수호 버프 등) 이후 게시판에서 가장 뜨겁게 불타오르는 논쟁 주제가 뭐야?",
+                            "성역2 난이도가 딸깍 패치 때문에 긴장감 없고 노잼이 되었다고 비판하는 글들이 보여?",
+                            "공홈 닉네임 검색 시 부캐 목록까지 다 공개해서 매크로 부캐들을 박제하자고 하는 주장이 있어?"
+                        ]
                     }
-                    
-                    item.innerHTML = `
-                        <div class="persona-item-title">${c.persona}</div>
-                        <div class="persona-item-desc">${c.desc}</div>
-                        <div class="persona-item-meta">
-                            <span>규모: ${c.size}명 (${c.ratio}%)</span>
-                            <span style="font-weight: bold; color: ${c.avg_sent >= 0 ? '#28a745' : '#dc3545'};">감성지수: ${c.avg_sent}</span>
-                        </div>
-                    `;
+                };
 
-                    item.addEventListener('click', () => {
-                        selectPersona(c.id);
+                const clusterAvatars = { 'critics': "🛠️", 'casual': "💬", 'core': "👑", 'churn': "⚠️" };
+
+                function init() {
+                    clusters.forEach(function(c) {
+                        const gameWelcomeMap = {
+                            '붉은사막': {
+                                'critics': "안녕하세요. 붉은사막을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성, 불합리한 전투 매커니즘 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
+                                'casual': "반가워요! 가볍게 메인 퀘스트 밀면서 맵 돌아다니는 라이트 유저예요. 가방 비우는 법이나 예구 쉴드 받는 법 같은 소소한 질문 글도 올리고 유저들이랑 잡담하는 걸 좋아해요.",
+                                'core': "반갑습니다! 파이웰 대륙의 광활한 비주얼과 압도적인 보스 레이드 전투에 매료되어 매일 즐겁게 플레이하는 코어 팬입니다. 이 게임의 훌륭한 시스템과 앞으로의 성장에 대해 기쁘게 대화 나누고 싶네요.",
+                                'churn': "솔직히 더 이상 게임에 접속하고 싶지 않네요. 지난번 가판대 근처 조작 불가 현상이나 끼임 버그로 캐릭터 사망했을 때 부활도 안 되던 경험을 겪고 나니 의욕 싹 사라졌습니다. 왜 이탈하게 되었는지 말씀드리죠."
+                            },
+                            'AION2': {
+                                0: "안녕하세요. 조용히 눈팅하면서 게시판 분위기를 살피는 유저입니다. 요즘 클래스 밸런스 패치나 매크로 단속 실태를 보면 솔직히 불만이 좀 쌓여 있네요. 굳이 매일 글을 쓰진 않지만 제 입장을 차분히 말씀드릴게요.",
+                                1: "솔직히 요즘은 게임에 거의 안 들어가요. 예전엔 진짜 열심히 달렸고 템 세팅도 다 해놨는데, 밸런스 꼬라지랑 라방 대처 보고 나니까 현타와서 의욕이 싹 사라졌습니다. 왜 떠나게 되었는지 말씀드리죠.",
+                                2: "반갑습니다. 아이온2를 깊게 파고 있는 유저인데, 요새 클래스 밸런스 붕괴나 패치 방향성에 대해 할 말이 아주 많습니다. 애정이 있으니까 이렇게 팩트로 꼬집는 쓴소리도 아끼지 않는 겁니다. 무엇이 문제인지 짚어드리죠."
+                            }
+                        };
+                        const defaultWelcome = {
+                            'critics': "안녕하세요. 이 게임을 깊게 플레이하고 있는 유저입니다. 밸런스 균형이나 UI 편의성 등 제가 겪은 불편과 아쉬운 점들을 가감 없이 말씀드릴 준비가 되어 있습니다.",
+                            'casual': "반가워요! 가볍게 플레이하면서 소소하게 즐기는 라이트 유저예요. 가벼운 질문 글도 올리고 유저들이랑 잡담하는 걸 좋아해요.",
+                            'core': "반갑습니다! 이 게임의 비주얼과 보스 레이드 전투에 매료되어 매일 즐겁게 플레이하는 코어 팬입니다. 앞으로의 발전에 대해 기쁘게 대화 나누고 싶네요.",
+                            'churn': "솔직히 더 이상 게임에 접속하고 싶지 않네요. 여러 버그나 운영 문제로 지쳐서 의욕이 싹 사라졌습니다. 왜 이탈하게 되었는지 말씀드리죠."
+                        };
+                        const welcomeMsgs = gameWelcomeMap[selectedGame] || defaultWelcome;
+                        const key = getPersonaKey(c.persona);
+                        const welcomeText = welcomeMsgs[c.id] || welcomeMsgs[key] || "안녕하세요.";
+                        chatHistories[c.id] = [
+                            { sender: 'persona', text: welcomeText, time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) }
+                        ];
                     });
 
-                    personasListContainer.appendChild(item);
-                });
-            }
-
-            function selectPersona(clusterId) {
-                activeClusterId = clusterId;
-                
-                // Update active item class
-                document.querySelectorAll('.persona-item').forEach(el => el.classList.remove('active'));
-                const selectedItem = document.querySelector(`.persona-item.cluster-${clusterId}`);
-                if (selectedItem) selectedItem.classList.add('active');
-
-                // Update Header info
-                const c = clusters.find(item => item.id === clusterId);
-                const key = c ? getPersonaKey(c.persona) : 'casual';
-                activeAvatar.textContent = clusterAvatars[key] || "👤";
-                activeAvatar.className = `avatar cluster-${clusterId}`;
-                activePersonaName.textContent = c ? c.persona.split(' (')[0] : "유저 페르소나";
-                
-                if (key === 'churn') {
-                    document.getElementById('active-status-text').textContent = "INACTIVE / RISK HIGH";
-                    document.getElementById('active-status-text').style.color = "#F44336";
-                    document.querySelector('.chat-header-status .status-dot').style.backgroundColor = "#F44336";
-                } else {
-                    document.getElementById('active-status-text').textContent = "ONLINE";
-                    document.getElementById('active-status-text').style.color = "#28a745";
-                    document.querySelector('.chat-header-status .status-dot').style.backgroundColor = "#28a745";
+                    renderPersonaList();
+                    if (clusters.length > 0) selectPersona(0);
                 }
 
-                // Render Chat Log
-                renderChatLog();
-
-                // Render Prompt Suggestions
-                renderSuggestions();
-
-                // Clear Evidence panel to initial state or last queries
-                clearEvidence();
-            }
-
-            function renderChatLog() {
-                chatMessagesContainer.innerHTML = '';
-                const history = chatHistories[activeClusterId] || [];
-                
-                history.forEach(msg => {
-                    const row = document.createElement('div');
-                    row.className = `message-row ${msg.sender}`;
-                    if (msg.sender === 'persona') {
-                        row.classList.add(`cluster-${activeClusterId}`);
-                    }
-                    
-                    row.innerHTML = `
-                        <div class="message-bubble">
-                            <div>${msg.text}</div>
-                            <div class="message-meta">
-                                <span>${msg.sender === 'user' ? 'PM' : (msg.engine === 'ollama_backend' ? `Ollama (${msg.model || 'Gemma'})` : (msg.engine === 'gemini_backend' ? `Gemini (${msg.model || '2.5 Flash'})` : (msg.engine === 'local_rag' ? 'Client-side RAG' : 'User Persona')))}</span>
-                                <span>${msg.time}</span>
+                function renderPersonaList() {
+                    personasListContainer.innerHTML = '';
+                    clusters.forEach(function(c) {
+                        const item = document.createElement('div');
+                        item.className = 'persona-item cluster-' + c.id;
+                        if (c.id === activeClusterId) {
+                            item.classList.add('active');
+                        }
+                        
+                        item.innerHTML = `
+                            <div class="persona-item-title">${c.persona}</div>
+                            <div class="persona-item-desc">${c.desc}</div>
+                            <div class="persona-item-meta">
+                                <span>규모: ${c.size}명 (${c.ratio}%)</span>
+                                <span style="font-weight: bold; color: ${c.avg_sent >= 0 ? '#28a745' : '#dc3545'};">감성지수: ${c.avg_sent}</span>
                             </div>
-                        </div>
-                    `;
-                    chatMessagesContainer.appendChild(row);
-                });
+                        `;
 
-                // Scroll to bottom
-                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-            }
+                        item.addEventListener('click', function() {
+                            selectPersona(c.id);
+                        });
 
-            function renderSuggestions() {
-                promptSuggestionsContainer.innerHTML = '';
-                const c = clusters.find(item => item.id === activeClusterId);
-                const key = c ? getPersonaKey(c.persona) : 'casual';
-                const prompts = personaPrompts[key] || [];
-                
-                prompts.forEach(p => {
-                    const chip = document.createElement('button');
-                    chip.className = 'suggestion-chip';
-                    chip.textContent = p;
-                    chip.addEventListener('click', () => {
-                        chatInput.value = p;
-                        sendMessage();
+                        personasListContainer.appendChild(item);
                     });
-                    promptSuggestionsContainer.appendChild(chip);
-                });
-            }
-
-            function clearEvidence() {
-                evidenceContainer.innerHTML = `
-                    <div class="no-evidence" id="evidence-placeholder">
-                        대화창에서 질문을 전송하시면,<br>해당 페르소나 집단 내에서 참고한<br>실제 커뮤니티 유저의 원문(Verbatim)<br>구절이 여기에 매핑됩니다.
-                    </div>
-                `;
-            }
-
-            // -------------------------------------------------------------
-            // LOCAL HEURISTIC SEARCH & TEXT GENERATION (Pure Persona Simulation)
-            // -------------------------------------------------------------
-            function generateMockResponse(userInput) {
-                const c = clusters.find(item => item.id === activeClusterId);
-                
-                let synthesizedAnswer = "";
-                if (activeClusterId === 0) { // Active Critics
-                    synthesizedAnswer = `로컬 오프라인 시뮬레이션 모드 상태예요. 저는 이 게임의 최적화 드랍, 밸런스 지연, UI 편의성에 대해 매우 불만이 가득한 비판자 페르소나예요. 질문하신 내용에 대해서 저는 부정적인 의견을 낼 수밖에 없네요.`;
-                } 
-                else if (activeClusterId === 1) { // Casual Socializers
-                    synthesizedAnswer = `로컬 오프라인 시뮬레이션 모드 상태예요! 저는 가볍게 퀘스트 깨고 다른 초보분들이랑 수다 떠는 걸 즐기는 라이트 유저예요. 어려운 시스템 질문보다는 편한 대화가 좋아요!`;
-                } 
-                else if (activeClusterId === 2) { // Loyal Power Users
-                    synthesizedAnswer = `로컬 오프라인 시뮬레이션 모드 상태입니다. 보스전 그래픽이나 손맛이 최고라서 앞으로 게임의 장기적인 업데이트에 대해 아주 긍정적으로 생각하고 큰 기대를 하고 있는 열성 유저랍니다.`;
-                } 
-                else { // High Churn Risks (clusterId = 3)
-                    synthesizedAnswer = `로컬 오프라인 시뮬레이션 모드예요. 조작이 막히거나 캐릭터가 끼이는 치명적인 버그가 계속 생겨서 진짜 탈퇴하고 복귀 안 할 예정인 유저예요. 버그 해결이 안 된다면 아무 생각도 없어요.`;
                 }
 
-                return {
-                    text: synthesizedAnswer,
-                    evidence: []
-                };
-            }
+                function selectPersona(clusterId) {
+                    activeClusterId = clusterId;
+                    const c = clusters.find(function(cl) { return cl.id === clusterId; });
+                    if (!c) return;
 
-            // -------------------------------------------------------------
-            // SEND AND RECEIVE MESSAGE ACTIONS
-            // -------------------------------------------------------------
-            async function sendMessage() {
-                const text = chatInput.value.trim();
-                if (!text) return;
+                    const key = getPersonaKey(c.persona);
+                    const avatarSymbol = clusterAvatars[key] || "👤";
 
-                // Add User Message
-                const userMsg = {
-                    sender: 'user',
-                    text: text,
-                    time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
-                };
-                
-                chatHistories[activeClusterId].push(userMsg);
-                renderChatLog();
-                chatInput.value = '';
+                    activeAvatar.textContent = avatarSymbol;
+                    activeAvatar.className = 'avatar cluster-' + c.id;
+                    activePersonaName.textContent = c.persona + ' (ID: ' + c.id + ')';
 
-                // Show "typing..." placeholder
-                const typingRow = document.createElement('div');
-                typingRow.className = `message-row persona cluster-${activeClusterId}`;
-                typingRow.id = 'typing-indicator';
-                typingRow.innerHTML = `
-                    <div class="message-bubble" style="padding: 10px 16px; color: var(--text-secondary); font-style: italic;">
-                        페르소나가 답변을 고민하는 중...
-                    </div>
-                `;
-                chatMessagesContainer.appendChild(typingRow);
-                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+                    document.querySelectorAll('.persona-item').forEach(function(el) {
+                        el.classList.remove('active');
+                    });
+                    const activeEl = document.querySelector('.persona-item.cluster-' + c.id);
+                    if (activeEl) activeEl.classList.add('active');
 
-                const selectedEngine = engineSelector.value;
-                let personaMsgText = "";
-                let evidenceList = [];
-                let actualModel = "";
+                    renderMessages();
+                    renderPrompts(c);
+                }
 
-                if (selectedEngine === 'local_rag') {
-                    // Wait a moment to simulate real chatbot response time
-                    await new Promise(resolve => setTimeout(resolve, 800));
-                    
-                    const response = generateMockResponse(text);
-                    personaMsgText = response.text;
-                    evidenceList = response.evidence;
-                    actualModel = "Client Mock";
-                } else {
-                    // API Backend Mode: HTTP Request to localhost server
-                    try {
-                        const res = await fetch(`${BACKEND_API_URL}/api/chat_profile`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                cluster_id: activeClusterId,
-                                message: text,
-                                game: selectedGame,
-                                engine: selectedEngine
-                            })
+                function renderMessages() {
+                    chatMessagesContainer.innerHTML = '';
+                    const msgs = chatHistories[activeClusterId] || [];
+                    msgs.forEach(function(m) {
+                        const row = document.createElement('div');
+                        row.className = 'msg-row ' + m.sender;
+                        
+                        const bubble = document.createElement('div');
+                        bubble.className = 'msg-bubble';
+                        bubble.innerHTML = m.text.replace(/\n/g, '<br>');
+                        
+                        const meta = document.createElement('div');
+                        meta.className = 'msg-meta';
+                        meta.textContent = m.time + (m.model ? ' • ' + m.model : '');
+                        
+                        bubble.appendChild(meta);
+                        row.appendChild(bubble);
+                        chatMessagesContainer.appendChild(row);
+                    });
+                    chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+                }
+
+                function renderPrompts(c) {
+                    promptSuggestionsContainer.innerHTML = '';
+                    const key = getPersonaKey(c.persona);
+                    const promptsMap = gamePersonaPrompts[selectedGame] || gamePersonaPrompts['붉은사막'];
+                    const suggestions = promptsMap[c.id] || promptsMap[key] || [
+                        "최근 게임 플레이 환경이나 시스템에 대해 만족하시나요?",
+                        "가장 아쉽거나 개선되었으면 하는 점이 있다면 말씀해 주세요.",
+                        "다른 유저들과 주로 공유하는 불만이나 의견이 있으신가요?"
+                    ];
+
+                    suggestions.forEach(function(txt) {
+                        const chip = document.createElement('div');
+                        chip.className = 'prompt-chip';
+                        chip.textContent = txt;
+                        chip.addEventListener('click', function() {
+                            chatInput.value = txt;
+                            sendMessage();
                         });
+                        promptSuggestionsContainer.appendChild(chip);
+                    });
+                }
 
-                        if (!res.ok) throw new Error('API server returned error');
-                        const data = await res.json();
-                        personaMsgText = data.text;
-                        evidenceList = data.evidence || [];
-                        actualModel = data.model || "Ollama";
-                    } catch (err) {
-                        console.error('Error fetching backend API:', err);
-                        personaMsgText = `❌ <strong>로컬 API 연동 실패:</strong> <code>execution/persona_chat_server.py</code> 백엔드 서버가 실행 중이지 않거나, 설정하신 AI 엔진이 정상적으로 켜져 있지 않습니다.<br><br>서버 구동을 확인하시거나 Direct Client-RAG (Browser-side Engine) 모드로 설정을 다시 변경해 주세요.`;
-                        evidenceList = [];
-                        actualModel = "Error";
+                function sendMessage() {
+                    const text = chatInput.value.trim();
+                    if (!text) return;
+
+                    const timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                    if (!chatHistories[activeClusterId]) {
+                        chatHistories[activeClusterId] = [];
                     }
-                }
+                    chatHistories[activeClusterId].push({ sender: 'user', text: text, time: timeStr });
+                    chatInput.value = '';
+                    renderMessages();
 
-                // Remove typing placeholder
-                const indicator = document.getElementById('typing-indicator');
-                if (indicator) indicator.remove();
+                    const loadingRow = document.createElement('div');
+                    loadingRow.className = 'msg-row persona';
+                    loadingRow.id = 'loading-msg';
+                    loadingRow.innerHTML = '<div class="msg-bubble" style="color: var(--text-muted); font-style: italic;">생각 중...</div>';
+                    chatMessagesContainer.appendChild(loadingRow);
+                    chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
 
-                // Add Persona Response
-                const responseMsg = {
-                    sender: 'persona',
-                    text: personaMsgText,
-                    engine: selectedEngine,
-                    model: actualModel,
-                    time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
-                };
-                chatHistories[activeClusterId].push(responseMsg);
-                renderChatLog();
+                    const targetEngine = engineSelector ? engineSelector.value : 'gemini_backend';
+                    const payload = {
+                        game: selectedGame,
+                        cluster_id: activeClusterId,
+                        message: text,
+                        engine: targetEngine
+                    };
 
-                // Update Evidence Panel
-                renderEvidence(evidenceList);
-            }
+                    fetch(BACKEND_API_URL + '/api/chat_profile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        const loader = document.getElementById('loading-msg');
+                        if (loader) loader.remove();
 
-            function renderEvidence(evidenceList) {
-                evidenceContainer.innerHTML = '';
-                
-                if (evidenceList.length === 0) {
-                    evidenceContainer.innerHTML = `
-                        <div class="no-evidence">
-                            매칭된 실제 유저 코멘트가 없습니다.<br>
-                            질문 키워드를 구체적으로 입력하시면<br>
-                            더 명확한 Verbatim 증거를 찾을 수 있습니다.
-                        </div>
-                    `;
-                    return;
-                }
-
-                evidenceList.forEach(v => {
-                    const card = document.createElement('div');
-                    card.className = 'evidence-card';
-                    card.innerHTML = `
-                        <div class="evidence-meta">
-                            <span class="evidence-highlight-tag">${v.category}</span>
-                            <span>${v.date}</span>
-                        </div>
-                        <div style="color: var(--text-primary); font-style: italic;">"${v.text}"</div>
-                        <div style="font-family: var(--font-mono); font-size: 8px; color: var(--text-muted); text-align: right; margin-top: 6px; text-decoration: underline;">
-                            원문 커뮤니티 글 보기 ↗
-                        </div>
-                    `;
-                    
-                    if (v.url) {
-                        card.addEventListener('click', () => {
-                            window.open(v.url, '_blank');
+                        const reply = data.text || "답변을 불러오지 못했습니다.";
+                        const modelUsed = data.model || "API Server";
+                        chatHistories[activeClusterId].push({
+                            sender: 'persona',
+                            text: reply,
+                            time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+                            model: modelUsed
                         });
-                    }
-                    evidenceContainer.appendChild(card);
-                });
-            }
+                        renderMessages();
 
-            // Keyboard and send buttons listener
-            sendBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
+                        if (data.evidence && data.evidence.length > 0) {
+                            renderEvidence(data.evidence);
+                        }
+                    })
+                    .catch(function(err) {
+                        const loader = document.getElementById('loading-msg');
+                        if (loader) loader.remove();
+
+                        chatHistories[activeClusterId].push({
+                            sender: 'persona',
+                            text: "❌ 서버 통신 오류가 발생했습니다: " + err.message,
+                            time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+                            model: 'Error'
+                        });
+                        renderMessages();
+                    });
                 }
-            });
 
-            // Initialize Everything
-            init();
+                function renderEvidence(evidenceList) {
+                    evidenceContainer.innerHTML = '';
+                    evidenceList.forEach(function(ev) {
+                        const card = document.createElement('div');
+                        card.className = 'evidence-card';
+                        card.innerHTML = `
+                            <div class="evidence-text">"${ev.text || ev}"</div>
+                            <div class="evidence-meta">
+                                <span>날짜: ${ev.date || 'N/A'}</span>
+                                <span>유사도: ${ev.score ? ev.score.toFixed(2) : 'N/A'}</span>
+                            </div>
+                        `;
+                        evidenceContainer.appendChild(card);
+                    });
+                }
+
+                sendBtn.addEventListener('click', sendMessage);
+                chatInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+
+                init();
             });
         });
     </script>
 </body>
 </html>
+

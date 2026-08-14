@@ -532,33 +532,187 @@
             <!-- ═══════════════════════════════════════════ -->
             <!-- ENTRY: 2026.08 — Qwen / Gemma 비교 분석 -->
             <!-- ═══════════════════════════════════════════ -->
+            <!-- ═══════════════════════════════════════════ -->
+            <!-- ENTRY 1: 2026.08 — 로컬 LLM 비교 분석 -->
+            <!-- ═══════════════════════════════════════════ -->
             <div class="timeline-entry">
                 <div class="entry-date">
                     <div class="date-year-month">2026.08</div>
-                    <div class="date-label">RAG & Model Comparison</div>
+                    <div class="date-label">Local LLM Comparison</div>
                 </div>
                 <div class="entry-content">
-                    <div class="entry-title">Qwen · Gemma 분석 및 챗봇 RAG/Verbatim 프로세스 고도화</div>
+                    <div class="entry-title">Qwen · Gemma 로컬 LLM 비교 분석 도입</div>
                     <div class="entry-tags">
                         <span class="tag tag-llm">LLM</span>
                         <span class="tag tag-compare">COMPARE</span>
                         <span class="tag tag-sentiment">SENTIMENT</span>
-                        <span class="tag tag-model">RAG</span>
+                    </div>
+                    <div class="entry-body">
+                        <p>
+                            기존 형태소 분석(키워드 매칭 + KoELECTRA) 방식의 한계를 보완하기 위해, 로컬 Ollama 기반의 <strong>Gemma 2 2B</strong>(<code>gemma2:2b</code>)와 <strong>Qwen</strong> 모델을 활용한 LLM 기반 분류 파이프라인을 구축하고 비교 분석을 수행하였습니다.
+                        </p>
+                        <p>
+                            <strong>Gemma 2 2B</strong> 모델은 처리 속도가 빠르고 게이머 슬랭에 대한 인식이 우수하여 로컬 1차 분류기로 <strong>최우선순위(Default Model)</strong>로 지정되었으며, <strong>Qwen</strong> 모델은 긴 문맥 이해와 미묘한 반어법 감정 분류에서 강력한 보조 엔진으로 활용됩니다.
+                        </p>
                     </div>
 
-                    <!-- 1. Persona Chatbot Answering Process -->
+                    <!-- Model Comparison Table -->
+                    <div class="detail-section">
+                        <div class="detail-section-title">MODEL COMPARISON MATRIX</div>
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>항목</th>
+                                    <th>Gemma 2 2B (우선순위)</th>
+                                    <th>Qwen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="model-name-cell">모델 ID</td>
+                                    <td><code>gemma2:2b</code> (우선순위 로컬 모델)</td>
+                                    <td><code>qwen</code> (대체/페르소나 챗봇 모델)</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">주요 역할</td>
+                                    <td>1차 분류기: 카테고리 + 감정 동시 판별</td>
+                                    <td>대체 엔진: 페르소나 챗봇 / 복합 문장 판별</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">호출 방식</td>
+                                    <td>Ollama REST API (JSON Mode)</td>
+                                    <td>Ollama REST API (JSON Mode)</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">한국어 성능</td>
+                                    <td>게이머 은어·축약어 인식 양호, 간헐적 영어 혼용 오류</td>
+                                    <td>한국어 문맥 이해력 우수, 긴 문장에서 안정적</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">처리 속도</td>
+                                    <td>경량 모델로 매우 빠른 응답 (~0.3s/문장)</td>
+                                    <td>Gemma 대비 소폭 느림 (~0.5s/문장)</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">카테고리 정확도</td>
+                                    <td>GAMEPLAY/GRAPHIC 구분 양호, COMMUNITY↔OTHER 혼동 가끔</td>
+                                    <td>OPTIMIZATION 판별 정확도 높음, MONETIZATION 구분 우수</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">감정 판별</td>
+                                    <td>강한 긍/부정 정확, 미묘한 뉘앙스에서 NEUTRAL 과다 분류</td>
+                                    <td>비꼬기·반어법 인식 상대적 우위, 게이머 슬랭 일부 미스</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-name-cell">적용 현황</td>
+                                    <td>현재 메인 분류 파이프라인 (<code>run_ollama_pipeline.py</code>)</td>
+                                    <td>페르소나 챗봇 엔진 + 보조 분류 검증용</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pipeline Architecture -->
+                    <div class="detail-section" style="margin-top: 16px;">
+                        <div class="detail-section-title">PIPELINE ARCHITECTURE & OPTIMIZATION</div>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">BYPASS 최적화</span>
+                                <span class="detail-value">Aspect 키워드·감정 키워드 모두 미포함 문장은 <code>should_bypass_llm()</code>으로 LLM 호출을 건너뜀 → <strong>~70% 연산 절감</strong></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">자동 기동</span>
+                                <span class="detail-value"><code>ensure_ollama_running()</code>이 포트 11434를 체크, 비활성 시 <code>ollama serve</code> 자동 실행</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cloud Fallback</span>
+                                <span class="detail-value">로컬 Ollama 실패 시 <code>gemini-2.5-flash</code> Cloud API로 자동 전환 (Persona Chat 서버)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">프롬프트 구조</span>
+                                <span class="detail-value">문장 입력 → 카테고리 6종 + OTHER 중 택 1, 감정 POSITIVE/NEGATIVE/NEUTRAL 중 택 1 → JSON 반환</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Findings -->
+                    <div class="detail-section" style="margin-top: 16px;">
+                        <div class="detail-section-title">KEY FINDINGS</div>
+                        <div class="entry-body" style="margin-top: 0;">
+                            <p>
+                                <strong>Gemma 2 2B</strong>는 경량 모델로서 초당 처리량이 높아 대량 데이터 파이프라인의 1차 분류기로 적합합니다. 특히 <code>갓겜</code>, <code>망겜</code>, <code>꿀잼</code> 등 강한 게이머 은어가 포함된 문장에서의 감정 판별 정확도가 높습니다.
+                            </p>
+                            <p>
+                                <strong>Qwen</strong>은 한국어 맥락 이해력과 긴 문장 처리에서 안정적이며, 특히 비꼬기·반어법이 포함된 복합 감정 문장(예: <em>"최적화가 너무 잘 돼서 프레임이 10이 나와요 ^^"</em>)의 NEGATIVE 판별에서 Gemma 대비 우위를 보입니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════ -->
+            <!-- ENTRY 2: 2026.08 — RAG & Verbatim Pipeline -->
+            <!-- ═══════════════════════════════════════════ -->
+            <div class="timeline-entry">
+                <div class="entry-date">
+                    <div class="date-year-month">2026.08</div>
+                    <div class="date-label">RAG & Verbatim Pipeline</div>
+                </div>
+                <div class="entry-content">
+                    <div class="entry-title">페르소나 챗봇 RAG 및 대표 Verbatim 추출 프로세스 고도화</div>
+                    <div class="entry-tags">
+                        <span class="tag tag-llm">RAG</span>
+                        <span class="tag tag-model">VECTOR</span>
+                        <span class="tag tag-nlp">RE-RANK</span>
+                    </div>
+
+                    <!-- Mode Distinctions -->
                     <div class="detail-section" style="margin-top: 12px;">
-                        <div class="detail-section-title">1. 페르소나 챗봇 답변 프로세스 (Persona Chatbot Answering Process)</div>
+                        <div class="detail-section-title">1. 프롬프트 방식 vs RAG 방식 구분</div>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">프롬프트 방식 (Static Profile Mode)</span>
+                                <span class="detail-value">
+                                    해당 클러스터의 인구통계학적 요약 정보, 평균 지표(집단 비율, 평균 이탈 위험도 등), 그리고 대표적인 정적 유저 피드백 5건만을 System Prompt에 주입하여 역할극을 수행합니다. <strong>실시간 외부 원문 데이터 조회가 불가능한 독립 연기 모드</strong>입니다.
+                                </span>
+                              </div>
+                              <div class="detail-item">
+                                <span class="detail-label">RAG 방식 (Dynamic Grounding Mode)</span>
+                                <span class="detail-value">
+                                    기획자가 채팅창에 입력한 질문과 실시간 의미 매칭을 수행하여, 커뮤니티에서 기 수집된 실제 유저들의 세부 발언들을 데이터베이스에서 검색해 와 프롬프트 Context로 동적으로 바인딩합니다. <strong>데이터 팩트에 기반한 초정밀 1인칭 대변 모드</strong>입니다.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RAG Data Preparation -->
+                    <div class="detail-section" style="margin-top: 16px;">
+                        <div class="detail-section-title">2. RAG 데이터 사전 처리 및 준비 (Pre-processing)</div>
+                        <div class="entry-body" style="margin-top: 0;">
+                            <p>
+                                챗봇의 실시간 답변 연산에 지연이 없도록 커뮤니티 데이터 분석 단계에서 다음과 같은 RAG 데이터 전처리를 사전에 일괄 수행합니다.
+                                <ul>
+                                    <li><strong>문장 단위 분할</strong>: 크롤러가 수집한 게시글 본문 및 댓글을 KSS(Korean Sentence Splitter)를 이용해 개별 문장 단위로 분할하여 미세 분석 단위를 구축합니다.</li>
+                                    <li><strong>밀집 벡터 모델 계산</strong>: 분할된 각 문장들을 한국어 전용 문장 임베딩 모델(Sentence Transformer)에 통과시켜 <code>768차원 밀집 벡터(Dense Vector)</code>로 변환하고, 이를 로컬 임베딩 행렬 및 데이터베이스에 사전 계산하여 인덱싱해 둡니다.</li>
+                                    <li><strong>메타데이터 매핑</strong>: 문장별로 Aspect 카테고리(GRAPHIC, GAMEPLAY 등), 감성 라벨(POSITIVE/NEGATIVE), 감성 신뢰 점수(Confidence Score), 작성한 유저의 고유 세션 및 분류된 클러스터 ID(Active Critics, Casual 등)를 결합하여 DB 구조를 선규정해 둡니다.</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- RAG Process -->
+                    <div class="detail-section" style="margin-top: 16px;">
+                        <div class="detail-section-title">3. 페르소나 챗봇 답변 프로세스 (RAG Answering Process)</div>
                         <div class="entry-body" style="margin-top: 0; margin-bottom: 16px;">
                             <p>
-                                유저 클러스터링 기반 페르소나 프로필과 원문 피드백 데이터를 활용하여, 기획자(PM)의 질문에 실제 해당 성향의 유저인 것처럼 1인칭 시점(구어체 존댓말)으로 답변하는 RAG(Retrieval-Augmented Generation) 시스템을 가동합니다.
+                                기획자(PM)가 입력한 질문에 대하여 백엔드(<code>persona_chat_server.py</code>) 서버 측에서 백그라운드로 작동하는 자동 검색-정렬-생성 파이프라인입니다.
                             </p>
                             <p>
                                 <ul>
-                                    <li><strong>SQLite 기반 실시간 RAG</strong>: 기획자가 입력한 질문에서 형태소 및 불용어를 정제한 뒤, 해당 유저 클러스터(페르소나)의 원문 피드백 데이터베이스(<code>analyzed_aspects</code>)에서 키워드 및 의미적 연관성이 높은 구절들을 실시간으로 로드합니다. (로컬 임베딩 모델 <code>snunlp/KR-SBERT-V4</code> cosine similarity 매칭 작동)</li>
-                                    <li><strong>2단계 교차 인코더 재정렬 (Cross-Encoder Reranking)</strong>: 1차로 필터링된 후보 유저 피드백들을 정밀 문맥 인식 모델인 교차 인코더(<code>bongsoo/klue-cross-encoder-v1</code>)로 재평정하여, 연관도 점수가 가장 높은 상위 4개(로컬 Ollama 구동 시 하드웨어 부하 조절을 위해 3개)의 Verbatim을 최종 답변 생성의 Context(근거 자료)로 확정합니다.</li>
-                                    <li><strong>페르소나 역할극 합성 (Prompt Synthesis)</strong>: 최종 선정된 Verbatim들과 함께 해당 페르소나의 인구통계학적 특성/핵심 불만사항, 그리고 엄격한 구어체 1인칭 답변 지침(해요체 존댓말 사용, 제3자 시점 요약 금지, 볼드체/마크다운 기호 사용 배제)을 결합하여 컨텍스트 프롬프트를 빌드합니다.</li>
-                                    <li><strong>LLM 추론 및 폴백 (Generation & Fallback)</strong>: 온라인 환경에서는 <code>Gemini 2.5 Flash</code> API를 활용해 고품질 답변을 도출하며, 오프라인 환경이나 API 한계 시 로컬 Ollama API의 <code>gemma2:2b</code> 또는 <code>qwen</code> 엔진으로 전환합니다. 양쪽 모두 호출 불가능할 경우, 클러스터 성향에 맞춰 사전 정의된 규칙 기반 Mock 응답으로 매끄럽게 폴백됩니다.</li>
+                                    <li><strong>1차 후보군 수집 (Top 300)</strong>: 기획자의 질문 텍스트를 임베딩 벡터로 실시간 계산한 뒤, 전체 문장 벡터 행렬과 코사인 유사도(Cosine Similarity)를 연산하여 가장 높은 유사도를 가진 <strong>상위 300개의 후보 문장</strong>을 1차로 로드합니다.</li>
+                                    <li><strong>2차 필터 및 가중치 계산 (Top 15)</strong>: 1차 수집된 300개 중, <u>대화 중인 페르소나 클러스터 ID와 일치하는 저자가 쓴 문장인지 검증</u>하고 스팸/자음 반복 제거를 거쳐 카테고리 매칭 보너스 및 시간 최신성 가중치를 계산해 최우수 <strong>15개의 문장</strong>으로 후보군을 압축합니다.</li>
+                                    <li><strong>최종 Reranking (최종 4개)</strong>: 15개의 2차 후보 문장을 로컬 PyTorch 기반 교차 인코더(<code>bongsoo/klue-cross-encoder-v1</code>) 모델에 질문과 함께 통과시켜 문맥적 흐름을 재연산하고, 최종적으로 가장 정합성이 높은 <strong>상위 4개의 Verbatim</strong>(로컬 Ollama 구동 시 3개)을 엄선하여 Prompt Context로 사용합니다.</li>
+                                    <li><strong>1인칭 구어체 대변</strong>: 이렇게 선정된 근거 피드백을 기반으로 <code>Gemini 2.5 Flash</code>(또는 로컬 <code>gemma2:2b</code>) 모델을 활용하여 1인칭 게이머 말투(해요체, 주로 '~요', '~네요'로 끝나는 말투)로 짧고 명확하게 소감을 답변합니다.</li>
                                 </ul>
                             </p>
                         </div>
@@ -590,8 +744,8 @@
                               <g transform="translate(175, 15)">
                                 <rect x="0" y="0" width="130" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
                                 <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">2. RAG Retrieval</text>
-                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">SQLite 실시간 검색</text>
-                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">SBERT 임베딩 매칭</text>
+                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">1차 코사인 유사도 검색</text>
+                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">Top 300 후보 문장 로드</text>
                               </g>
 
                               <!-- Connector 2 -> 3 -->
@@ -600,9 +754,9 @@
                               <!-- 3. Reranking -->
                               <g transform="translate(345, 15)">
                                 <rect x="0" y="0" width="130" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
-                                <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">3. Reranking</text>
-                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">교차 인코더 정렬</text>
-                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">KLUE Cross-Encoder</text>
+                                <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">3. Filter & Rerank</text>
+                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">2차 필터 및 교차정렬</text>
+                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">Top 15 압축 ➔ 최종 4개 선택</text>
                               </g>
 
                               <!-- Connector 3 -> 4 -->
@@ -612,8 +766,8 @@
                               <g transform="translate(515, 15)">
                                 <rect x="0" y="0" width="130" height="75" rx="4" fill="var(--card-bg)" stroke="var(--border-color)" stroke-width="1.5"/>
                                 <text x="65" y="25" text-anchor="middle" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="900">4. Prompt Synthesis</text>
-                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">시스템 프롬프트 조립</text>
-                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">페르소나 규정 + Top 4 근거</text>
+                                <text x="65" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">프롬프트 컨텍스트 조립</text>
+                                <text x="65" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">페르소나 규정 + 4개 Verbatim</text>
                               </g>
 
                               <!-- Connector 4 -> 5 -->
@@ -623,19 +777,19 @@
                               <g transform="translate(675, 15)">
                                 <rect x="0" y="0" width="115" height="75" rx="4" fill="rgba(76, 175, 80, 0.05)" stroke="#4CAF50" stroke-width="1.5"/>
                                 <text x="57.5" y="25" text-anchor="middle" fill="#4CAF50" font-family="var(--font-sans)" font-size="11" font-weight="900">5. User Response</text>
-                                <text x="57.5" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">Gemini/Ollama 구동</text>
+                                <text x="57.5" y="45" text-anchor="middle" fill="var(--text-secondary)" font-family="var(--font-sans)" font-size="10">해요체 1인칭 답변</text>
                                 <text x="57.5" y="58" text-anchor="middle" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="8">"솔직히 최적화는..."</text>
                               </g>
                             </svg>
                         </div>
                     </div>
 
-                    <!-- 2. Representative Verbatim Selection Process -->
+                    <!-- 4. Representative Verbatim Selection Process -->
                     <div class="detail-section" style="margin-top: 16px;">
-                        <div class="detail-section-title">2. 대표 Verbatim 선정 프로세스 (Representative Verbatim Selection Process)</div>
+                        <div class="detail-section-title">4. 대표 Verbatim 선정 프로세스 (Representative Verbatim Selection Process)</div>
                         <div class="entry-body" style="margin-top: 0;">
                             <p>
-                                대시보드 및 페르소나 분석에 활용되는 실제 유저 원어 반응(Verbatim) 데이터를 객관적이고 신뢰도 높은 순서로 선별하여 가독성과 품질을 향상하기 위한 자동 필터링 파이프라인입니다.
+                                대시보드 메인 화면의 카테고리별 긍정/부정 의견 영역에 정적으로 노출될 대표 의견(Verbatim)을 선별 및 정제하기 위한 주기적 내보내기 알고리즘입니다.
                             </p>
                             <p>
                                 <ul>
@@ -654,110 +808,6 @@
                                         날짜, 카테고리, 감성 축별로 동일 문장의 중복 적재를 막는 중복성 검사(deduplication)를 적용하며, 최종 데이터 파일 크기를 경량화하여 프론트엔드 렌더링 성능을 지키기 위해 **날짜-카테고리-감성별 최대 3개**의 고유 Verbatim만 정제하여 최종 아카이빙합니다.
                                     </li>
                                 </ul>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- 3. Model Comparison (Existing) -->
-                    <div class="detail-section" style="margin-top: 16px;">
-                        <div class="detail-section-title">3. Qwen · Gemma 로컬 LLM 비교 분석 도입</div>
-                        <div class="entry-body" style="margin-top: 0; margin-bottom: 16px;">
-                            <p>
-                                기존 형태소 분석(키워드 매칭 + KoELECTRA) 방식의 한계를 보완하기 위해, 로컬 Ollama 기반의 <strong>Gemma 2 2B</strong>(<code>gemma2:2b</code>)와 <strong>Qwen</strong> 모델을 활용한 LLM 기반 분류 파이프라인을 구축하고 비교 분석을 수행하였습니다.
-                            </p>
-                            <p>
-                                두 모델 모두 <code>http://localhost:11434/api/generate</code> (Ollama API)를 통해 호출되며, 문장 단위로 구조화된 JSON 프롬프트(<code>{"category": "...", "sentiment": "..."}</code>)를 전송하여 카테고리와 감정을 동시에 반환받는 구조입니다.
-                            </p>
-                        </div>
-
-                        <table class="compare-table">
-                            <thead>
-                                <tr>
-                                    <th>항목</th>
-                                    <th>Gemma 2 2B</th>
-                                    <th>Qwen</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="model-name-cell">모델 ID</td>
-                                    <td><code>gemma2:2b</code></td>
-                                    <td><code>qwen</code> (Ollama)</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">주요 역할</td>
-                                    <td>1차 분류기: 카테고리 + 감정 동시 판별</td>
-                                    <td>대체 엔진: 페르소나 챗봇 / 분류 대안</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">호출 방식</td>
-                                    <td>Ollama REST API (JSON Mode)</td>
-                                    <td>Ollama REST API (JSON Mode)</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">한국어 성능</td>
-                                    <td>게이머 은어·축약어 인식 양호, 간헐적 영어 혼용 오류</td>
-                                    <td>한국어 문맥 이해력 우수, 긴 문장에서 안정적</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">처리 속도</td>
-                                    <td>경량 모델로 빠른 응답 (~0.3s/문장)</td>
-                                    <td>Gemma 대비 소폭 느림 (~0.5s/문장)</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">카테고리 정확도</td>
-                                    <td>GAMEPLAY/GRAPHIC 구분 양호, COMMUNITY↔OTHER 혼동 가끔</td>
-                                    <td>OPTIMIZATION 판별 정확도 높음, MONETIZATION 구분 우수</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">감정 판별</td>
-                                    <td>강한 긍/부정 정확, 미묘한 뉘앙스에서 NEUTRAL 과다 분류</td>
-                                    <td>비꼬기·반어법 인식 상대적 우위, 게이머 슬랭 일부 미스</td>
-                                </tr>
-                                <tr>
-                                    <td class="model-name-cell">적용 현황</td>
-                                    <td>현재 메인 분류 파이프라인 (<code>run_ollama_pipeline.py</code>)</td>
-                                    <td>페르소나 챗봇 엔진 + 보조 분류 검증용</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pipeline Architecture -->
-                    <div class="detail-section" style="margin-top: 16px;">
-                        <div class="detail-section-title">PIPELINE ARCHITECTURE</div>
-                        <div class="detail-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">BYPASS 최적화</span>
-                                <span class="detail-value">Aspect 키워드·감정 키워드 모두 미포함 문장은 <code>should_bypass_llm()</code>으로 LLM 호출을 건너뜀 → <strong>~70% 연산 절감</strong></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">자동 기동</span>
-                                <span class="detail-value"><code>ensure_ollama_running()</code>이 포트 11434를 체크, 비활성 시 <code>ollama serve</code> 자동 실행</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Cloud Fallback</span>
-                                <span class="detail-value">로컬 Ollama 실패 시 <code>gemini-2.5-flash</code> Cloud API로 자동 전환 (Persona Chat 서버)</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">프롬프트 구조</span>
-                                <span class="detail-value">문장 입력 → 카테고리 6종 + OTHER 중 택 1, 감정 POSITIVE/NEGATIVE/NEUTRAL 중 택 1 → JSON 반환</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Findings -->
-                    <div class="detail-section" style="margin-top: 16px;">
-                        <div class="detail-section-title">KEY FINDINGS</div>
-                        <div class="entry-body" style="margin-top: 0;">
-                            <p>
-                                <strong>Gemma 2 2B</strong>는 경량 모델로서 초당 처리량이 높아 대량 데이터 파이프라인의 1차 분류기로 적합합니다. 특히 <code>갓겜</code>, <code>망겜</code>, <code>꿀잼</code> 등 강한 게이머 은어가 포함된 문장에서의 감정 판별 정확도가 높습니다.
-                            </p>
-                            <p>
-                                <strong>Qwen</strong>은 한국어 맥락 이해력과 긴 문장 처리에서 안정적이며, 특히 비꼬기·반어법이 포함된 복합 감정 문장(예: <em>"최적화가 너무 잘 돼서 프레임이 10이 나와요 ^^"</em>)의 NEGATIVE 판별에서 Gemma 대비 우위를 보입니다.
-                            </p>
-                            <p>
-                                현재 운영 환경에서는 <strong>Gemma 2 2B를 메인 분류 엔진</strong>으로, <strong>Qwen을 페르소나 챗봇 + 검증용 보조 엔진</strong>으로 이원화 운영 중입니다.
                             </p>
                         </div>
                     </div>
