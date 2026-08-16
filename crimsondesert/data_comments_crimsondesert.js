@@ -2423,13 +2423,23 @@ const COMMENT_DASHBOARD_DATA = {
   },
   {
     "date": "2026-08-16",
-    "total_posts_with_comments": 1,
-    "total_comments": 1,
+    "total_posts_with_comments": 7,
+    "total_comments": 10,
+    "total_replies": 2,
+    "rejection_count": 0,
+    "defense_count": 0,
+    "agreement_count": 0,
+    "neutral_count": 7
+  },
+  {
+    "date": "2026-08-17",
+    "total_posts_with_comments": 0,
+    "total_comments": 0,
     "total_replies": 0,
     "rejection_count": 0,
     "defense_count": 0,
     "agreement_count": 0,
-    "neutral_count": 1
+    "neutral_count": 0
   }
 ],
     top_controversial_posts: [
