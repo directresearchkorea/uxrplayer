@@ -2433,13 +2433,13 @@ const COMMENT_DASHBOARD_DATA = {
   },
   {
     "date": "2026-08-17",
-    "total_posts_with_comments": 0,
-    "total_comments": 0,
-    "total_replies": 0,
+    "total_posts_with_comments": 6,
+    "total_comments": 10,
+    "total_replies": 3,
     "rejection_count": 0,
     "defense_count": 0,
     "agreement_count": 0,
-    "neutral_count": 0
+    "neutral_count": 6
   }
 ],
     top_controversial_posts: [
