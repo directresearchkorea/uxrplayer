@@ -9,6 +9,7 @@ on:
       - 'posts/**.html'
       - 'insights/**.html'
       - 'introduction/**.html'
+      - 'partnership/**.html'
       - 'sitemap.xml'
   workflow_dispatch:
 
@@ -47,12 +48,14 @@ jobs:
       - name: Build MARP Presentation
         run: |
           mkdir -p introduction
-          npx @marp-team/marp-cli@latest templates/introduction.md -o introduction/index.html
+          npx @marp-team/marp-cli@latest --html templates/introduction.md -o introduction/index.html
+          mkdir -p partnership
+          npx @marp-team/marp-cli@latest --html templates/partnership.md -o partnership/index.html
 
       - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html sitemap.xml posts/ introduction/
+          git add index.html sitemap.xml posts/ introduction/ partnership/
           git commit -m "Auto-generate HTML from markdown [skip ci]" || echo "No changes to commit"
           git push
